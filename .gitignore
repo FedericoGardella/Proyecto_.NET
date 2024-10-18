@@ -1,0 +1,66 @@
+﻿# Build Folders
+bin/
+obj/
+
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Rider
+.idea/
+*.sln.iml
+
+# Visual Studio Code
+.vscode/
+
+# NuGet Packages
+*.nupkg
+*.snupkg
+**/packages/*
+!**/packages/build/
+!**/packages/build/PackageRestore.targets
+!**/packages/build/*.props
+!**/packages/build/*.targets
+
+# User Secrets
+secrets.json
+
+# Azure Web Apps
+wwwroot/
+
+# Temporary files
+*.tmp
+*.temp
+
+# Logs
+*.log
+
+# DotNet Core
+*.db
+*.db-journal
+
+# Configuration files
+appsettings*.json
+*.env
+
+# SQL Server database files
+*.mdf
+*.ldf
+
+# Publish directory
+publish/
+
+# Other common files
+*.exe
+*.dll
+*.pdb
+*.mdb
+*.cache
+
+# Ignore compiled files from IntelliSense
+*.iobj
+*.ipdb
+
