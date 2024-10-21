@@ -1,0 +1,364 @@
+# Nginx ConfigMap
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-config
+data:
+  nginx.conf: |
+    events {
+      worker_connections 1024;
+    }
+
+    http {
+      server {
+        listen 80;
+
+        location /administrativo/ {
+          proxy_pass http://webservice1-service;
+        }
+
+        location /autenticacion/ {
+          proxy_pass http://webservice2-service;
+        }
+
+        location /gestion-citas/ {
+          proxy_pass http://webservice3-service;
+        }
+
+        location /historias-clinicas/ {
+          proxy_pass http://webservice4-service;
+        }
+
+        location /portal-paciente/ {
+          proxy_pass http://webservice5-service;
+        }
+      }
+    }
+
+---
+# Nginx Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:latest
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: nginx-config-volume
+          mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
+      volumes:
+      - name: nginx-config-volume
+        configMap:
+          name: nginx-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: 80
+  selector:
+    app: nginx
+
+---
+# SQL Server Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sqlserver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sqlserver
+  template:
+    metadata:
+      labels:
+        app: sqlserver
+    spec:
+      containers:
+      - name: sqlserver
+        image: mcr.microsoft.com/mssql/server:2019-latest
+        ports:
+        - containerPort: 1433
+        env:
+        - name: SA_PASSWORD
+          value: "P45w0rd.N3T"
+        - name: ACCEPT_EULA
+          value: "Y"
+        volumeMounts:
+        - name: mssql-data
+          mountPath: /var/opt/mssql
+      volumes:
+      - name: mssql-data
+        persistentVolumeClaim:
+          claimName: mssql-pvc
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mssql-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sqlserver-service
+spec:
+  type: ClusterIP
+  ports:
+  - port: 1433
+    targetPort: 1433
+  selector:
+    app: sqlserver
+
+---
+# RabbitMQ Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rabbitmq
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rabbitmq
+  template:
+    metadata:
+      labels:
+        app: rabbitmq
+    spec:
+      containers:
+      - name: rabbitmq
+        image: rabbitmq:3-management
+        ports:
+        - containerPort: 5672
+        - containerPort: 15672
+        env:
+        - name: RABBITMQ_DEFAULT_USER
+          value: "dotnetlab"
+        - name: RABBITMQ_DEFAULT_PASS
+          value: "P455w0rd_net"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rabbitmq-service
+spec:
+  type: ClusterIP
+  ports:
+  - name: amqp
+    port: 5672
+    targetPort: 5672
+  - name: management
+    port: 15672
+    targetPort: 15672
+  selector:
+    app: rabbitmq
+
+---
+# Webservice1 Deployment and Service
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webservice1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: webservice1
+  template:
+    metadata:
+      labels:
+        app: webservice1
+    spec:
+      containers:
+      - name: webservice1
+        image: administrativo-app:latest
+        ports:
+        - containerPort: 80
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: "Development"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: webservice1-service
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 80
+  selector:
+    app: webservice1
+
+---
+# Webservice2 Deployment and Service
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webservice2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: webservice2
+  template:
+    metadata:
+      labels:
+        app: webservice2
+    spec:
+      containers:
+      - name: webservice2
+        image: autenticacion-app:latest
+        ports:
+        - containerPort: 80
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: "Development"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: webservice2-service
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 80
+  selector:
+    app: webservice2
+
+---
+# Webservice3 Deployment and Service
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webservice3
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: webservice3
+  template:
+    metadata:
+      labels:
+        app: webservice3
+    spec:
+      containers:
+      - name: webservice3
+        image: gestioncitas-app:latest
+        ports:
+        - containerPort: 80
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: "Development"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: webservice3-service
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 80
+  selector:
+    app: webservice3
+
+---
+# Webservice4 Deployment and Service
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webservice4
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: webservice4
+  template:
+    metadata:
+      labels:
+        app: webservice4
+    spec:
+      containers:
+      - name: webservice4
+        image: historiasclinicas-app:latest
+        ports:
+        - containerPort: 80
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: "Development"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: webservice4-service
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 80
+  selector:
+    app: webservice4
+
+---
+# Webservice5 Deployment and Service
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webservice5
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: webservice5
+  template:
+    metadata:
+      labels:
+        app: webservice5
+    spec:
+      containers:
+      - name: webservice5
+        image: portalpaciente-app:latest
+        ports:
+        - containerPort: 80
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: "Development"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: webservice5-service
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 80
+  selector:
+    app: webservice5

@@ -6,12 +6,11 @@ using System.Threading.Tasks;
 
 namespace DAL.Models
 {
-    public class Diagnosticos
+    public class Medicamentos
     {
-
         public int Id { get; set; }
-        public HistoriasClinicas HistClinId { get; set; }
-        public string Descripcion { get; set; }
-        public DateTime Fecha { get; set; }
+        public int RecetasId { get; set; }
+        public string Nombre { get; set; }
+        public string Dosis { get; set; }
     }
 }

@@ -8,7 +8,6 @@ namespace DAL.Models
 {
     public class Diagnosticos
     {
-
         public int Id { get; set; }
         public HistoriasClinicas HistClinId { get; set; }
         public string Descripcion { get; set; }
