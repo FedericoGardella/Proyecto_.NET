@@ -1,0 +1,130 @@
+﻿version: '3.8'
+
+services:
+  webservice1:
+    build:
+      context: ./Administrativo
+      dockerfile: Dockerfile
+    image: administrativo-app:latest
+    ports:
+      - "8081:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    depends_on:
+      - bl
+      - dal
+      - sqlserver
+    networks:
+      - backend
+
+  webservice2:
+    build:
+      context: ./Autenticacion
+      dockerfile: Dockerfile
+    image: Autenticacion-app:latest
+    ports:
+      - "8082:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    depends_on:
+      - bl
+      - dal
+      - sqlserver
+    networks:
+      - backend
+
+  webservice3:
+    build:
+      context: ./GestionCitas
+      dockerfile: Dockerfile
+    image: GestionCitas-app:latest
+    ports:
+      - "8083:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    depends_on:
+      - bl
+      - dal
+      - sqlserver
+    networks:
+      - backend
+
+  webservice4:
+    build:
+      context: ./HistoriasClinicas
+      dockerfile: Dockerfile
+    image: HistoriasClinicas-app:latest
+    ports:
+      - "8084:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    depends_on:
+      - bl
+      - dal
+      - sqlserver
+    networks:
+      - backend
+
+  webservice5:
+    build:
+      context: ./PortalPaciente
+      dockerfile: Dockerfile
+    image: PortalPaciente-app:latest
+    ports:
+      - "8085:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    depends_on:
+      - bl
+      - dal
+      - sqlserver
+    networks:
+      - backend
+
+  dal:
+    build:
+      context: ./DAL
+      dockerfile: Dockerfile
+    image: DAL-app:latest
+    networks:
+      - backend
+
+  bl:
+    build:
+      context: ./BL
+      dockerfile: Dockerfile
+    image: BL-app:latest
+    networks:
+      - backend
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: sqlserver
+    environment:
+      - SA_PASSWORD=P45w0rd.N3T
+      - ACCEPT_EULA=Y
+    ports:
+      - "1433:1433"
+    volumes:
+      - sql_data:/var/opt/mssql
+    networks:
+      - backend
+  
+  rabbitmq:
+    image: rabbitmq:3-management  
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"     # Puerto por defecto para RabbitMQ
+      - "15672:15672"   # Puerto para la interfaz de gestión
+    environment:
+      - RABBITMQ_DEFAULT_USER=dotnetlab
+      - RABBITMQ_DEFAULT_PASS=P455w0rd_net
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
+
+volumes:
+  sql_data
