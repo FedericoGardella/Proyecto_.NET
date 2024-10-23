@@ -5,10 +5,12 @@ using System.Linq;
 using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+
 
 namespace DAL
 {
-    internal class DBContext : DbContext
+    public class DBContext : DbContext
     {
         private string _connectionString = "Server=sqlserver,1433;Database=Practico3;User Id=sa;Password=Abc*123!;TrustServerCertificate=True";
 
@@ -26,8 +28,8 @@ namespace DAL
             base.OnModelCreating(modelBuilder);
         }
 
-        public DbSet<Diagnosticos> Diagnisticos { get; set; }
-        public DbSet<HistoriasClinicas> HistoriasClinicas { get; set; } //Da error porque me falta la entidad Personas
+        public DbSet<Diagnosticos> Diagnosticos { get; set; }
+        public DbSet<HistoriasClinicas> HistoriasClinicas { get; set; }
         public DbSet<Medicamentos> Medicamentos { get; set; }
         public DbSet<Recetas> Recetas { get; set; }
         public DbSet<ResultadosEstudios> ResultadosEstudios { get; set; }

@@ -6,49 +6,56 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Shared.Entities;
 
 namespace DAL.DALs
 {
     public class DAL_Diagnosticos_EF : IDAL_Diagnosticos
     {
-        private readonly DbContext _context;
+        private DBContext db;
+        private string entityName = "Diagnostico";
 
-        public DAL_Diagnosticos_EF(DbContext context)
+        public DAL_Diagnosticos_EF(DBContext _db)
         {
-            _context = context;
+            db = _db;
         }
 
-        public IEnumerable<Diagnosticos> ObtenerDiagnosticos()
+        public Diagnostico Get(long Id)
         {
-            return _context.Set<Diagnosticos>().Include(d => d.HistClinId).ToList();
+            return db.Diagnosticos.Find(Id)?.GetEntity();
         }
 
-        public Diagnosticos ObtenerDiagnosticoPorId(int id)
+        public List<Diagnostico> GetAll()
         {
-            return _context.Set<Diagnosticos>().Include(d => d.HistClinId)
-                            .FirstOrDefault(d => d.Id == id);
+            return db.Diagnosticos.Select(x => x.GetEntity()).ToList();
         }
 
-        public void AgregarDiagnostico(Diagnosticos diagnostico)
+
+        public Diagnostico Add(Diagnostico x)
         {
-            _context.Set<Diagnosticos>().Add(diagnostico);
-            _context.SaveChanges();
+            Diagnosticos toSave = new Diagnosticos();
+            toSave = Diagnosticos.FromEntity(x, toSave);
+            db.Diagnosticos.Add(toSave);
+            db.SaveChanges();
+            return Get(toSave.Id);
         }
 
-        public void ActualizarDiagnostico(Diagnosticos diagnostico)
+        public Diagnostico Update(Diagnostico x)
         {
-            _context.Set<Diagnosticos>().Update(diagnostico);
-            _context.SaveChanges();
+            Diagnosticos toSave = db.Diagnosticos.FirstOrDefault(c => c.Id == x.Id);
+            toSave = Diagnosticos.FromEntity(x, toSave);
+            db.Update(toSave);
+            db.SaveChanges();
+            return Get(toSave.Id);
         }
 
-        public void EliminarDiagnostico(int id)
+        public void Delete(long Id)
         {
-            var diagnostico = _context.Set<Diagnosticos>().Find(id);
-            if (diagnostico != null)
-            {
-                _context.Set<Diagnosticos>().Remove(diagnostico);
-                _context.SaveChanges();
-            }
+            Diagnosticos? toDelete = db.Diagnosticos.Find(Id);
+            if (toDelete == null)
+                throw new Exception($"No existe un {entityName} con Id {Id}");
+            db.Diagnosticos.Remove(toDelete);
+            db.SaveChanges();
         }
     }
 }

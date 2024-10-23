@@ -1,27 +1,38 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Shared.Entities;
+
+
 
 namespace DAL.Models
 {
     public class HistoriasClinicas
     {
+
+        public HistoriasClinicas() { }
         public int Id { get; set; }
-        public Pacientes PacienteId { get; set; }
         public DateTime FechaCreacion { get; set; }
 
-        public List<Diagnosticos> Diagnosticos { get; set; }
-        public List<Recetas> Recetas { get; set; }
-        public List<ResultadosEstudios> ResultadosEstudios { get; set; }
-
-        // Constructor para inicializar las listas
-        public HistoriasClinicas()
+        public HistoriaClinica GetEntity()
         {
-            Diagnosticos = new List<Diagnosticos>();
-            Recetas = new List<Recetas>();
-            ResultadosEstudios = new List<ResultadosEstudios>();
+            HistoriaClinica historiaClinica = new HistoriaClinica();
+
+            historiaClinica.Id = Id;
+            historiaClinica.FechaCreacion = FechaCreacion;
+
+            return historiaClinica;
+        }
+
+        public static HistoriasClinicas FromEntity(HistoriaClinica historiaClinica, HistoriasClinicas historiasClinicas)
+        {
+            HistoriasClinicas historiaToSave;
+            if (historiasClinicas == null)
+                historiaToSave = new HistoriasClinicas();
+            else
+                historiaToSave = historiasClinicas;
+
+            historiaToSave.Id = historiaClinica.Id;
+            historiaToSave.FechaCreacion = historiaClinica.FechaCreacion;
+
+            return historiaToSave;
         }
     }
 }

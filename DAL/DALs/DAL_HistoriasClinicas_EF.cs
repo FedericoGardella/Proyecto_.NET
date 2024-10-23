@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Shared.Entities;
 
 namespace DAL.DALs
 {
@@ -19,20 +20,15 @@ namespace DAL.DALs
         }
 
         // Método para obtener todas las historias clínicas con detalles completos
-        public IEnumerable<HistoriasClinicas> ObtenerHistoriasClinicas()
+        public List<HistoriaClinica> ObtenerHistoriasClinicas()
         {
-            return _context.Set<HistoriasClinicas>()
-                           .Include(h => h.PacienteId)
-                           .Include(h => h.Diagnosticos)
-                           .Include(h => h.Recetas)
-                           .Include(h => h.ResultadosEstudios)
-                           .ToList();
+            return _context.HistoriasClinicas.Select(x => x.GetEntity()).ToList();
         }
 
         // Método para obtener una historia clínica por su Id
-        public HistoriasClinicas ObtenerHistoriaClinicaPorId(int id)
+        public HistoriaClinica ObtenerHistoriaClinicaPorId(int id)
         {
-            return _context.Set<HistoriasClinicas>()
+            return _context.Set<HistoriaClinicas>()
                            .Include(h => h.PacienteId)
                            .Include(h => h.Diagnosticos)
                            .Include(h => h.Recetas)
