@@ -1,14 +1,13 @@
-﻿using DAL.Models;
-using Shared.Entities;
+﻿using Shared.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DAL.IDALs
+namespace BL.IBLs
 {
-    public interface IDAL_Medicamentos
+    public interface IBL_Medicamentos
     {
         Medicamento Get(long Id);
         List<Medicamento> GetAll();

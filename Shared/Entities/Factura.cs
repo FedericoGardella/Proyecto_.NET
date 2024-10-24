@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace Shared.Entities
 {
-    public class HistoriaClinica
+    public class Factura
     {
-        public long Id { get; set; }
-        public DateTime FechaCreacion { get; set; }
-
+        public int Id { get; set; }
+        public DateTime FechaEmision { get; set; }
+        public bool Pago { get; set; }
     }
 }

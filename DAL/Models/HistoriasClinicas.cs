@@ -8,7 +8,7 @@ namespace DAL.Models
     {
 
         public HistoriasClinicas() { }
-        public int Id { get; set; }
+        public long Id { get; set; }
         public DateTime FechaCreacion { get; set; }
 
         public HistoriaClinica GetEntity()

@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DAL.IDALs
+namespace BL.IBLs
 {
-    public interface IDAL_Recetas
+    public interface IBL_Recetas
     {
         Receta Get(long Id);
         List<Receta> GetAll();

@@ -12,53 +12,50 @@ namespace DAL.DALs
 {
     public class DAL_HistoriasClinicas_EF : IDAL_HistoriasClinicas
     {
-        private readonly DbContext _context;
+        private DBContext db;
+        private string entityName = "HistoriaClinica";
 
-        public DAL_HistoriasClinicas_EF(DbContext context)
+        public DAL_HistoriasClinicas_EF(DBContext _db)
         {
-            _context = context;
+            db = _db;
         }
 
-        // Método para obtener todas las historias clínicas con detalles completos
-        public List<HistoriaClinica> ObtenerHistoriasClinicas()
+        public HistoriaClinica Get(long Id)
         {
-            return _context.HistoriasClinicas.Select(x => x.GetEntity()).ToList();
+            return db.HistoriasClinicas.Find(Id)?.GetEntity();
         }
 
-        // Método para obtener una historia clínica por su Id
-        public HistoriaClinica ObtenerHistoriaClinicaPorId(int id)
+        public List<HistoriaClinica> GetAll()
         {
-            return _context.Set<HistoriaClinicas>()
-                           .Include(h => h.PacienteId)
-                           .Include(h => h.Diagnosticos)
-                           .Include(h => h.Recetas)
-                           .Include(h => h.ResultadosEstudios)
-                           .FirstOrDefault(h => h.Id == id);
+            return db.HistoriasClinicas.Select(x => x.GetEntity()).ToList();
         }
 
-        // Método para agregar una historia clínica
-        public void AgregarHistoriaClinica(HistoriasClinicas historiaClinica)
+
+        public HistoriaClinica Add(HistoriaClinica x)
         {
-            _context.Set<HistoriasClinicas>().Add(historiaClinica);
-            _context.SaveChanges();
+            HistoriasClinicas toSave = new HistoriasClinicas();
+            toSave = HistoriasClinicas.FromEntity(x, toSave);
+            db.HistoriasClinicas.Add(toSave);
+            db.SaveChanges();
+            return Get(toSave.Id);
         }
 
-        // Método para actualizar una historia clínica
-        public void ActualizarHistoriaClinica(HistoriasClinicas historiaClinica)
+        public HistoriaClinica Update(HistoriaClinica x)
         {
-            _context.Set<HistoriasClinicas>().Update(historiaClinica);
-            _context.SaveChanges();
+            HistoriasClinicas toSave = db.HistoriasClinicas.FirstOrDefault(c => c.Id == x.Id);
+            toSave = HistoriasClinicas.FromEntity(x, toSave);
+            db.Update(toSave);
+            db.SaveChanges();
+            return Get(toSave.Id);
         }
 
-        // Método para eliminar una historia clínica
-        public void EliminarHistoriaClinica(int id)
+        public void Delete(long Id)
         {
-            var historiaClinica = _context.Set<HistoriasClinicas>().Find(id);
-            if (historiaClinica != null)
-            {
-                _context.Set<HistoriasClinicas>().Remove(historiaClinica);
-                _context.SaveChanges();
-            }
+            HistoriasClinicas? toDelete = db.HistoriasClinicas.Find(Id);
+            if (toDelete == null)
+                throw new Exception($"No existe un {entityName} con Id {Id}");
+            db.HistoriasClinicas.Remove(toDelete);
+            db.SaveChanges();
         }
     }
 }

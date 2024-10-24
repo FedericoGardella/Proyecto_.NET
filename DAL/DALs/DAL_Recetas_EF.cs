@@ -1,6 +1,7 @@
 ﻿using DAL.IDALs;
 using DAL.Models;
 using Microsoft.EntityFrameworkCore;
+using Shared.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,49 +12,50 @@ namespace DAL.DALs
 {
     public class DAL_Recetas_EF : IDAL_Recetas
     {
-        private readonly DbContext _context;
+        private DBContext db;
+        private string entityName = "Receta";
 
-        public DAL_Recetas_EF(DbContext context)
+        public DAL_Recetas_EF(DBContext _db)
         {
-            _context = context;
+            db = _db;
         }
 
-        public IEnumerable<Recetas> ObtenerRecetas()
+        public Receta Get(long Id)
         {
-            return _context.Set<Recetas>()
-                           .Include(r => r.HistClinId)
-                           .Include(r => r.Medicamentos)
-                           .ToList();
+            return db.Recetas.Find(Id)?.GetEntity();
         }
 
-        public Recetas ObtenerRecetaPorId(int id)
+        public List<Receta> GetAll()
         {
-            return _context.Set<Recetas>()
-                           .Include(r => r.HistClinId)
-                           .Include(r => r.Medicamentos)
-                           .FirstOrDefault(r => r.Id == id);
+            return db.Recetas.Select(x => x.GetEntity()).ToList();
         }
 
-        public void AgregarReceta(Recetas receta)
+
+        public Receta Add(Receta x)
         {
-            _context.Set<Recetas>().Add(receta);
-            _context.SaveChanges();
+            Recetas toSave = new Recetas();
+            toSave = Recetas.FromEntity(x, toSave);
+            db.Recetas.Add(toSave);
+            db.SaveChanges();
+            return Get(toSave.Id);
         }
 
-        public void ActualizarReceta(Recetas receta)
+        public Receta Update(Receta x)
         {
-            _context.Set<Recetas>().Update(receta);
-            _context.SaveChanges();
+            Recetas toSave = db.Recetas.FirstOrDefault(c => c.Id == x.Id);
+            toSave = Recetas.FromEntity(x, toSave);
+            db.Update(toSave);
+            db.SaveChanges();
+            return Get(toSave.Id);
         }
 
-        public void EliminarReceta(int id)
+        public void Delete(long Id)
         {
-            var receta = _context.Set<Recetas>().Find(id);
-            if (receta != null)
-            {
-                _context.Set<Recetas>().Remove(receta);
-                _context.SaveChanges();
-            }
+            Recetas? toDelete = db.Recetas.Find(Id);
+            if (toDelete == null)
+                throw new Exception($"No existe un {entityName} con Id {Id}");
+            db.Recetas.Remove(toDelete);
+            db.SaveChanges();
         }
     }
 }

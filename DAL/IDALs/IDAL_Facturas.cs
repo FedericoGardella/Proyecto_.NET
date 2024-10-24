@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace DAL.IDALs
 {
-    public interface IDAL_Recetas
+    public interface IDAL_Facturas
     {
-        Receta Get(long Id);
-        List<Receta> GetAll();
-        Receta Add(Receta x);
-        Receta Update(Receta x);
+        Factura Get(long Id);
+        List<Factura> GetAll();
+        Factura Add(Factura x);
+        Factura Update(Factura x);
         void Delete(long Id);
     }
 }

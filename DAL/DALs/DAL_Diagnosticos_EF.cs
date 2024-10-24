@@ -30,7 +30,6 @@ namespace DAL.DALs
             return db.Diagnosticos.Select(x => x.GetEntity()).ToList();
         }
 
-
         public Diagnostico Add(Diagnostico x)
         {
             Diagnosticos toSave = new Diagnosticos();
