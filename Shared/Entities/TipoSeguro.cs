@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace Shared.Entities
 {
-    public class HistoriaClinica
+    public class TipoSeguro
     {
         public long Id { get; set; }
-        public DateTime FechaCreacion { get; set; }
-
+        public string Nombre { get; set; }
+        public string Descripcion { get; set; }
     }
 }

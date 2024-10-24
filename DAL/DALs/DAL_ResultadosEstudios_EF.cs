@@ -1,6 +1,7 @@
 ﻿using DAL.IDALs;
 using DAL.Models;
 using Microsoft.EntityFrameworkCore;
+using Shared.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,47 +12,50 @@ namespace DAL.DALs
 {
     public class DAL_ResultadosEstudios_EF : IDAL_ResultadosEstudios
     {
-        private readonly DbContext _context;
+        private DBContext db;
+        private string entityName = "ResultadoEstudio";
 
-        public DAL_ResultadosEstudios_EF(DbContext context)
+        public DAL_ResultadosEstudios_EF(DBContext _db)
         {
-            _context = context;
+            db = _db;
         }
 
-        public IEnumerable<ResultadosEstudios> ObtenerResultadosEstudios()
+        public ResultadoEstudio Get(long Id)
         {
-            return _context.Set<ResultadosEstudios>()
-                           .Include(r => r.HistClinId)
-                           .ToList();
+            return db.ResultadosEstudios.Find(Id)?.GetEntity();
         }
 
-        public ResultadosEstudios ObtenerResultadoEstudioPorId(int id)
+        public List<ResultadoEstudio> GetAll()
         {
-            return _context.Set<ResultadosEstudios>()
-                           .Include(r => r.HistClinId)
-                           .FirstOrDefault(r => r.Id == id);
+            return db.ResultadosEstudios.Select(x => x.GetEntity()).ToList();
         }
 
-        public void AgregarResultadoEstudio(ResultadosEstudios resultadoEstudio)
+
+        public ResultadoEstudio Add(ResultadoEstudio x)
         {
-            _context.Set<ResultadosEstudios>().Add(resultadoEstudio);
-            _context.SaveChanges();
+            ResultadosEstudios toSave = new ResultadosEstudios();
+            toSave = ResultadosEstudios.FromEntity(x, toSave);
+            db.ResultadosEstudios.Add(toSave);
+            db.SaveChanges();
+            return Get(toSave.Id);
         }
 
-        public void ActualizarResultadoEstudio(ResultadosEstudios resultadoEstudio)
+        public ResultadoEstudio Update(ResultadoEstudio x)
         {
-            _context.Set<ResultadosEstudios>().Update(resultadoEstudio);
-            _context.SaveChanges();
+            ResultadosEstudios toSave = db.ResultadosEstudios.FirstOrDefault(c => c.Id == x.Id);
+            toSave = ResultadosEstudios.FromEntity(x, toSave);
+            db.Update(toSave);
+            db.SaveChanges();
+            return Get(toSave.Id);
         }
 
-        public void EliminarResultadoEstudio(int id)
+        public void Delete(long Id)
         {
-            var resultadoEstudio = _context.Set<ResultadosEstudios>().Find(id);
-            if (resultadoEstudio != null)
-            {
-                _context.Set<ResultadosEstudios>().Remove(resultadoEstudio);
-                _context.SaveChanges();
-            }
+            ResultadosEstudios? toDelete = db.ResultadosEstudios.Find(Id);
+            if (toDelete == null)
+                throw new Exception($"No existe un {entityName} con Id {Id}");
+            db.ResultadosEstudios.Remove(toDelete);
+            db.SaveChanges();
         }
     }
 }

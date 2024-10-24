@@ -1,22 +1,21 @@
-﻿using System;
+﻿using DAL.IDALs;
+using Shared.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DAL.IDALs;
-using DAL.Models;
-using Shared.Entities;
 
 namespace DAL.DALs
 {
-    public class DAL_Recetas_Service : IDAL_Recetas
+    public class DAL_TiposSeguros_Service: IDAL_TiposSeguros
     {
-        public Receta Update(Receta receta)
+        public TipoSeguro Update(TipoSeguro receta)
         {
             throw new NotImplementedException();
         }
 
-        public Receta Add(Receta receta)
+        public TipoSeguro Add(TipoSeguro receta)
         {
             throw new NotImplementedException();
         }
@@ -26,12 +25,12 @@ namespace DAL.DALs
             throw new NotImplementedException();
         }
 
-        public Receta Get(long id)
+        public TipoSeguro Get(long id)
         {
             throw new NotImplementedException();
         }
 
-        public List<Receta> GetAll()
+        public List<TipoSeguro> GetAll()
         {
             throw new NotImplementedException();
         }
