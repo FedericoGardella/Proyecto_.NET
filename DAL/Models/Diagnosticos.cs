@@ -9,15 +9,12 @@ namespace DAL.Models
 {
     public class Diagnosticos
     {
-<<<<<<< HEAD
         public Diagnosticos() { }
-        public long Id { get; set; }
-=======
 
-        public int Id { get; set; }
-        public HistoriasClinicas HistClinId { get; set; }
->>>>>>> origin/MarianoOK
+        public long Id { get; set; }
+
         public string Descripcion { get; set; }
+
         public DateTime Fecha { get; set; }
 
         public Diagnostico GetEntity()

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Shared.Entities;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.RegularExpressions;
 
@@ -9,7 +10,7 @@ namespace DAL.Models
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
-        public int Id { get; set; }
+        public long Id { get; set; }
 
         [Required]
         [MaxLength(150)]
@@ -20,32 +21,42 @@ namespace DAL.Models
         public string Apellidos { get; set; }
 
         [Required]
-        [MaxLength(8),MinLength(8)]
-        public string Documento { get; set; }
+        [MaxLength(20), MinLength(4)]
+        public string Telefono { get; set; }
 
         [Required]
-        private string passwordHash;
+        [MaxLength(8),MinLength(8)]
+        public string Cedula { get; set; }
 
 
-        public void SetPassword(string password)
+        public Paciente GetEntity()
         {
-            var hasLetterAndDigit = new Regex(@"^(?=.*[a-zA-Z])(?=.*\d)");
-            var hasSpecialChar = new Regex(@"[!@#$%^&*(),.?""{}|<>]");
-            if (password.Length == 8 && hasLetterAndDigit.IsMatch(password) && hasSpecialChar.IsMatch(password))
-            { 
-                passwordHash = BCrypt.Net.BCrypt.HashPassword(password);
-            }
+            Paciente paciente = new Paciente();
+
+            paciente.Id = Id;
+            paciente.Nombres = Nombres;
+            paciente.Apellidos = Apellidos;
+            paciente.Telefono = Telefono;
+            paciente.Cedula = Cedula;
+
+            return paciente;
+        }
+
+        public static Pacientes FromEntity(Paciente paciente, Pacientes pacientes)
+        {
+            Pacientes pacienteToSave;
+            if (pacientes == null)
+                pacienteToSave = new Pacientes();
             else
-            {
-                throw new Exception("Formato de Password incorrecto");
-            }
+                pacienteToSave = pacientes;
+
+            pacienteToSave.Id = paciente.Id;
+            pacienteToSave.Nombres = paciente.Nombres;
+            pacienteToSave.Apellidos = paciente.Apellidos;
+            pacienteToSave.Telefono = paciente.Telefono;
+            pacienteToSave.Cedula = paciente.Cedula;
+
+            return pacienteToSave;
         }
-
-
-        public bool VerificarPassword(string password)
-        {
-            return BCrypt.Net.BCrypt.Verify(password, passwordHash);
-        }
-
     }
 }

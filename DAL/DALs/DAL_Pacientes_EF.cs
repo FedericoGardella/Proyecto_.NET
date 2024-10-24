@@ -1,6 +1,7 @@
 ﻿using DAL.IDALs;
 using DAL.Models;
 using Microsoft.EntityFrameworkCore;
+using Shared.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,50 +12,51 @@ namespace DAL.DALs
 {
     public class DAL_Pacientes_EF : IDAL_Pacientes
     {
-        private readonly DbContext _context;
+        private DBContext db;
+        private string entityName = "Paciente";
 
-        public DAL_Pacientes_EF(DbContext context)
-        { 
-            _context = context; 
+        public DAL_Pacientes_EF(DBContext _db)
+        {
+            db = _db;
         }
 
-        public void AddPaciente(Pacientes paciente)
+        public Paciente Get(long Id)
         {
-            _context.Set<Pacientes>().Add(paciente);
-            _context.SaveChanges();
+            return db.Pacientes.Find(Id)?.GetEntity();
         }
 
-        public void DeletePaciente(int id)
+        public List<Paciente> GetAll()
         {
-            var paciente = _context.Set<Pacientes>().Find(id);
-            if (paciente != null)
-            {
-                _context.Set<Pacientes>().Remove(paciente);
-                _context.SaveChanges();
-            }
+            return db.Pacientes.Select(x => x.GetEntity()).ToList();
         }
 
-        public IEnumerable<Pacientes> GetAllPacientes()
+
+        public Paciente Add(Paciente x)
         {
-            return _context.Set<Pacientes>().ToList();
+            Pacientes toSave = new Pacientes();
+            toSave = Pacientes.FromEntity(x, toSave);
+            db.Pacientes.Add(toSave);
+            db.SaveChanges();
+            return Get(toSave.Id);
         }
 
-        public Pacientes GetPacienteByDocumento(string documento)
+        public Paciente Update(Paciente x)
         {
-            return _context.Set<Pacientes>().FirstOrDefault(p => p.Documento == documento);
+            Pacientes toSave = db.Pacientes.FirstOrDefault(c => c.Id == x.Id);
+            toSave = Pacientes.FromEntity(x, toSave);
+            db.Update(toSave);
+            db.SaveChanges();
+            return Get(toSave.Id);
         }
 
-        public Pacientes GetPacienteById(int id)
+        public void Delete(long Id)
         {
-            return _context.Set<Pacientes>().Find(id);
-        }
-        public void UpdatePaciente(Pacientes paciente)
-        {
-            _context.Entry(paciente).State = EntityState.Modified;
-            _context.SaveChanges();
+            Pacientes? toDelete = db.Pacientes.Find(Id);
+            if (toDelete == null)
+                throw new Exception($"No existe un {entityName} con Id {Id}");
+            db.Pacientes.Remove(toDelete);
+            db.SaveChanges();
         }
     }
-
-
 }
 

@@ -7,6 +7,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using BCrypt.Net;
+using Shared.Entities;
 
 namespace DAL.Models
 {
@@ -14,44 +15,46 @@ namespace DAL.Models
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key] 
-        public int Id { get; set; }
+        public long Id { get; set; }
 
         [Required]
         public string Matricula { get; set; }
 
         [Required] 
         [MaxLength(100)]
-        public string Nombre { get; set; }
+        public string Nombres { get; set; }
 
         [Required]
         [MaxLength(100)] 
-        public string Apellido { get; set; }
+        public string Apellidos { get; set; }
 
-        [Required] 
-        private string passwordHash { get; set; }
-
-        public void SetPassword(string password)
+        public Medico GetEntity()
         {
-            var hasLetterAndDigit = new Regex(@"^(?=.*[a-zA-Z])(?=.*\d)");
-            var hasSpecialChar = new Regex(@"[!@#$%^&*(),.?""{}|<>]");
-            if (password.Length == 8 && hasLetterAndDigit.IsMatch(password) && hasSpecialChar.IsMatch(password))
-            {
-                passwordHash = BCrypt.Net.BCrypt.HashPassword(password);
-            }
+            Medico medico = new Medico();
+
+            medico.Id = Id;
+            medico.Nombres = Nombres;
+            medico.Apellidos = Apellidos;
+            medico.Matricula = Matricula;
+
+            return medico;
+        }
+
+        public static Medicos FromEntity(Medico medico, Medicos medicos)
+        {
+            Medicos medicoToSave;
+            if (medicos == null)
+                medicoToSave = new Medicos();
             else
-            {
-                throw new Exception("Formato de Password incorrecto");
-            }
+                medicoToSave = medicos;
+
+            medicoToSave.Id = medico.Id;
+            medicoToSave.Nombres = medico.Nombres;
+            medicoToSave.Apellidos = medico.Apellidos;
+            medicoToSave.Matricula = medico.Matricula ;
+
+            return medicoToSave;
         }
 
-
-        public bool VerificarPassword(string password)
-        {
-            return BCrypt.Net.BCrypt.Verify(password, passwordHash);
-        }
-
-
-        public int EspecialidadId { get; set; }
-        public Especialidades Especialidad { get; set; }
     }
 }
