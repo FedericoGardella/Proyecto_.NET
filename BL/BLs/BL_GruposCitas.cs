@@ -1,6 +1,4 @@
-﻿using BL.IBLs;
-using DAL.IDALs;
-using DAL.Models;
+﻿using DAL.IDALs;
 using Shared.Entities;
 using System;
 using System.Collections.Generic;
@@ -10,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace BL.BLs
 {
-    public class BL_Medicamentos: IBL_Medicamentos
+    public class BL_GruposCitas
     {
-        private IDAL_Medicamentos dal;
+        private IDAL_GruposCitas dal;
 
-        public BL_Medicamentos(IDAL_Medicamentos _dal)
+        public BL_GruposCitas(IDAL_Medicamentos _dal)
         {
             dal = _dal;
         }

@@ -5,14 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DAL.IDALs
+namespace BL.IBLs
 {
-    public interface IDAL_Medicos
+    public interface IBL_Citas
     {
-        Medico Get(long Id);
-        List<Medico> GetAll();
-        Medico Add(Medico x);
-        Medico Update(Medico x);
+        Cita Get(long Id);
+        List<Cita> GetAll();
+        Cita Add(Cita x);
+        Cita Update(Cita x);
         void Delete(long Id);
     }
 }

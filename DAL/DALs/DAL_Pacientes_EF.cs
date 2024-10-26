@@ -1,6 +1,5 @@
 ﻿using DAL.IDALs;
 using DAL.Models;
-using Microsoft.EntityFrameworkCore;
 using Shared.Entities;
 using System;
 using System.Collections.Generic;
@@ -30,7 +29,6 @@ namespace DAL.DALs
             return db.Pacientes.Select(x => x.GetEntity()).ToList();
         }
 
-
         public Paciente Add(Paciente x)
         {
             Pacientes toSave = new Pacientes();
@@ -59,4 +57,3 @@ namespace DAL.DALs
         }
     }
 }
-

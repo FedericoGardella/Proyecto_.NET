@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace DAL.IDALs
 {
-    public interface IDAL_Especialidades
+    public interface IDAL_Citas
     {
-        Especialidad Get(long Id);
-        List<Especialidad> GetAll();
-        Especialidad Add(Especialidad x);
-        Especialidad Update(Especialidad x);
+        Cita Get(long Id);
+        List<Cita> GetAll();
+        Cita Add(Cita x);
+        Cita Update(Cita x);
         void Delete(long Id);
     }
 }

@@ -48,7 +48,9 @@ namespace DAL
         public DbSet<Especialidades> Especialidades { get; set; }
         public DbSet<Medicos> Medicos { get; set; }
         public DbSet<TiposSeguros> TiposSeguros { get; set; }
-        
+        public DbSet<Citas> Citas { get; set; }
+        public DbSet<GruposCitas> GruposCitas { get; set; }
+
         public static void UpdateDatabase()
         {
             using (var context = new DBContext())
