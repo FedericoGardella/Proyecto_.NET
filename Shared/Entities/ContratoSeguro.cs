@@ -11,5 +11,7 @@ namespace Shared.Entities
         public long Id { get; set; }
         public DateTime FechaInicio { get; set; }
         public string Estado { get; set; }
+        public Paciente paciente { get; set; }
+        public TipoSeguro tipoSeguro { get; set; }
     }
 }

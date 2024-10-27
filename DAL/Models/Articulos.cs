@@ -9,6 +9,7 @@ namespace DAL.Models
 {
     public class Articulos
     {
+        public Articulos() { }
         public long Id { get; set; }
         public string Nombre { get; set; }
         public DateTime Fecha { get; set; }

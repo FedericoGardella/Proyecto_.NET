@@ -9,11 +9,12 @@ namespace DAL.Models
 {
     public class ContratosSeguros
     {
+        public ContratosSeguros() { }
         public long Id { get; set; }
-        public long PacienteId { get; set; }
-        public long TipoSeguroId { get; set; }
         public DateTime FechaInicio { get; set; }
         public string Estado { get; set; } // Ej: Activo, Cancelado, etc.
+        public Pacientes paciente { get; set; }
+        public TiposSeguros tipoSeguro { get; set; }
 
 
         public ContratoSeguro GetEntity()

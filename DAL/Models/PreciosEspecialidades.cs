@@ -9,10 +9,11 @@ namespace DAL.Models
 {
     public class PreciosEspecialidades
     {
+        public PreciosEspecialidades() { }
         public long Id { get; set; }
-        public long ArticuloId { get; set; }
-        public long TipoSeguroId { get; set; }
-        public long EspecialidadId { get; set; }
+        public Articulos articulo { get; set; }
+        public TiposSeguros tipoSeguro { get; set; }
+        public Especialidades especialidad { get; set; }
 
         public PrecioEspecialidad GetEntity()
         {

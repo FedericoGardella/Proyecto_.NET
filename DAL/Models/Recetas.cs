@@ -11,17 +11,12 @@ namespace DAL.Models
     {
         public Recetas() { }
         public long Id { get; set; }
-        public HistoriasClinicas HistClinId { get; set; }
+        public HistoriasClinicas historiaClinica { get; set; }
         public DateTime Fecha { get; set; }
         public string Tipo { get; set; } // Tipo de receta, por ejemplo, "Receta controlada"
 
         public List<Medicamentos> Medicamentos { get; set; }
 
-        // Constructor para inicializar la lista
-        //public Recetas()
-        //{
-        //   Medicamentos = new List<Medicamentos>();
-        //} Como quedaria esto? O no va?
 
         public Receta GetEntity()
         {

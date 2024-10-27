@@ -9,8 +9,12 @@ namespace DAL.Models
 {
     public class Citas
     {
+        public Citas() { }
         public long Id { get; set; }
         public TimeSpan Hora { get; set; }
+        public Pacientes paciente { get; set; }
+        public GruposCitas grupoCita { get; set; }
+        public PreciosEspecialidades precioEspecialidad { get; set; }
 
         public Cita GetEntity()
         {

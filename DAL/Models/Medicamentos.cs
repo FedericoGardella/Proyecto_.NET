@@ -11,7 +11,6 @@ namespace DAL.Models
     {
         public Medicamentos() { }
         public long Id { get; set; }
-        public int RecetasId { get; set; }
         public string Nombre { get; set; }
         public string Dosis { get; set; }
 

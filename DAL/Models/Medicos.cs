@@ -13,6 +13,8 @@ namespace DAL.Models
 {
     public class Medicos
     {
+        public Medicos() { }
+
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key] 
         public long Id { get; set; }
@@ -27,6 +29,9 @@ namespace DAL.Models
         [Required]
         [MaxLength(100)] 
         public string Apellidos { get; set; }
+
+        public List<Especialidades> Especialidades { get; set; } // Puede tener mas de una especialidad?
+        public List<GruposCitas> GruposCitas { get; set; }
 
         public Medico GetEntity()
         {

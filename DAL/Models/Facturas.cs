@@ -9,16 +9,13 @@ namespace DAL.Models
 {
     public class Facturas
     {
+        public Facturas() { }
         public int Id { get; set; }
         public DateTime FechaEmision { get; set; }
         public bool Pago { get; set; }
+        public ContratosSeguros contrato { get; set; }
+        public List<Cita> Citas { get; set; }
 
-        //public List<Cita> Citas { get; set; }
-
-        // public Factura()
-        //{
-        //    Citas = new List<Cita>();
-        // }
 
         public Factura GetEntity()
         {

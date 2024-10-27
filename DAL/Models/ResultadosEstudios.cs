@@ -11,7 +11,6 @@ namespace DAL.Models
     {
         public ResultadosEstudios() { }
         public long Id { get; set; }
-        public HistoriasClinicas HistClinId { get; set; }
         public string Descripcion { get; set; }
         public DateTime Fecha { get; set; }
 

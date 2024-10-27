@@ -13,5 +13,6 @@ namespace Shared.Entities
         public string Apellidos { get; set; }
         public string Cedula { get; set; }
         public string Telefono { get; set; }
+        public HistoriaClinica historiaClinica { get; set; }
     }
 }

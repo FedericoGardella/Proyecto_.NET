@@ -8,6 +8,8 @@ namespace DAL.Models
 {
     public class Pacientes
     {
+        public Pacientes() { }
+
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
         public long Id { get; set; }
@@ -27,6 +29,11 @@ namespace DAL.Models
         [Required]
         [MaxLength(8),MinLength(8)]
         public string Cedula { get; set; }
+
+        public HistoriasClinicas historiaClinica { get; set; }
+
+        public List<ContratosSeguros> ContratosSeguros { get; set; }
+        public List<Citas> Citas { get; set; }
 
 
         public Paciente GetEntity()

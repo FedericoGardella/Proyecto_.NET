@@ -10,6 +10,11 @@ namespace DAL.Models
         public HistoriasClinicas() { }
         public long Id { get; set; }
         public DateTime FechaCreacion { get; set; }
+        public Pacientes paciente { get; set; }
+
+        public List<Diagnosticos> Diagnosticos { get; set; }
+        public List<ResultadosEstudios> ResultadosEstudios { get; set; }
+        public List<Recetas> Recetas { get; set; }
 
         public HistoriaClinica GetEntity()
         {

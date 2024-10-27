@@ -16,10 +16,6 @@ namespace DAL.Models
 
         public List<Articulos> Articulos { get; set; }
 
-        //public TiposSeguros()
-        //{
-        //    Articulos = new List<Articulos>();
-        //}
 
         public TipoSeguro GetEntity()
         {

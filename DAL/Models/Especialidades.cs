@@ -11,6 +11,8 @@ namespace DAL.Models
 {
     public class Especialidades
     {
+        public Especialidades() { }
+
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
         public long Id { get; set; }
@@ -20,6 +22,8 @@ namespace DAL.Models
         public string Nombre { get; set; }
 
         public TimeSpan tiempoCita { get; set; }
+
+        public List<Medicos> Medicos { get; set; } // Podria ser necesario ver todos los medicos con una especialidad especifica, sino se saca
 
         public Especialidad GetEntity()
         {

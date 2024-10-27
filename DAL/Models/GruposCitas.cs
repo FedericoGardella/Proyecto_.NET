@@ -9,9 +9,14 @@ namespace DAL.Models
 {
     public class GruposCitas
     {
+        public GruposCitas() { }
         public long Id { get; set; }
         public string Lugar { get; set; }
         public DateTime Fecha { get; set; }
+        public Medicos medico { get; set; }
+        public Especialidades especialidad {  get; set; } 
+        
+
         public GrupoCita GetEntity()
         {
             GrupoCita grupoCita = new GrupoCita();
