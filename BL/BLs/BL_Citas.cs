@@ -1,6 +1,5 @@
 ﻿using BL.IBLs;
 using DAL.IDALs;
-using DAL.Models;
 using Shared.Entities;
 using System;
 using System.Collections.Generic;
@@ -10,31 +9,31 @@ using System.Threading.Tasks;
 
 namespace BL.BLs
 {
-    public class BL_Medicamentos: IBL_Medicamentos
+    public class BL_Citas : IBL_Citas
     {
-        private IDAL_Medicamentos dal;
+        private IDAL_Citas dal;
 
-        public BL_Medicamentos(IDAL_Medicamentos _dal)
+        public BL_Citas(IDAL_Citas _dal)
         {
             dal = _dal;
         }
 
-        public Medicamento Get(long Id)
+        public Cita Get(long Id)
         {
             return dal.Get(Id);
         }
 
-        public List<Medicamento> GetAll()
+        public List<Cita> GetAll()
         {
             return dal.GetAll();
         }
 
-        public Medicamento Add(Medicamento x)
+        public Cita Add(Cita x)
         {
             return dal.Add(x);
         }
 
-        public Medicamento Update(Medicamento x)
+        public Cita Update(Cita x)
         {
             return dal.Update(x);
         }

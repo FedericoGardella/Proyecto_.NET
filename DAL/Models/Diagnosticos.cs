@@ -10,8 +10,11 @@ namespace DAL.Models
     public class Diagnosticos
     {
         public Diagnosticos() { }
+
         public long Id { get; set; }
+
         public string Descripcion { get; set; }
+
         public DateTime Fecha { get; set; }
 
         public Diagnostico GetEntity()

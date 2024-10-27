@@ -10,31 +10,31 @@ using System.Threading.Tasks;
 
 namespace BL.BLs
 {
-    public class BL_Medicamentos: IBL_Medicamentos
+    public class BL_Pacientes : IBL_Pacientes
     {
-        private IDAL_Medicamentos dal;
+        private IDAL_Pacientes dal;
 
-        public BL_Medicamentos(IDAL_Medicamentos _dal)
+        public BL_Pacientes(IDAL_Pacientes _dal)
         {
             dal = _dal;
         }
 
-        public Medicamento Get(long Id)
+        public Paciente Get(long Id)
         {
             return dal.Get(Id);
         }
 
-        public List<Medicamento> GetAll()
+        public List<Paciente> GetAll()
         {
             return dal.GetAll();
         }
 
-        public Medicamento Add(Medicamento x)
+        public Paciente Add(Paciente x)
         {
             return dal.Add(x);
         }
 
-        public Medicamento Update(Medicamento x)
+        public Paciente Update(Paciente x)
         {
             return dal.Update(x);
         }
