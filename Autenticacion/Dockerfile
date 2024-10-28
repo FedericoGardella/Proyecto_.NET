@@ -12,9 +12,9 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["/Autenticacion/Autenticacion.csproj", "Autenticacion/"]
+COPY ["Autenticacion.csproj", "Autenticacion/"]
 RUN dotnet restore "./Autenticacion/Autenticacion.csproj"
-COPY . .
+COPY . Autenticacion/
 WORKDIR "/src/Autenticacion"
 RUN dotnet build "./Autenticacion.csproj" -c $BUILD_CONFIGURATION -o /app/build
 

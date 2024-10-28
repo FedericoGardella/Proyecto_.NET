@@ -13,24 +13,29 @@ data:
         listen 80;
 
         location /administrativo/ {
-          proxy_pass http://webservice1-service;
+          proxy_pass http://administrativoservice-service:8080;
         }
 
         location /autenticacion/ {
-          proxy_pass http://webservice2-service;
+          proxy_pass http://autenticacionservice-service:8080;
         }
 
         location /gestion-citas/ {
-          proxy_pass http://webservice3-service;
+          proxy_pass http://gestioncitasservice-service:8080;
         }
 
         location /historias-clinicas/ {
-          proxy_pass http://webservice4-service;
+          proxy_pass http://historiasclinicaservice-service:8080;
         }
 
         location /portal-paciente/ {
-          proxy_pass http://webservice5-service;
+          proxy_pass http://portalpacienteservice-service:8080;
         }
+
+        location /gestion-usuarios/ {
+          proxy_pass http://gestionusuariosservice-service:8080;  # Corrigido: eliminado espacio
+        }
+        
       }
     }
 
@@ -52,6 +57,7 @@ spec:
       containers:
       - name: nginx
         image: nginx:latest
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 80
         volumeMounts:
@@ -77,7 +83,6 @@ spec:
     app: nginx
 
 ---
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -128,9 +133,10 @@ kind: Service
 metadata:
   name: sqlserver-service
 spec:
-  type: ClusterIP
+  type: ClusterIP   
   ports:
-  - port: 1433
+  - name: http
+    port: 1433
     targetPort: 1433
   selector:
     app: sqlserver
@@ -152,7 +158,8 @@ spec:
     spec:
       containers:
       - name: rabbitmq
-        image: rabbitmq:3-management
+        image: rabbitmq:latest
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 5672
         - containerPort: 15672
@@ -168,9 +175,9 @@ kind: Service
 metadata:
   name: rabbitmq-service
 spec:
-  type: ClusterIP
+  type: ClusterIP   
   ports:
-  - name: amqp
+  - name: amp 
     port: 5672
     targetPort: 5672
   - name: management
@@ -180,24 +187,24 @@ spec:
     app: rabbitmq
 
 ---
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: webservice1
+  name: administrativoservice
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: webservice1
+      app: administrativoservice
   template:
     metadata:
       labels:
-        app: webservice1
+        app: administrativoservice
     spec:
       containers:
-      - name: webservice1
-        image: administrativo-app:latest
+      - name: administrativoservice
+        image: administrativo:latest
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 80
         env:
@@ -208,26 +215,26 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: webservice1-service
+  name: administrativoservice-service
 spec:
-  type: ClusterIP
+  type: ClusterIP   
   ports:
-  - port: 80
-    targetPort: 80
+  - name: http
+    port: 8080
+    targetPort: 8080
   selector:
-    app: webservice1
+    app: administrativoservice
 
 ---
-
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: webservice1-hpa
+  name: administrativoservice-hpa
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: webservice1
+    name: administrativoservice
   minReplicas: 3
   maxReplicas: 7
   metrics:
@@ -239,24 +246,24 @@ spec:
         averageUtilization: 50
 
 ---
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: webservice2
+  name: autenticacionservice
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: webservice2
+      app: autenticacionservice
   template:
     metadata:
       labels:
-        app: webservice2
+        app: autenticacionservice
     spec:
       containers:
-      - name: webservice2
-        image: autenticacion-app:latest
+      - name: autenticacionservice
+        image: autenticacion:latest
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 80
         env:
@@ -267,26 +274,26 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: webservice2-service
+  name: autenticacionservice-service
 spec:
-  type: ClusterIP
+  type: ClusterIP   
   ports:
-  - port: 80
-    targetPort: 80
+  - name: http
+    port: 8080
+    targetPort: 8080
   selector:
-    app: webservice2
+    app: autenticacionservice
 
 ---
-
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: webservice2-hpa
+  name: autenticacionservice-hpa
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: webservice2
+    name: autenticacionservice
   minReplicas: 3
   maxReplicas: 7
   metrics:
@@ -298,24 +305,24 @@ spec:
         averageUtilization: 50
 
 ---
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: webservice3
+  name: gestioncitasservice
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: webservice3
+      app: gestioncitasservice
   template:
     metadata:
       labels:
-        app: webservice3
+        app: gestioncitasservice
     spec:
       containers:
-      - name: webservice3
-        image: gestioncitas-app:latest
+      - name: gestioncitasservice
+        image: gestioncitas:latest
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 80
         env:
@@ -326,26 +333,26 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: webservice3-service
+  name: gestioncitasservice-service
 spec:
-  type: ClusterIP
+  type: ClusterIP   
   ports:
-  - port: 80
-    targetPort: 80
+  - name: http
+    port: 8080
+    targetPort: 8080
   selector:
-    app: webservice3
+    app: gestioncitasservice
 
 ---
-
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: webservice3-hpa
+  name: gestioncitasservice-hpa
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: webservice3
+    name: gestioncitasservice
   minReplicas: 3
   maxReplicas: 7
   metrics:
@@ -357,24 +364,24 @@ spec:
         averageUtilization: 50
 
 ---
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: webservice4
+  name: historiasclinicaservice
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: webservice4
+      app: historiasclinicaservice
   template:
     metadata:
       labels:
-        app: webservice4
+        app: historiasclinicaservice
     spec:
       containers:
-      - name: webservice4
-        image: historiasclinicas-app:latest
+      - name: historiasclinicaservice
+        image: historiasclinicas:latest
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 80
         env:
@@ -385,26 +392,26 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: webservice4-service
+  name: historiasclinicaservice-service
 spec:
-  type: ClusterIP
+  type: ClusterIP   
   ports:
-  - port: 80
-    targetPort: 80
+  - name: http
+    port: 8080
+    targetPort: 8080
   selector:
-    app: webservice4
+    app: historiasclinicaservice
 
 ---
-
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: webservice4-hpa
+  name: historiasclinicaservice-hpa
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: webservice4
+    name: historiasclinicaservice
   minReplicas: 3
   maxReplicas: 7
   metrics:
@@ -416,24 +423,24 @@ spec:
         averageUtilization: 50
 
 ---
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: webservice5
+  name: portalpacienteservice
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: webservice5
+      app: portalpacienteservice
   template:
     metadata:
       labels:
-        app: webservice5
+        app: portalpacienteservice
     spec:
       containers:
-      - name: webservice5
-        image: portalpaciente-app:latest
+      - name: portalpacienteservice
+        image: portalpacientes:latest
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 80
         env:
@@ -444,26 +451,26 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: webservice5-service
+  name: portalpacienteservice-service
 spec:
-  type: ClusterIP
+  type: ClusterIP   
   ports:
-  - port: 80
-    targetPort: 80
+  - name: http
+    port: 8080
+    targetPort: 8080
   selector:
-    app: webservice5
+    app: portalpacienteservice
 
 ---
-
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: webservice5-hpa
+  name: portalpacienteservice-hpa
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: webservice5
+    name: portalpacienteservice
   minReplicas: 3
   maxReplicas: 7
   metrics:
@@ -475,24 +482,24 @@ spec:
         averageUtilization: 50
 
 ---
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: webservice6
+  name: gestionusuariosservice
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: webservice6
+      app: gestionusuariosservice
   template:
     metadata:
       labels:
-        app: webservice6
+        app: gestionusuariosservice
     spec:
       containers:
-      - name: webservice6
-        image: gestionusuarios-app:latest
+      - name: gestionusuariosservice
+        image: gestionusuarios:latest
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 80
         env:
@@ -503,26 +510,26 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: webservice6-service
+  name: gestionusuariosservice-service
 spec:
-  type: ClusterIP
+  type: ClusterIP   
   ports:
-  - port: 80
-    targetPort: 80
+  - name: http
+    port: 8080
+    targetPort: 8080
   selector:
-    app: webservice6
+    app: gestionusuariosservice
 
 ---
-
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: webservice6-hpa
+  name: gestionusuariosservice-hpa
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: webservice6
+    name: gestionusuariosservice
   minReplicas: 3
   maxReplicas: 7
   metrics:

@@ -1,9 +1,9 @@
 # Usa la imagen base de .NET 8.0 SDK
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
-COPY ["Administrativo/Administrativo.csproj", "Administrativo/"]
+COPY ["Administrativo.csproj", "Administrativo/"]
 RUN dotnet restore "Administrativo/Administrativo.csproj"
-COPY . .
+COPY . Administrativo/
 WORKDIR "/src/Administrativo"
 RUN dotnet build "Administrativo.csproj" -c Release -o /app/build
 

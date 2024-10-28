@@ -12,9 +12,9 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["/GestionUsuarios/GestionUsuarios.csproj", "GestionUsuarios/"]
+COPY ["GestionUsuarios.csproj", "GestionUsuarios/"]
 RUN dotnet restore "./GestionUsuarios/GestionUsuarios.csproj"
-COPY . .
+COPY . GestionUsuarios/
 WORKDIR "/src/GestionUsuarios"
 RUN dotnet build "./GestionUsuarios.csproj" -c $BUILD_CONFIGURATION -o /app/build
 

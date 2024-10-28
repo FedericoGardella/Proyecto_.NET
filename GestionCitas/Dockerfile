@@ -12,9 +12,9 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["/GestionCitas/GestionCitas.csproj", "GestionCitas/"]
+COPY ["GestionCitas.csproj", "GestionCitas/"]
 RUN dotnet restore "./GestionCitas/GestionCitas.csproj"
-COPY . .
+COPY . GestionCitas/
 WORKDIR "/src/GestionCitas"
 RUN dotnet build "./GestionCitas.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
