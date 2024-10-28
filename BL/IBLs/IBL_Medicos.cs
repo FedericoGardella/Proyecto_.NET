@@ -4,16 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DAL.Models;
+using Shared.Entities;
 
 namespace BL.IBLs
 {
     public interface IBL_Medicos
     {
-        public Medicos GetMedicoById(int id);
-        Medicos GetByMatricula(string matricula);
-        IEnumerable<Medicos> GetAllMedicos();
-        void AddMedico(Medicos medico);
-        void UpdateMedico(Medicos medico);
-        void DeleteMedico(string matricula);
+        Medico Get(long Id);
+        List<Medico> GetAll();
+        Medico Add(Medico x);
+        Medico Update(Medico x);
+        void Delete(long Id);
     }
 }

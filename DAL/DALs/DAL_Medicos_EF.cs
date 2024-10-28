@@ -1,6 +1,6 @@
 ﻿using DAL.IDALs;
 using DAL.Models;
-using Microsoft.EntityFrameworkCore;
+using Shared.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,53 +11,49 @@ namespace DAL.DALs
 {
     public class DAL_Medicos_EF : IDAL_Medicos
     {
-        private readonly DbContext _context;
+        private DBContext db;
+        private string entityName = "Medico";
 
-        public DAL_Medicos_EF(DbContext context)
+        public DAL_Medicos_EF(DBContext _db)
         {
-            _context = context;
-        }
-        public Medicos GetMedicoById(int id)
-        {
-            return _context.Set<Medicos>()
-                           .Include(m => m.Especialidad)
-                           .FirstOrDefault(m => m.Id == id);
+            db = _db;
         }
 
-        public Medicos GetByMatricula(string matricula)
+        public Medico Get(long Id)
         {
-            return _context.Set<Medicos>()
-                           .Include(m => m.Especialidad)
-                           .FirstOrDefault(m => m.Matricula == matricula);
+            return db.Medicos.Find(Id)?.GetEntity();
         }
 
-        public IEnumerable<Medicos> GetAllMedicos()
+        public List<Medico> GetAll()
         {
-            return _context.Set<Medicos>()
-                           .Include(m => m.Especialidad)
-                           .ToList();
+            return db.Medicos.Select(x => x.GetEntity()).ToList();
         }
 
-        public void AddMedico(Medicos medico)
+        public Medico Add(Medico x)
         {
-            _context.Set<Medicos>().Add(medico);
-            _context.SaveChanges();
+            Medicos toSave = new Medicos();
+            toSave = Medicos.FromEntity(x, toSave);
+            db.Medicos.Add(toSave);
+            db.SaveChanges();
+            return Get(toSave.Id);
         }
 
-        public void UpdateMedico(Medicos medico)
+        public Medico Update(Medico x)
         {
-            _context.Entry(medico).State = EntityState.Modified;
-            _context.SaveChanges();
+            Medicos toSave = db.Medicos.FirstOrDefault(c => c.Id == x.Id);
+            toSave = Medicos.FromEntity(x, toSave);
+            db.Update(toSave);
+            db.SaveChanges();
+            return Get(toSave.Id);
         }
 
-        public void DeleteMedico(int id) // Cambiado a eliminar por ID
+        public void Delete(long Id)
         {
-            var medico = _context.Set<Medicos>().Find(id);
-            if (medico != null)
-            {
-                _context.Set<Medicos>().Remove(medico);
-                _context.SaveChanges();
-            }
+            Medicos? toDelete = db.Medicos.Find(Id);
+            if (toDelete == null)
+                throw new Exception($"No existe un {entityName} con Id {Id}");
+            db.Medicos.Remove(toDelete);
+            db.SaveChanges();
         }
     }
 }

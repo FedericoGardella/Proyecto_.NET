@@ -1,4 +1,5 @@
 ﻿using DAL.Models;
+using Shared.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,16 +8,12 @@ using System.Threading.Tasks;
 
 namespace DAL.IDALs
 {
-    public class IDAL_Medicamentos
+    public interface IDAL_Medicamentos
     {
-        IEnumerable<Medicamentos> ObtenerMedicamentos();
-
-        Medicamentos ObtenerMedicamentoPorId(int id);
-
-        void AgregarMedicamento(Medicamentos medicamento);
-
-        void ActualizarMedicamento(Medicamentos medicamento);
-
-        void EliminarMedicamento(int id);
+        Medicamento Get(long Id);
+        List<Medicamento> GetAll();
+        Medicamento Add(Medicamento x);
+        Medicamento Update(Medicamento x);
+        void Delete(long Id);
     }
 }

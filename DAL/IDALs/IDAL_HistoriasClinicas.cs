@@ -1,4 +1,5 @@
 ﻿using DAL.Models;
+using Shared.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,16 +8,12 @@ using System.Threading.Tasks;
 
 namespace DAL.IDALs
 {
-    public class IDAL_HistoriasClinicas
+    public interface IDAL_HistoriasClinicas
     {
-        IEnumerable<HistoriasClinicas> ObtenerHistoriasClinicas();
-
-        HistoriasClinicas ObtenerHistoriaClinicaPorId(int id);
-
-        void AgregarHistoriaClinica(HistoriasClinicas historiaClinica);
-
-        void ActualizarHistoriaClinica(HistoriasClinicas historiaClinica);
-
-        void EliminarHistoriaClinica(int id);
+        HistoriaClinica Get(long Id);
+        List<HistoriaClinica> GetAll();
+        HistoriaClinica Add(HistoriaClinica x);
+        HistoriaClinica Update(HistoriaClinica x);
+        void Delete(long Id);
     }
 }

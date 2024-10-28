@@ -1,6 +1,7 @@
 ﻿using BL.IBLs;
 using DAL.IDALs;
 using DAL.Models;
+using Shared.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,39 +12,36 @@ namespace BL.BLs
 {
     public class BL_Pacientes : IBL_Pacientes
     {
-        private readonly IDAL_Pacientes _pacientes;
+        private IDAL_Pacientes dal;
 
-        public BL_Pacientes (IDAL_Pacientes pacientes)    {
-            _pacientes = pacientes;
-        }
-        public void AddPaciente(Pacientes paciente)
+        public BL_Pacientes(IDAL_Pacientes _dal)
         {
-            _pacientes.AddPaciente(paciente);
+            dal = _dal;
         }
 
-        public void DeletePaciente(int id)
+        public Paciente Get(long Id)
         {
-            _pacientes.DeletePaciente(id);
+            return dal.Get(Id);
         }
 
-        public IEnumerable<Pacientes> GetAllPacientes()
+        public List<Paciente> GetAll()
         {
-           return  _pacientes.GetAllPacientes();
+            return dal.GetAll();
         }
 
-        public Pacientes GetPacienteByDocumento(string documento)
+        public Paciente Add(Paciente x)
         {
-            return _pacientes.GetPacienteByDocumento(documento);
+            return dal.Add(x);
         }
 
-        public Pacientes GetPacienteById(int id)
+        public Paciente Update(Paciente x)
         {
-            return _pacientes.GetPacienteById(id);
+            return dal.Update(x);
         }
 
-        public void UpdatePaciente(Pacientes paciente)
+        public void Delete(long Id)
         {
-            _pacientes.UpdatePaciente(paciente);
+            dal.Delete(Id);
         }
     }
 }

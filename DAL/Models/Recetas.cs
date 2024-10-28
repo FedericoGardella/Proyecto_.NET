@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Shared.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,17 +9,40 @@ namespace DAL.Models
 {
     public class Recetas
     {
-        public int Id { get; set; }
-        public HistoriasClinicas HistClinId { get; set; }
+        public Recetas() { }
+        public long Id { get; set; }
+        public HistoriasClinicas historiaClinica { get; set; }
         public DateTime Fecha { get; set; }
         public string Tipo { get; set; } // Tipo de receta, por ejemplo, "Receta controlada"
 
         public List<Medicamentos> Medicamentos { get; set; }
 
-        // Constructor para inicializar la lista
-        public Recetas()
+
+        public Receta GetEntity()
         {
-            Medicamentos = new List<Medicamentos>();
+            Receta receta = new Receta();
+
+            receta.Id = Id;
+            receta.Fecha = Fecha;
+            receta.Tipo = Tipo;
+            // HistClinId va?
+
+            return receta;
+        }
+
+        public static Recetas FromEntity(Receta receta, Recetas recetas)
+        {
+            Recetas recetaToSave;
+            if (receta == null)
+                recetaToSave = new Recetas();
+            else
+                recetaToSave  = recetas;
+
+            recetaToSave.Id = receta.Id;
+            recetaToSave.Fecha = receta.Fecha;
+            recetaToSave.Tipo = receta.Tipo;
+
+            return recetaToSave;
         }
     }
 }

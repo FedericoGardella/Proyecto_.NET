@@ -1,6 +1,7 @@
 ﻿using DAL.IDALs;
 using DAL.Models;
 using Microsoft.EntityFrameworkCore;
+using Shared.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,44 +12,50 @@ namespace DAL.DALs
 {
     public class DAL_Medicamentos_EF : IDAL_Medicamentos
     {
-        private readonly DbContext _context;
+        private DBContext db;
+        private string entityName = "Medicamento";
 
-        public DAL_Medicamentos_EF(DbContext context)
+        public DAL_Medicamentos_EF(DBContext _db)
         {
-            _context = context;
+            db = _db;
         }
 
-        public IEnumerable<Medicamentos> ObtenerMedicamentos()
+        public Medicamento Get(long Id)
         {
-            return _context.Set<Medicamentos>().ToList();
+            return db.Medicamentos.Find(Id)?.GetEntity();
         }
 
-        public Medicamentos ObtenerMedicamentoPorId(int id)
+        public List<Medicamento> GetAll()
         {
-            return _context.Set<Medicamentos>()
-                           .FirstOrDefault(m => m.Id == id);
+            return db.Medicamentos.Select(x => x.GetEntity()).ToList();
         }
 
-        public void AgregarMedicamento(Medicamentos medicamento)
+
+        public Medicamento Add(Medicamento x)
         {
-            _context.Set<Medicamentos>().Add(medicamento);
-            _context.SaveChanges();
+            Medicamentos toSave = new Medicamentos();
+            toSave = Medicamentos.FromEntity(x, toSave);
+            db.Medicamentos.Add(toSave);
+            db.SaveChanges();
+            return Get(toSave.Id);
         }
 
-        public void ActualizarMedicamento(Medicamentos medicamento)
+        public Medicamento Update(Medicamento x)
         {
-            _context.Set<Medicamentos>().Update(medicamento);
-            _context.SaveChanges();
+            Medicamentos toSave = db.Medicamentos.FirstOrDefault(c => c.Id == x.Id);
+            toSave = Medicamentos.FromEntity(x, toSave);
+            db.Update(toSave);
+            db.SaveChanges();
+            return Get(toSave.Id);
         }
 
-        public void EliminarMedicamento(int id)
+        public void Delete(long Id)
         {
-            var medicamento = _context.Set<Medicamentos>().Find(id);
-            if (medicamento != null)
-            {
-                _context.Set<Medicamentos>().Remove(medicamento);
-                _context.SaveChanges();
-            }
+            Medicamentos? toDelete = db.Medicamentos.Find(Id);
+            if (toDelete == null)
+                throw new Exception($"No existe un {entityName} con Id {Id}");
+            db.Medicamentos.Remove(toDelete);
+            db.SaveChanges();
         }
     }
 }

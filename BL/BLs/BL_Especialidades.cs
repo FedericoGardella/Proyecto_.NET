@@ -1,5 +1,7 @@
 ﻿using BL.IBLs;
+using DAL.IDALs;
 using DAL.Models;
+using Shared.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,29 +12,36 @@ namespace BL.BLs
 {
     public class BL_Especialidades : IBL_Especialidades
     {
-        public void AddEspecialidad(Especialidades especialidad)
+        private IDAL_Especialidades dal;
+
+        public BL_Especialidades(IDAL_Especialidades _dal)
         {
-            throw new NotImplementedException();
+            dal = _dal;
         }
 
-        public void DeleteEspecialidad(int id)
+        public Especialidad Get(long Id)
         {
-            throw new NotImplementedException();
+            return dal.Get(Id);
         }
 
-        public IEnumerable<Especialidades> GetAllEspecialidades()
+        public List<Especialidad> GetAll()
         {
-            throw new NotImplementedException();
+            return dal.GetAll();
         }
 
-        public Especialidades GetEspecialidadById(int id)
+        public Especialidad Add(Especialidad x)
         {
-            throw new NotImplementedException();
+            return dal.Add(x);
         }
 
-        public void UpdateEspecialidad(Especialidades especialidad)
+        public Especialidad Update(Especialidad x)
         {
-            throw new NotImplementedException();
+            return dal.Update(x);
+        }
+
+        public void Delete(long Id)
+        {
+            dal.Delete(Id);
         }
     }
 }

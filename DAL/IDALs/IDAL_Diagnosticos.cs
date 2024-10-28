@@ -1,4 +1,5 @@
 ﻿using DAL.Models;
+using Shared.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,16 +8,12 @@ using System.Threading.Tasks;
 
 namespace DAL.IDALs
 {
-    public class IDAL_Diagnosticos
+    public interface IDAL_Diagnosticos
     {
-        IEnumerable<Diagnosticos> ObtenerDiagnosticos();
-
-        Diagnosticos ObtenerDiagnosticoPorId(int id);
-
-        void AgregarDiagnostico(Diagnosticos diagnostico);
-
-        void ActualizarDiagnostico(Diagnosticos diagnostico);
-
-        void EliminarDiagnostico(int id);
+        Diagnostico Get(long Id);
+        List<Diagnostico> GetAll();
+        Diagnostico Add(Diagnostico x);
+        Diagnostico Update(Diagnostico x);
+        void Delete(long Id);
     }
 }

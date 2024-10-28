@@ -1,4 +1,4 @@
-﻿using DAL.Models;
+﻿using Shared.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,11 +9,10 @@ namespace DAL.IDALs
 {
     public interface IDAL_Medicos
     {
-        public Medicos GetMedicoById(int id);
-        Medicos GetByMatricula(string matricula);
-        IEnumerable<Medicos> GetAllMedicos();
-        void AddMedico(Medicos medico);
-        void UpdateMedico(Medicos medico);
-        void DeleteMedico(string matricula);
+        Medico Get(long Id);
+        List<Medico> GetAll();
+        Medico Add(Medico x);
+        Medico Update(Medico x);
+        void Delete(long Id);
     }
 }

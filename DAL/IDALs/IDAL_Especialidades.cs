@@ -1,4 +1,4 @@
-﻿using DAL.Models;
+﻿using Shared.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,10 +9,10 @@ namespace DAL.IDALs
 {
     public interface IDAL_Especialidades
     {
-        Especialidades GetEspecialidadById(int id);
-        IEnumerable<Especialidades> GetAllEspecialidades();
-        void AddEspecialidad(Especialidades especialidad);
-        void UpdateEspecialidad(Especialidades especialidad);
-        void DeleteEspecialidad(int id);
+        Especialidad Get(long Id);
+        List<Especialidad> GetAll();
+        Especialidad Add(Especialidad x);
+        Especialidad Update(Especialidad x);
+        void Delete(long Id);
     }
 }

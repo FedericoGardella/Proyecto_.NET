@@ -1,4 +1,5 @@
 ﻿using DAL.Models;
+using Shared.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,16 +8,12 @@ using System.Threading.Tasks;
 
 namespace DAL.IDALs
 {
-    public class IDAL_ResultadosEstudios
+    public interface IDAL_ResultadosEstudios
     {
-        IEnumerable<ResultadosEstudios> ObtenerResultadosEstudios();
-
-        ResultadosEstudios ObtenerResultadoEstudioPorId(int id);
-
-        void AgregarResultadoEstudio(ResultadosEstudios resultadoEstudio);
-
-        void ActualizarResultadoEstudio(ResultadosEstudios resultadoEstudio);
-
-        void EliminarResultadoEstudio(int id);
+        ResultadoEstudio Get(long Id);
+        List<ResultadoEstudio> GetAll();
+        ResultadoEstudio Add(ResultadoEstudio x);
+        ResultadoEstudio Update(ResultadoEstudio x);
+        void Delete(long Id);
     }
 }

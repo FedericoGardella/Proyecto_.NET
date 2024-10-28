@@ -6,45 +6,42 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Shared.Entities;
 
 namespace BL.BLs
 {
     public class BL_Medicos : IBL_Medicos
     {
-        private readonly IDAL_Medicos _medicos;
+        private IDAL_Medicos dal;
 
-        public BL_Medicos(IDAL_Medicos medicos) 
+        public BL_Medicos(IDAL_Medicos _dal)
         {
-            _medicos = medicos;
-        }
-        public void AddMedico(Medicos medico)
-        {
-            _medicos.AddMedico(medico);
+            dal = _dal;
         }
 
-        public void DeleteMedico(string matricula)
+        public Medico Get(long Id)
         {
-            _medicos.DeleteMedico(matricula);
+            return dal.Get(Id);
         }
 
-        public IEnumerable<Medicos> GetAllMedicos()
+        public List<Medico> GetAll()
         {
-            return _medicos.GetAllMedicos();
+            return dal.GetAll();
         }
 
-        public Medicos GetByMatricula(string matricula)
+        public Medico Add(Medico x)
         {
-            return _medicos.GetByMatricula(matricula);
+            return dal.Add(x);
         }
 
-        public Medicos GetMedicoById(int id)
+        public Medico Update(Medico x)
         {
-            return _medicos.GetMedicoById(id);
+            return dal.Update(x);
         }
 
-        public void UpdateMedico(Medicos medico)
+        public void Delete(long Id)
         {
-            _medicos.UpdateMedico(medico);
+            dal.Delete(Id);
         }
     }
 }

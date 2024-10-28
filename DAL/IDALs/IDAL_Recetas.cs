@@ -1,4 +1,5 @@
 ﻿using DAL.Models;
+using Shared.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,16 +8,12 @@ using System.Threading.Tasks;
 
 namespace DAL.IDALs
 {
-    internal class IDAL_Recetas
+    public interface IDAL_Recetas
     {
-        IEnumerable<Recetas> ObtenerRecetas();
-
-        Recetas ObtenerRecetaPorId(int id);
-
-        void AgregarReceta(Recetas receta);
-
-        void ActualizarReceta(Recetas receta);
-
-        void EliminarReceta(int id);
+        Receta Get(long Id);
+        List<Receta> GetAll();
+        Receta Add(Receta x);
+        Receta Update(Receta x);
+        void Delete(long Id);
     }
 }
