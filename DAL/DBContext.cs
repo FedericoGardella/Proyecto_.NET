@@ -28,11 +28,11 @@ namespace DAL
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            
-            modelBuilder.Entity<Pacientes>()
-           .Property(u => u.PasswordHash)
-           .IsRequired();
 
+            modelBuilder.Entity<Pacientes>()
+                .HasOne(p => p.historiaClinica)
+                .WithOne(h => h.paciente)
+                .HasForeignKey<HistoriasClinicas>(h => h.Id);
         }
 
         public DbSet<Articulos> Articulos { get; set; }

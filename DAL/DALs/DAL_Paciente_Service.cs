@@ -1,4 +1,5 @@
 ﻿using DAL.IDALs;
+using DAL.Models;
 using Shared.Entities;
 using System;
 using System.Collections.Generic;
@@ -10,27 +11,32 @@ namespace DAL.DALs
 {
     public class DAL_Paciente_Service : IDAL_Pacientes
     {
-        public Paciente Add(Paciente x)
+        Pacientes IDAL_Pacientes.GetPacienteById(int id)
         {
             throw new NotImplementedException();
         }
 
-        public void Delete(long Id)
+        IEnumerable<Pacientes> IDAL_Pacientes.GetAllPacientes()
         {
             throw new NotImplementedException();
         }
 
-        public Paciente Get(long Id)
+        void IDAL_Pacientes.AddPaciente(Pacientes paciente)
         {
             throw new NotImplementedException();
         }
 
-        public List<Paciente> GetAll()
+        void IDAL_Pacientes.UpdatePaciente(Pacientes paciente)
         {
             throw new NotImplementedException();
         }
 
-        public Paciente Update(Paciente x)
+        void IDAL_Pacientes.DeletePaciente(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        Pacientes IDAL_Pacientes.GetPacienteByDocumento(string documento)
         {
             throw new NotImplementedException();
         }
