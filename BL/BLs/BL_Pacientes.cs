@@ -20,34 +20,34 @@ namespace BL.BLs
         {
             _pacientes = pacientes;
         }
-        public void AddPaciente(Pacientes paciente)
+        public Paciente Get(long Id)
         {
-            _pacientes.AddPaciente(paciente);
+            return dal.Get(Id);
         }
 
-        public void DeletePaciente(int id)
+        public List<Paciente> GetAll()
         {
-            _pacientes.DeletePaciente(id);
+            return dal.GetAll();
         }
 
-        public IEnumerable<Pacientes> GetAllPacientes()
+        public Paciente Add(Paciente x)
         {
-            return _pacientes.GetAllPacientes();
+            return dal.Add(x);
+        }
+
+        public Paciente Update(Paciente x)
+        {
+            return dal.Update(x);
+        }
+
+        public void Delete(long Id)
+        {
+            dal.Delete(Id);
         }
 
         public Pacientes GetPacienteByDocumento(string documento)
         {
             return _pacientes.GetPacienteByDocumento(documento);
-        }
-
-        public Pacientes GetPacienteById(int id)
-        {
-            return _pacientes.GetPacienteById(id);
-        }
-
-        public void UpdatePaciente(Pacientes paciente)
-        {
-            _pacientes.UpdatePaciente(paciente);
         }
     }
 }

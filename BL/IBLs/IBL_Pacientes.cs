@@ -4,16 +4,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DAL.Models;
+using Shared.Entities;
 
 namespace BL.IBLs
 {
     public interface IBL_Pacientes
     {
-        Pacientes GetPacienteById(int id);
-        IEnumerable<Pacientes> GetAllPacientes();
-        void AddPaciente(Pacientes paciente);
-        void UpdatePaciente(Pacientes paciente);
-        void DeletePaciente(int id);
+        Paciente Get(long Id);
+        List<Paciente> GetAll();
+        Paciente Add(Paciente x);
+        Paciente Update(Paciente x);
+        void Delete(long Id);
         Pacientes GetPacienteByDocumento(string documento);
     }
 }

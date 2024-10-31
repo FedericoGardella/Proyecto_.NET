@@ -1,4 +1,5 @@
 ﻿using DAL.IDALs;
+using DAL.Models;
 using Shared.Entities;
 using System;
 using System.Collections.Generic;
@@ -12,27 +13,27 @@ namespace BL.BLs
     {
         private IDAL_GruposCitas dal;
 
-        public BL_GruposCitas(IDAL_Medicamentos _dal)
+        public BL_GruposCitas(IDAL_GruposCitas _dal)
         {
             dal = _dal;
         }
 
-        public Medicamento Get(long Id)
+        public GrupoCita Get(long Id)
         {
             return dal.Get(Id);
         }
 
-        public List<Medicamento> GetAll()
+        public List<GrupoCita>  GetAll()
         {
             return dal.GetAll();
         }
 
-        public Medicamento Add(Medicamento x)
+        public GrupoCita Add(GrupoCita x)
         {
             return dal.Add(x);
         }
 
-        public Medicamento Update(Medicamento x)
+        public GrupoCita Update(GrupoCita x)
         {
             return dal.Update(x);
         }

@@ -11,32 +11,32 @@ namespace DAL.DALs
 {
     public class DAL_Paciente_Service : IDAL_Pacientes
     {
-        Pacientes IDAL_Pacientes.GetPacienteById(int id)
+        public Paciente Add(Paciente x)
         {
             throw new NotImplementedException();
         }
 
-        IEnumerable<Pacientes> IDAL_Pacientes.GetAllPacientes()
+        public void Delete(long Id)
         {
             throw new NotImplementedException();
         }
 
-        void IDAL_Pacientes.AddPaciente(Pacientes paciente)
+        public Paciente Get(long Id)
         {
             throw new NotImplementedException();
         }
 
-        void IDAL_Pacientes.UpdatePaciente(Pacientes paciente)
+        public List<Paciente> GetAll()
         {
             throw new NotImplementedException();
         }
 
-        void IDAL_Pacientes.DeletePaciente(int id)
+        public Pacientes GetPacienteByDocumento(string documento)
         {
             throw new NotImplementedException();
         }
 
-        Pacientes IDAL_Pacientes.GetPacienteByDocumento(string documento)
+        public Paciente Update(Paciente x)
         {
             throw new NotImplementedException();
         }

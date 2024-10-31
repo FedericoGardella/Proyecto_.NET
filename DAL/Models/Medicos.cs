@@ -6,7 +6,6 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using BCrypt.Net;
 using Shared.Entities;
 
 namespace DAL.Models

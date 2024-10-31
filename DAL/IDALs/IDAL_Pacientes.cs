@@ -10,11 +10,11 @@ namespace DAL.IDALs
 {
     public interface IDAL_Pacientes
     {
-        Pacientes GetPacienteById(int id);
-        IEnumerable<Pacientes> GetAllPacientes();
-        void AddPaciente(Pacientes paciente);
-        void UpdatePaciente(Pacientes paciente);
-        void DeletePaciente(int id);
+        Paciente Get(long Id);
+        List<Paciente> GetAll();
+        Paciente Add(Paciente x);
+        Paciente Update(Paciente x);
+        public void Delete(long Id);
         Pacientes GetPacienteByDocumento(string documento);
 
     }

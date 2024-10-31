@@ -13,7 +13,7 @@ namespace DAL
 {
     public class DBContext : DbContext
     {
-        private string _connectionString = "Server=sqlserver,1433;Database=Practico3;User Id=sa;Password=Abc*123!;TrustServerCertificate=True";
+        private string _connectionString = "Server=sqlserver,1433;Database=master;User Id=sa;Password=P45w0rd.N3T;TrustServerCertificate=True";
 
         public DBContext() { }
 
@@ -32,7 +32,8 @@ namespace DAL
             modelBuilder.Entity<Pacientes>()
                 .HasOne(p => p.historiaClinica)
                 .WithOne(h => h.paciente)
-                .HasForeignKey<HistoriasClinicas>(h => h.Id);
+                .HasForeignKey<HistoriasClinicas>(h => h.Id)
+                .IsRequired(false);
         }
 
         public DbSet<Articulos> Articulos { get; set; }

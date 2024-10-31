@@ -1,99 +1,85 @@
-﻿version: '3.8'
-
-services:
-  webservice1:
+﻿services:
+  administrativo-service:
     build:
       context: ./Administrativo
       dockerfile: Dockerfile
-    image: administrativo-app:latest
+    image: administrativo:latest
     ports:
       - "8081:80"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
     depends_on:
-      - bl
-      - dal
       - sqlserver
     networks:
       - backend
 
-  webservice2:
+  autenticacion-service:
     build:
       context: ./Autenticacion
       dockerfile: Dockerfile
-    image: Autenticacion-app:latest
+    image: autenticacion:latest
     ports:
       - "8082:80"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
     depends_on:
-      - bl
-      - dal
       - sqlserver
     networks:
       - backend
 
-  webservice3:
+  gestion-citas-service:
     build:
       context: ./GestionCitas
       dockerfile: Dockerfile
-    image: GestionCitas-app:latest
+    image: gestioncitas-app:latest
     ports:
       - "8083:80"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
     depends_on:
-      - bl
-      - dal
       - sqlserver
     networks:
       - backend
 
-  webservice4:
+  historias-clinicas-service:
     build:
       context: ./HistoriasClinicas
       dockerfile: Dockerfile
-    image: HistoriasClinicas-app:latest
+    image: historiasclinicas:latest
     ports:
       - "8084:80"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
     depends_on:
-      - bl
-      - dal
       - sqlserver
     networks:
       - backend
 
-  webservice5:
+  portal-paciente-service:
     build:
       context: ./PortalPaciente
       dockerfile: Dockerfile
-    image: PortalPaciente-app:latest
+    image: portalpaciente:latest
     ports:
       - "8085:80"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
     depends_on:
-      - bl
-      - dal
       - sqlserver
     networks:
       - backend
 
-  dal:
+  gestion-usuarios-service:
     build:
-      context: ./DAL
+      context: ./GestionUsuarios
       dockerfile: Dockerfile
-    image: DAL-app:latest
-    networks:
-      - backend
-
-  bl:
-    build:
-      context: ./BL
-      dockerfile: Dockerfile
-    image: BL-app:latest
+    image: gestionusuarios:latest
+    ports:
+      - "8086:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    depends_on:
+      - sqlserver
     networks:
       - backend
 
@@ -127,4 +113,4 @@ networks:
     driver: bridge
 
 volumes:
-  sql_data
+  sql_data: {}

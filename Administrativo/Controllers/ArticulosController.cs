@@ -22,7 +22,7 @@ namespace Administrativo.Controllers
             logger = _logger;
         }
 
-        // GET: api/<ArticulosController>
+
         [Authorize(Roles = "ADMIN, X")]
         [ProducesResponseType(typeof(List<Articulo>), 200)]
         [HttpGet]
@@ -39,7 +39,7 @@ namespace Administrativo.Controllers
             }
         }
 
-        // GET api/<ArticulosController>/5
+
         [Authorize(Roles = "ADMIN, X")]
         [ProducesResponseType(typeof(Articulo), 200)]
         [HttpGet("{Id}")]
@@ -56,7 +56,7 @@ namespace Administrativo.Controllers
             }
         }
 
-        // POST api/<ArticulosController>
+
         [Authorize(Roles = "ADMIN")]
         [ProducesResponseType(typeof(Articulo), 200)]
         [HttpPost]
@@ -73,7 +73,7 @@ namespace Administrativo.Controllers
             }
         }
 
-        // PUT api/<ArticulosController>/5
+
         [Authorize(Roles = "ADMIN")]
         [ProducesResponseType(typeof(Articulo), 200)]
         [HttpPut("{Id}")]
@@ -90,7 +90,7 @@ namespace Administrativo.Controllers
             }
         }
 
-        // DELETE api/<ArticulosController>/5
+        [Route("api/[ArticulosController]")]
         [Authorize(Roles = "ADMIN")]
         [ProducesResponseType(typeof(StatusResponse), 200)]
         [HttpDelete("{Id}")]
