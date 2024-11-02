@@ -1,4 +1,5 @@
-﻿using DAL.IDALs;
+﻿using BL.IBLs;
+using DAL.IDALs;
 using Shared.Entities;
 using System;
 using System.Collections.Generic;
@@ -8,31 +9,34 @@ using System.Threading.Tasks;
 
 namespace BL.BLs
 {
-    public class BL_GruposCitas
+    public class BL_Personas : IBL_Personas
     {
-        private IDAL_GruposCitas dal;
+        private IDAL_Personas dal;
 
-        public BL_GruposCitas(IDAL_GruposCitas _dal)
+        public BL_Personas(IDAL_Personas _dal)
         {
             dal = _dal;
         }
 
-        public GrupoCita Get(long Id)
+        public Persona Get(long Id)
         {
             return dal.Get(Id);
         }
-
-        public List<GrupoCita> GetAll()
+        public Persona GetXDocumento(string Documento)
+        {
+            return dal.GetXDocumento(Documento);
+        }
+        public List<Persona> GetAll()
         {
             return dal.GetAll();
         }
 
-        public GrupoCita Add(GrupoCita x)
+        public Persona Add(Persona x)
         {
             return dal.Add(x);
         }
 
-        public GrupoCita Update(GrupoCita x)
+        public Persona Update(Persona x)
         {
             return dal.Update(x);
         }

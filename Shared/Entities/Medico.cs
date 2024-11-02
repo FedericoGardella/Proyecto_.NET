@@ -8,14 +8,9 @@ using System.Threading.Tasks;
 
 namespace Shared.Entities
 {
-    public class Medico
+    public class Medico : Persona
     {
-        public long Id { get; set; }
-
         public string Matricula { get; set; }
-
-        public string Nombres { get; set; }
-
-        public string Apellidos { get; set; }
     }
 }
+
