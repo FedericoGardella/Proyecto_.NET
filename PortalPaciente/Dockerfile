@@ -1,33 +1,38 @@
+# PortalPaciente
+# Consulte https://aka.ms/customizecontainer para aprender a personalizar su contenedor de depuración y cómo Visual Studio usa este Dockerfile para compilar sus imágenes para una depuración más rápida.
+
+# Esta fase se usa cuando se ejecuta desde VS en modo rápido (valor predeterminado para la configuración de depuración)
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+USER app
 WORKDIR /app
 EXPOSE 8080
 EXPOSE 8081
 
+
+# Esta fase se usa para compilar el proyecto de servicio
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 
-# Copia el archivo .csproj y restaura las dependencias
-COPY ["PortalPaciente.csproj", "./"]
-RUN dotnet restore "PortalPaciente.csproj"
+COPY ["DAL/DAL.csproj", "DAL/"]
+COPY ["BL/BL.csproj", "BL/"]
+COPY ["Shared/Shared.csproj", "Shared/"]
+COPY ["PortalPaciente/PortalPaciente.csproj", "PortalPaciente/"]
 
-# Copia el resto de los archivos del proyecto
+RUN dotnet restore "./PortalPaciente/PortalPaciente.csproj"
+
 COPY . .
 
-# Compila el proyecto
-WORKDIR "/src"
+WORKDIR "/src/PortalPaciente"
+RUN dotnet build "./PortalPaciente.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
-RUN dotnet build "PortalPaciente.csproj" -c $BUILD_CONFIGURATION -o /app/build
-
+# Esta fase se usa para publicar el proyecto de servicio que se copiará en la fase final.
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
+RUN dotnet publish "./PortalPaciente.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
-# Publica el proyecto
-RUN dotnet publish "PortalPaciente.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
-
+# Esta fase se usa en producción o cuando se ejecuta desde VS en modo normal (valor predeterminado cuando no se usa la configuración de depuración)
 FROM base AS final
 WORKDIR /app
-
-# Copia los archivos publicados al contenedor final
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "PortalPaciente.dll"]

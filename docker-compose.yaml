@@ -1,8 +1,8 @@
 ﻿services:
   administrativo-service:
     build:
-      context: ./Administrativo
-      dockerfile: Dockerfile
+      context: ./
+      dockerfile: ./Administrativo/Dockerfile
     image: administrativo:latest
     ports:
       - "8081:80"
@@ -15,8 +15,8 @@
 
   autenticacion-service:
     build:
-      context: ./Autenticacion
-      dockerfile: Dockerfile
+      context: ./
+      dockerfile: ./Autenticacion/Dockerfile
     image: autenticacion:latest
     ports:
       - "8082:80"
@@ -29,9 +29,9 @@
 
   gestion-citas-service:
     build:
-      context: ./GestionCitas
-      dockerfile: Dockerfile
-    image: gestioncitas-app:latest
+      context: ./
+      dockerfile: ./GestionCitas/Dockerfile
+    image: gestioncitas:latest
     ports:
       - "8083:80"
     environment:
@@ -43,8 +43,8 @@
 
   historias-clinicas-service:
     build:
-      context: ./HistoriasClinicas
-      dockerfile: Dockerfile
+      context: ./
+      dockerfile: ./HistoriasClinicas/Dockerfile
     image: historiasclinicas:latest
     ports:
       - "8084:80"
@@ -57,8 +57,8 @@
 
   portal-paciente-service:
     build:
-      context: ./PortalPaciente
-      dockerfile: Dockerfile
+      context: ./
+      dockerfile: ./PortalPaciente/Dockerfile
     image: portalpaciente:latest
     ports:
       - "8085:80"
@@ -71,8 +71,8 @@
 
   gestion-usuarios-service:
     build:
-      context: ./GestionUsuarios
-      dockerfile: Dockerfile
+      context: ./
+      dockerfile: ./GestionUsuarios/Dockerfile
     image: gestionusuarios:latest
     ports:
       - "8086:80"

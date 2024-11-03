@@ -1,31 +1,37 @@
-# Usar la imagen base de .NET SDK para construir la aplicación
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+# Consulte https://aka.ms/customizecontainer para aprender a personalizar su contenedor de depuración y cómo Visual Studio usa este Dockerfile para compilar sus imágenes para una depuración más rápida.
 
-# Establecer el directorio de trabajo
+# Esta fase se usa cuando se ejecuta desde VS en modo rápido (valor predeterminado para la configuración de depuración)
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+USER app
+WORKDIR /app
+EXPOSE 8080
+EXPOSE 8081
+
+
+# Esta fase se usa para compilar el proyecto de servicio
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 
-# Copiar solo el archivo de proyecto (csproj) y restaurar las dependencias
-COPY ["Administrativo.csproj", "./"]
+COPY ["DAL/DAL.csproj", "DAL/"]
+COPY ["BL/BL.csproj", "BL/"]
+COPY ["Shared/Shared.csproj", "Shared/"]
+COPY ["Administrativo/Administrativo.csproj", "Administrativo/"]
 
+RUN dotnet restore "./Administrativo/Administrativo.csproj"
 
-RUN dotnet restore "Administrativo.csproj"
+COPY . .
 
-# Copiar todos los archivos de la carpeta actual al contenedor
-COPY . /src
+WORKDIR "/src/Administrativo"
+RUN dotnet build "./Administrativo.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
-# Compilar la aplicación en modo Release
-RUN dotnet build "Administrativo.csproj" -c Release -o /app/build
-
-# Publicar la aplicación
+# Esta fase se usa para publicar el proyecto de servicio que se copiará en la fase final.
 FROM build AS publish
-RUN dotnet publish "Administrativo.csproj" -c Release -o /app/publish
+ARG BUILD_CONFIGURATION=Release
+RUN dotnet publish "./Administrativo.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
-# Usar la imagen base de .NET ASP.NET para el runtime
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
+# Esta fase se usa en producción o cuando se ejecuta desde VS en modo normal (valor predeterminado cuando no se usa la configuración de depuración)
+FROM base AS final
 WORKDIR /app
-
-# Copiar los archivos publicados desde la etapa anterior
 COPY --from=publish /app/publish .
-
-# Establecer el punto de entrada para el contenedor
 ENTRYPOINT ["dotnet", "Administrativo.dll"]
