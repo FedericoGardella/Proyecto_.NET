@@ -7,33 +7,23 @@ using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 
 namespace DAL
 {
-    public class DBContext : DbContext
+    public class DBContext : IdentityDbContext<Users>
     {
-        private string _connectionString = "Server=sqlserver,1433;Database=master;User Id=sa;Password=P45w0rd.N3T;TrustServerCertificate=True";
+       private string _connectionString = "Server=sqlserver,1433;Database=master;User Id=sa;Password=P45w0rd.N3T;TrustServerCertificate=True";
 
-        public DBContext() { }
-
+        DBContext() { }
         public DBContext(DbContextOptions<DBContext> options) : base(options) { }
+        
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {           
 
             optionsBuilder.UseSqlServer(_connectionString);
-        }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
-
-            modelBuilder.Entity<Pacientes>()
-                .HasOne(p => p.historiaClinica)
-                .WithOne(h => h.paciente)
-                .HasForeignKey<HistoriasClinicas>(h => h.Id)
-                .IsRequired(false);
         }
 
         public DbSet<Articulos> Articulos { get; set; }
@@ -51,6 +41,7 @@ namespace DAL
         public DbSet<TiposSeguros> TiposSeguros { get; set; }
         public DbSet<Citas> Citas { get; set; }
         public DbSet<GruposCitas> GruposCitas { get; set; }
+        public DbSet<Personas> Personas { get; set; }
 
         public static void UpdateDatabase()
         {

@@ -10,8 +10,9 @@ using Shared.Entities;
 
 namespace DAL.Models
 {
-    public class Medicos
+    public class Medicos : Personas
     {
+        
         public Medicos() { }
 
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -32,33 +33,28 @@ namespace DAL.Models
         public List<Especialidades> Especialidades { get; set; } // Puede tener mas de una especialidad?
         public List<GruposCitas> GruposCitas { get; set; }
 
+
         public Medico GetEntity()
         {
-            Medico medico = new Medico();
-
-            medico.Id = Id;
-            medico.Nombres = Nombres;
-            medico.Apellidos = Apellidos;
-            medico.Matricula = Matricula;
-
-            return medico;
+            return new Medico
+            {
+                Id = Id,
+                Nombres = Nombres,
+                Apellidos = Apellidos,
+                Matricula = Matricula
+            };
         }
 
         public static Medicos FromEntity(Medico medico, Medicos medicos)
         {
-            Medicos medicoToSave;
-            if (medicos == null)
-                medicoToSave = new Medicos();
-            else
-                medicoToSave = medicos;
+            Medicos medicoToSave = medicos ?? new Medicos();
 
             medicoToSave.Id = medico.Id;
             medicoToSave.Nombres = medico.Nombres;
             medicoToSave.Apellidos = medico.Apellidos;
-            medicoToSave.Matricula = medico.Matricula ;
+            medicoToSave.Matricula = medico.Matricula;
 
             return medicoToSave;
         }
-
     }
 }
