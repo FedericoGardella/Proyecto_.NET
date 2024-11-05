@@ -24,7 +24,7 @@ namespace DAL.Models
                 Nombres = Nombres,
                 Apellidos = Apellidos,
                 Telefono = Telefono,
-                Cedula = Cedula
+                Documento = Documento
             };
         }
 
