@@ -1,9 +1,6 @@
 ﻿using DAL.IDALs;
 using DAL.Models;
 using Microsoft.AspNetCore.Identity;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace DAL.DALs
 {

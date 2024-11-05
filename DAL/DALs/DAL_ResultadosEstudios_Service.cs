@@ -1,14 +1,9 @@
 ﻿using DAL.IDALs;
 using Shared.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DAL.DALs
 {
-    public class DAL_ResultadosEstudios_Service: IDAL_ResultadosEstudios
+    public class DAL_ResultadosEstudios_Service : IDAL_ResultadosEstudios
     {
         public ResultadoEstudio Update(ResultadoEstudio resultadoEstudio)
         {

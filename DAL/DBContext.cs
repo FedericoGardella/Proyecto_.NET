@@ -1,27 +1,20 @@
 ﻿using DAL.Models;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace DAL
 {
     public class DBContext : IdentityDbContext<Users>
     {
-       private string _connectionString = "Server=sqlserver,1433;Database=master;User Id=sa;Password=P45w0rd.N3T;TrustServerCertificate=True";
+        private string _connectionString = "Server=sqlserver,1433;Database=master;User Id=sa;Password=P45w0rd.N3T;TrustServerCertificate=True";
 
         DBContext() { }
         public DBContext(DbContextOptions<DBContext> options) : base(options) { }
-        
+
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {           
+        {
 
             optionsBuilder.UseSqlServer(_connectionString);
         }

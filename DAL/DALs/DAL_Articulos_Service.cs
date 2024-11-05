@@ -1,14 +1,9 @@
 ﻿using DAL.IDALs;
 using Shared.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DAL.DALs
 {
-    public class DAL_Articulos_Service: IDAL_Articulos
+    public class DAL_Articulos_Service : IDAL_Articulos
     {
         public Articulo Update(Articulo articulo)
         {

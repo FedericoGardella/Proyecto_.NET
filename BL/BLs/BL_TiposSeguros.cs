@@ -1,15 +1,10 @@
 ﻿using BL.IBLs;
 using DAL.IDALs;
 using Shared.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BL.BLs
 {
-    public class BL_TiposSeguros: IBL_TiposSeguros
+    public class BL_TiposSeguros : IBL_TiposSeguros
     {
         private IDAL_TiposSeguros dal;
 

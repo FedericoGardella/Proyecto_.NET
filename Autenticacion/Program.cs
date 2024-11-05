@@ -47,6 +47,12 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+// Add Authorization Service
+builder.Services.AddAuthorization();
+
+// Add Controllers Service
+builder.Services.AddControllers();
+
 builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>
 {
     options.TokenLifespan = TimeSpan.FromHours(2);

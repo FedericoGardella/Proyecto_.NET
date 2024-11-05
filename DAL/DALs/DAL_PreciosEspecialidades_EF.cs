@@ -1,15 +1,10 @@
 ﻿using DAL.IDALs;
 using DAL.Models;
 using Shared.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DAL.DALs
 {
-    public class DAL_PreciosEspecialidades_EF: IDAL_PreciosEspecialidades
+    public class DAL_PreciosEspecialidades_EF : IDAL_PreciosEspecialidades
     {
         private DBContext db;
         private string entityName = "PrecioEspecialidad";

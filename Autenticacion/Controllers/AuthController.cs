@@ -1,20 +1,16 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+﻿using Autenticacion.Models;
+using BL.IBLs;
+using DAL;
+using DAL.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.IdentityModel.Tokens;
 using Shared.DTOs;
+using Shared.Entities;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
-using DAL.Models;
-using Shared.Entities;
-using BL;
-using Autenticacion.Models;
-using BL.IBLs;
-using DAL;
 
 namespace Autenticacion.Controllers
 {

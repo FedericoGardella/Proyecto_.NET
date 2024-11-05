@@ -1,14 +1,9 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+﻿using BL.IBLs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Shared.Entities;
-
-using BL.IBLs;
 using Shared.DTOs;
-
+using Shared.Entities;
 using StatusResponse = PortalPaciente.Models.StatusResponse;
-using BL.BLs;
-using DAL.Models;
 
 namespace PortalPaciente.Controllers
 {

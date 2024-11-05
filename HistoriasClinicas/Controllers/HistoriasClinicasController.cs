@@ -1,6 +1,4 @@
 ﻿using BL.IBLs;
-using DAL.Models;
-using HistoriasClinicas.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shared.DTOs;

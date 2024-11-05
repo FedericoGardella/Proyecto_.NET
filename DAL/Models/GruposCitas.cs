@@ -1,9 +1,4 @@
 ﻿using Shared.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DAL.Models
 {
@@ -14,8 +9,8 @@ namespace DAL.Models
         public string Lugar { get; set; }
         public DateTime Fecha { get; set; }
         public Medicos medico { get; set; }
-        public Especialidades especialidad {  get; set; } 
-        
+        public Especialidades especialidad { get; set; }
+
 
         public GrupoCita GetEntity()
         {

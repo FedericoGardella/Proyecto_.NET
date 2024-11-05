@@ -1,4 +1,5 @@
-﻿services:
+
+services:
   administrativo-service:
     build:
       context: ./
@@ -101,7 +102,7 @@
     container_name: rabbitmq
     ports:
       - "5672:5672"     # Puerto por defecto para RabbitMQ
-      - "15672:15672"   # Puerto para la interfaz de gestión
+      - "15672:15672"   # Puerto para la interfaz de gestion
     environment:
       - RABBITMQ_DEFAULT_USER=dotnetlab
       - RABBITMQ_DEFAULT_PASS=P455w0rd_net

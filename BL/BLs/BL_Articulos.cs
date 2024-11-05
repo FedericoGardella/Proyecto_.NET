@@ -1,15 +1,10 @@
 ﻿using BL.IBLs;
 using DAL.IDALs;
 using Shared.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BL.BLs
 {
-    public class BL_Articulos: IBL_Articulos
+    public class BL_Articulos : IBL_Articulos
     {
         private IDAL_Articulos dal;
 

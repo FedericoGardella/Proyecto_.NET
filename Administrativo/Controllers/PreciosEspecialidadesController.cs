@@ -1,11 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+﻿using BL.IBLs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Shared.Entities;
-
-using BL.IBLs;
 using Shared.DTOs;
-
+using Shared.Entities;
 using StatusResponse = Administrativo.Models.StatusResponse;
 
 namespace Administrativo.Controllers
@@ -58,7 +55,7 @@ namespace Administrativo.Controllers
 
         // POST api/<PreciosEspecialidadesController>
         [Authorize(Roles = "ADMIN")]
-        [ProducesResponseType(typeof(PrecioEspecialidad ), 200)]
+        [ProducesResponseType(typeof(PrecioEspecialidad), 200)]
         [HttpPost]
         public IActionResult Post([FromBody] PrecioEspecialidad x)
         {

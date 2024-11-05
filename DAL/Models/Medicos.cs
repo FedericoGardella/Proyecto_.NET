@@ -1,33 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Shared.Entities;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using Shared.Entities;
 
 namespace DAL.Models
 {
     public class Medicos : Personas
     {
-        
+
         public Medicos() { }
 
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Key] 
+        [Key]
         public long Id { get; set; }
 
         [Required]
         public string Matricula { get; set; }
 
-        [Required] 
+        [Required]
         [MaxLength(100)]
         public string Nombres { get; set; }
 
         [Required]
-        [MaxLength(100)] 
+        [MaxLength(100)]
         public string Apellidos { get; set; }
 
         public List<Especialidades> Especialidades { get; set; } // Puede tener mas de una especialidad?

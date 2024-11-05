@@ -1,13 +1,9 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+﻿using BL.IBLs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Shared.Entities;
-
-using BL.IBLs;
 using Shared.DTOs;
-
+using Shared.Entities;
 using StatusResponse = Administrativo.Models.StatusResponse;
-using DAL.Models;
 
 namespace Administrativo.Controllers
 {
@@ -90,7 +86,7 @@ namespace Administrativo.Controllers
             }
         }
 
-        [Route("api/[ArticulosController]")]
+        [Route("api/[controller]")]
         [Authorize(Roles = "ADMIN")]
         [ProducesResponseType(typeof(StatusResponse), 200)]
         [HttpDelete("{Id}")]

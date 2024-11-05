@@ -4,7 +4,8 @@ namespace Autenticacion.Models
 {
     public class RegisterModel
     {
-        public string Id { get; set; }
+        [Required(ErrorMessage = "El Id es requerido"), MinLength(1), MaxLength(128)]
+        public required string Id { get; set; }
 
         [Required(ErrorMessage = "El documento es requerido"), MinLength(3), MaxLength(128)]
         public string Documento { get; set; } = string.Empty;

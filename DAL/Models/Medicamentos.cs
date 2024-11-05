@@ -1,9 +1,4 @@
 ﻿using Shared.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DAL.Models
 {
@@ -16,7 +11,7 @@ namespace DAL.Models
 
         public Medicamento GetEntity()
         {
-            Medicamento medicamento= new Medicamento();
+            Medicamento medicamento = new Medicamento();
 
             medicamento.Id = Id;
             medicamento.Nombre = Nombre;

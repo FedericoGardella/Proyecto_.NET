@@ -1,15 +1,10 @@
 ﻿using DAL.IDALs;
 using DAL.Models;
 using Shared.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DAL.DALs
 {
-    public class DAL_Articulos_EF: IDAL_Articulos
+    public class DAL_Articulos_EF : IDAL_Articulos
     {
         private DBContext db;
         private string entityName = "Articulo";

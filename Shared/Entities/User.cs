@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Shared.Entities
+﻿namespace Shared.Entities
 {
     public class User
     {

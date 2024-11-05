@@ -1,6 +1,4 @@
-﻿using Shared.Entities;
-
-namespace Autenticacion.Models
+﻿namespace Autenticacion.Models
 {
     public class LoginResponse
     {

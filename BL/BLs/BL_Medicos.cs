@@ -1,11 +1,5 @@
 ﻿using BL.IBLs;
-using DAL.Models;
 using DAL.IDALs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Shared.Entities;
 
 namespace BL.BLs

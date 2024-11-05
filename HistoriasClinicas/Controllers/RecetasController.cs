@@ -1,13 +1,10 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Shared.Entities;
-
-using BL.IBLs;
-using Shared.DTOs;
-
-using StatusResponse = HistoriasClinicas.Models.StatusResponse;
+﻿using BL.IBLs;
 using DAL.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Shared.DTOs;
+using Shared.Entities;
+using StatusResponse = HistoriasClinicas.Models.StatusResponse;
 
 namespace HistoriasClinicas.Controllers
 {

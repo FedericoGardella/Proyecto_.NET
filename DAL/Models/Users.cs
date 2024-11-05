@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Shared.Entities;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Shared.Entities;
 
 namespace DAL.Models
 {

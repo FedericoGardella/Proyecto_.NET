@@ -1,9 +1,4 @@
 ﻿using Shared.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DAL.Models
 {
@@ -36,7 +31,7 @@ namespace DAL.Models
             if (receta == null)
                 recetaToSave = new Recetas();
             else
-                recetaToSave  = recetas;
+                recetaToSave = recetas;
 
             recetaToSave.Id = receta.Id;
             recetaToSave.Fecha = receta.Fecha;
