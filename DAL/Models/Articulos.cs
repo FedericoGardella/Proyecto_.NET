@@ -1,4 +1,5 @@
 ﻿using Shared.Entities;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DAL.Models
 {
@@ -8,6 +9,8 @@ namespace DAL.Models
         public long Id { get; set; }
         public string Nombre { get; set; }
         public DateTime Fecha { get; set; }
+        
+        [Column(TypeName = "decimal(18,2)")]
         public decimal Costo { get; set; }
 
         public Articulo GetEntity()

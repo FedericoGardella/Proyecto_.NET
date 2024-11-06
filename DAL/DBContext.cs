@@ -1,6 +1,7 @@
 ﻿using DAL.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Shared.Entities;
 
 
 namespace DAL
@@ -17,6 +18,20 @@ namespace DAL
         {
 
             optionsBuilder.UseSqlServer(_connectionString);
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Paciente>()
+                .HasOne(p => p.HistoriaClinica)
+                .WithOne(h => h.Paciente)
+                .HasForeignKey<HistoriaClinica>(h => h.PacienteId);
+
+            modelBuilder.Entity<Articulo>()
+                .Property(a => a.Costo)
+                .HasPrecision(10, 2);
         }
 
         public DbSet<Articulos> Articulos { get; set; }

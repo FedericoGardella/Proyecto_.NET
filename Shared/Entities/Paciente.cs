@@ -2,7 +2,7 @@
 {
     public class Paciente : Persona
     {
-        public HistoriaClinica historiaClinica { get; set; }
+        public HistoriaClinica HistoriaClinica { get; set; }
         public string Telefono { get; set; }
 
     }
