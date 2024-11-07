@@ -1,3 +1,4 @@
+﻿version: '3.8'
 
 services:
   administrativo-service:
@@ -6,7 +7,7 @@ services:
       dockerfile: ./Administrativo/Dockerfile
     image: administrativo:latest
     ports:
-      - "8081:80"
+      - "8081:8080"  # Puerto host único
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
     depends_on:
@@ -20,7 +21,7 @@ services:
       dockerfile: ./Autenticacion/Dockerfile
     image: autenticacion:latest
     ports:
-      - "8082:80"
+      - "8082:8080"  # Puerto host único
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
     depends_on:
@@ -34,7 +35,7 @@ services:
       dockerfile: ./GestionCitas/Dockerfile
     image: gestioncitas:latest
     ports:
-      - "8083:80"
+      - "8083:8080"  # Puerto host único
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
     depends_on:
@@ -48,7 +49,7 @@ services:
       dockerfile: ./HistoriasClinicas/Dockerfile
     image: historiasclinicas:latest
     ports:
-      - "8084:80"
+      - "8084:8080"  # Puerto host único
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
     depends_on:
@@ -62,7 +63,7 @@ services:
       dockerfile: ./PortalPaciente/Dockerfile
     image: portalpaciente:latest
     ports:
-      - "8085:80"
+      - "8085:8080"  # Puerto host único
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
     depends_on:
@@ -76,11 +77,28 @@ services:
       dockerfile: ./GestionUsuarios/Dockerfile
     image: gestionusuarios:latest
     ports:
-      - "8086:80"
+      - "8086:8080"  # Puerto host único
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
     depends_on:
       - sqlserver
+    networks:
+      - backend
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - administrativo-service
+      - autenticacion-service
+      - gestion-citas-service
+      - historias-clinicas-service
+      - portal-paciente-service
+      - gestion-usuarios-service
     networks:
       - backend
 
@@ -96,13 +114,13 @@ services:
       - sql_data:/var/opt/mssql
     networks:
       - backend
-  
+
   rabbitmq:
     image: rabbitmq:3-management  
     container_name: rabbitmq
     ports:
-      - "5672:5672"     # Puerto por defecto para RabbitMQ
-      - "15672:15672"   # Puerto para la interfaz de gestion
+      - "5672:5672"
+      - "15672:15672"
     environment:
       - RABBITMQ_DEFAULT_USER=dotnetlab
       - RABBITMQ_DEFAULT_PASS=P455w0rd_net
@@ -111,7 +129,7 @@ services:
 
 networks:
   backend:
-    driver: bridge
+    name: proyecto_net_backend
 
 volumes:
   sql_data: {}

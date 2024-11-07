@@ -26,7 +26,8 @@ namespace Administrativo.Controllers
         {
             try
             {
-                return Ok(bl.GetAll());
+                return Ok("ok");
+                //return Ok(bl.GetAll());
             }
             catch (Exception ex)
             {
