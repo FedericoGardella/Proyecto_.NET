@@ -128,7 +128,8 @@ services:
       - RABBITMQ_DEFAULT_USER=dotnetlab
       - RABBITMQ_DEFAULT_PASS=P455w0rd_net
     networks:
-      - backend
+      - backend 
+  
 
 networks:
   backend:
