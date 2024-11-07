@@ -1,4 +1,5 @@
 ﻿using Shared.Entities;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DAL.Models
 {
@@ -6,9 +7,18 @@ namespace DAL.Models
     {
         public PreciosEspecialidades() { }
         public long Id { get; set; }
-        public Articulos articulo { get; set; }
-        public TiposSeguros tipoSeguro { get; set; }
-        public Especialidades especialidad { get; set; }
+
+
+        public Articulos ArticulosId { get; set; }
+        public Articulos Articulos { get; set; }
+
+        [ForeignKey("TiposSeguros")]
+        public long TiposSegurosId { get; set; }
+        public TiposSeguros TiposSeguros { get; set; }
+
+        [ForeignKey("Especialidades")]
+        public long EspecialidadesId { get; set; }
+        public Especialidades Especialidades { get; set; }
 
         public PrecioEspecialidad GetEntity()
         {

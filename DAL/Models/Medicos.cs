@@ -24,7 +24,7 @@ namespace DAL.Models
         [MaxLength(100)]
         public string Apellidos { get; set; }
 
-        public List<Especialidades> Especialidades { get; set; } // Puede tener mas de una especialidad?
+        public List<Especialidades> Especialidades { get; set; }
         public List<GruposCitas> GruposCitas { get; set; }
 
 

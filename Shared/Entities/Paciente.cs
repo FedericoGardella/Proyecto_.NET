@@ -5,5 +5,6 @@
         public HistoriaClinica HistoriaClinica { get; set; }
         public string Telefono { get; set; }
 
+        public List<Cita> Citas { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Shared.Entities;
+using System.ComponentModel.DataAnnotations.Schema;
 
 
 
@@ -10,7 +11,8 @@ namespace DAL.Models
         public HistoriasClinicas() { }
         public long Id { get; set; }
         public DateTime FechaCreacion { get; set; }
-        public Pacientes paciente { get; set; }
+        public long PacientesId { get; set; }
+        public Pacientes Pacientes { get; set; }
 
         public List<Diagnosticos> Diagnosticos { get; set; }
         public List<ResultadosEstudios> ResultadosEstudios { get; set; }

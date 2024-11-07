@@ -9,8 +9,16 @@ namespace DAL.Models
         public long Id { get; set; }
         public string Nombre { get; set; }
         public DateTime Fecha { get; set; }
-        
-        [Column(TypeName = "decimal(18,2)")]
+
+        [ForeignKey("TiposSeguros")]
+        public long TiposSegurosId { get; set; }
+        public TiposSeguros TiposSeguros { get; set; }
+
+        [ForeignKey("PreciosEspecialidades")]
+        public long PreciosEspecialidadesId { get; set; }
+        public PreciosEspecialidades PreciosEspecialidades { get; set; }
+
+        [Column(TypeName = "decimal(10,2)")]
         public decimal Costo { get; set; }
 
         public Articulo GetEntity()

@@ -10,12 +10,14 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 // Configura la cadena de conexión a la base de datos
-string connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ??
-    "Server=sqlserver;Database=nombre_base_datos;User Id=sa;Password=P45w0rd.N3T;";
+string connectionString = "Server=sqlserver,1433;Database=master;User Id=sa;Password=P45w0rd.N3T;TrustServerCertificate=True";
 
 // DbContext and Identity
 builder.Services.AddDbContext<DBContext>(options =>
-    options.UseSqlServer(connectionString));
+    options.UseSqlServer(
+        connectionString,
+        sqlOptions => sqlOptions.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null)  // Habilita resiliencia
+    ));
 builder.Services.AddIdentity<Users, IdentityRole>(options =>
 {
     options.Lockout.MaxFailedAccessAttempts = 5;
@@ -132,4 +134,3 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
-

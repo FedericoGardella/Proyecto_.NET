@@ -5,6 +5,7 @@
         public long Id { get; set; }
         public Articulo articulo { get; set; }
         public TipoSeguro tipoSeguro { get; set; }
+
         public Especialidad especialidad { get; set; }
     }
 }

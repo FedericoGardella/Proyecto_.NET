@@ -1,5 +1,6 @@
 ﻿using Shared.Entities;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DAL.Models
 {
@@ -9,10 +10,15 @@ namespace DAL.Models
         [MaxLength(20), MinLength(4)]
         public string Telefono { get; set; }
 
-        [Required]
+        public List<Citas> Citas { get; set; }
 
-        [MaxLength(8), MinLength(8)]
-        public string Cedula { get; set; }
+        [ForeignKey("ContratosSeguros")]
+        public long ContratosSegurosId { get; set; }
+        public ContratosSeguros ContratosSeguros { get; set; }
+
+        [ForeignKey("HistoriasClinicas")]
+        public long HistoriasClinicasId { get; set; }
+        public HistoriasClinicas HistoriasClinicas { get; set; }
 
         public Paciente GetEntity()
         {
