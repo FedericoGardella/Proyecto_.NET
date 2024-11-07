@@ -11,7 +11,7 @@ namespace DAL.Models
         public DateTime Fecha { get; set; }
 
         [ForeignKey("Medicos")]
-        public string MedicosId { get; set; }
+        public long MedicosId { get; set; }
         public Medicos Medicos { get; set; }
 
         [ForeignKey("Especialidades")]

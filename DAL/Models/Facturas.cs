@@ -6,7 +6,7 @@ namespace DAL.Models
     public class Facturas
     {
         public Facturas() { }
-        public int Id { get; set; }
+        public long Id { get; set; }
         public DateTime FechaEmision { get; set; }
         public bool Pago { get; set; }
 

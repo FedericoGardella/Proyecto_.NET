@@ -8,8 +8,6 @@ namespace DAL.Models
         public PreciosEspecialidades() { }
         public long Id { get; set; }
 
-
-        public Articulos ArticulosId { get; set; }
         public Articulos Articulos { get; set; }
 
         [ForeignKey("TiposSeguros")]
