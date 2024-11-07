@@ -32,7 +32,7 @@ namespace DAL.Models
             return persona;
         }
 
-        public static Personas FromEntity(Persona persona, Personas personas)
+        public static Personas FromEntity(Persona persona, Personas personas = null)
         {
             Personas personaToSave = personas ?? new Personas();
 
@@ -41,7 +41,18 @@ namespace DAL.Models
             personaToSave.Apellidos = persona.Apellidos;
             personaToSave.Documento = persona.Documento;
 
+            if (persona is Paciente paciente)
+            {
+                if (personaToSave is Pacientes pacientes)
+                {
+                    pacientes.Telefono = paciente.Telefono;
+                    pacientes.HistoriasClinicasId = paciente.HistoriaClinicaId;
+                    pacientes.ContratosSegurosId = paciente.ContratoSeguroId;
+                }
+            }
+
             return personaToSave;
         }
+
     }
 }

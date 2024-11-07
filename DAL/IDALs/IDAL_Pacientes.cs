@@ -10,7 +10,7 @@ namespace DAL.IDALs
         Paciente Add(Paciente x);
         Paciente Update(Paciente x);
         public void Delete(long Id);
-        Pacientes GetPacienteByDocumento(string documento);
+        Paciente GetPacienteByDocumento(string documento);
 
     }
 }

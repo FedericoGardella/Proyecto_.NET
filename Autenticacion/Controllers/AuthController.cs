@@ -1,10 +1,13 @@
 ﻿using Autenticacion.Models;
+using BL.BLs;
 using BL.IBLs;
 using DAL;
 using DAL.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Shared.DTOs;
 using Shared.Entities;
@@ -21,14 +24,21 @@ namespace Autenticacion.Controllers
         private readonly UserManager<Users> userManager;
         private readonly RoleManager<IdentityRole> roleManager;
         private readonly ILogger<AuthController> customLogger;
-        private readonly IBL_Personas blPersonas;
+        private readonly IBL_Pacientes blPacientes;
         private readonly DBContext db;
 
-        public AuthController(UserManager<Users> userManager, RoleManager<IdentityRole> roleManager, ILogger<AuthController> customLogger)
+        public AuthController(
+                UserManager<Users> _userManager,
+                RoleManager<IdentityRole> _roleManager,
+                IBL_Pacientes _blPacientes,
+                ILogger<AuthController> _customLogger,
+                DBContext _db)
         {
-            this.userManager = userManager;
-            this.roleManager = roleManager;
-            this.customLogger = customLogger;
+            userManager = _userManager;
+            roleManager = _roleManager;
+            blPacientes = _blPacientes;
+            customLogger = _customLogger;
+            db = _db;
         }
 
         [HttpPost]
@@ -63,7 +73,7 @@ namespace Autenticacion.Controllers
                     var token = GetToken(authClaims);
 
                     // 5. Preparar la respuesta exitosa con información del usuario
-                    Persona persona = blPersonas.Get(user.PersonasId);
+                    Persona persona = blPacientes.Get(user.PersonasId);
                     await userManager.ResetAccessFailedCountAsync(user);
 
                     return Ok(new LoginResponse
@@ -103,12 +113,10 @@ namespace Autenticacion.Controllers
             }
         }
 
-
         [HttpPost]
-        [Route("Register")]
+        [Route("RegisterPaciente")]
         [ProducesResponseType(typeof(StatusDTO), 200)]
-        [Authorize(Roles = "SUPERADMIN, ADMIN")]
-        public async Task<IActionResult> Register([FromBody] RegisterModel model)
+        public async Task<IActionResult> RegisterPaciente([FromBody] RegisterModel model)
         {
             try
             {
@@ -116,50 +124,68 @@ namespace Autenticacion.Controllers
                 if (userExists != null)
                     return StatusCode(StatusCodes.Status400BadRequest, new StatusDTO(false, "El usuario ya existe!"));
 
-                Persona persona = blPersonas.GetXDocumento(model.Documento) ??
-                                  new Persona
-                                  {
-                                      Documento = model.Documento,
-                                      Nombres = model.Nombres,
-                                      Apellidos = model.Apellidos
-                                  };
-                persona = blPersonas.Add(persona);
+                // Busca o crea un nuevo Paciente sin agregarlo aún al contexto
+                Paciente paciente = blPacientes.GetPacienteByDocumento(model.Documento) ?? new Paciente
+                {
+                    Documento = model.Documento,
+                    Nombres = model.Nombres,
+                    Apellidos = model.Apellidos,
+                    Telefono = model.Telefono
+                };
+
+                // Solo añade el paciente si es nuevo
+                if (paciente.Id == 0)
+                {
+                    paciente = blPacientes.Add(paciente);
+                }
+
+                // Obtén el Id de la persona y desasocia la entidad para evitar problemas de seguimiento
+                var personaId = paciente.Id;
+
                 Users user = new Users
                 {
                     Email = model.Email,
                     SecurityStamp = Guid.NewGuid().ToString(),
                     UserName = model.Email,
                     Activo = model.Activo,
-
+                    PersonasId = personaId // Asigna solo el Id, no la entidad completa
                 };
-                user.Personas = db.Personas.Find(persona.Id);
-                var result = await userManager.CreateAsync(user);
+
+                var result = await userManager.CreateAsync(user, model.Password);
                 if (!result.Succeeded)
                 {
-                    string errors = "";
-                    result.Errors.ToList().ForEach(x => errors += x.Description + ". ");
-                    return StatusCode(StatusCodes.Status500InternalServerError, new Models.StatusResponse { StatusOk = false, StatusMessage = "Error al crear usuario! Revisar los datos ingresados y probar nuevamente. Errores: " + errors });
+                    string errors = string.Join(". ", result.Errors.Select(e => e.Description));
+                    return StatusCode(StatusCodes.Status500InternalServerError,
+                        new Models.StatusResponse
+                        {
+                            StatusOk = false,
+                            StatusMessage = "Error al crear usuario! Revisar los datos ingresados y probar nuevamente. Errores: " + errors
+                        });
                 }
 
-                // Asignar Rol User
                 await userManager.AddToRoleAsync(user, "USER");
 
-                // Envío notificación de activación.
                 var token = await userManager.GeneratePasswordResetTokenAsync(user);
                 var param = new Dictionary<string, string?>
                 {
-                        {"token", token },
-                        {"email", user.Email }
+                    { "token", token },
+                    { "email", user.Email }
                 };
 
-                return Ok(new Models.StatusResponse { StatusOk = true, StatusMessage = "Usuario creado correctamente! Se le ha enviado un email para establecer la contraseña" });
+                return Ok(new Models.StatusResponse
+                {
+                    StatusOk = true,
+                    StatusMessage = "Usuario creado correctamente!"
+                });
             }
             catch (Exception ex)
             {
                 customLogger.LogError(new Exception("Error al registrar usuario", ex), ex.Message);
-                return BadRequest(new StatusDTO(false, "Error al registrar usuario"));
+                return BadRequest(new StatusDTO(false, $"Error al registrar usuario: {ex.Message}"));
             }
         }
+
+
 
         private JwtSecurityToken GetToken(List<Claim> authClaims)
         {

@@ -6,6 +6,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using BL.IBLs;
+using BL.BLs;
+using DAL.IDALs;
+using DAL.DALs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,6 +34,9 @@ builder.Services.AddIdentity<Users, IdentityRole>(options =>
 })
 .AddEntityFrameworkStores<DBContext>()
 .AddDefaultTokenProviders();
+
+builder.Services.AddScoped<IBL_Pacientes, BL_Pacientes>();
+builder.Services.AddScoped<IDAL_Pacientes, DAL_Pacientes_EF>();
 
 // Authentication
 string? JWT_SECRET = Environment.GetEnvironmentVariable("JWT_SECRET");
@@ -98,10 +105,11 @@ builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>
 
 var app = builder.Build();
 
-// Prueba de conexión a la base de datos
 using (var scope = app.Services.CreateScope())
 {
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
     var dbContext = scope.ServiceProvider.GetRequiredService<DBContext>();
+
     try
     {
         // Verifica si se puede conectar a la base de datos
@@ -117,6 +125,16 @@ using (var scope = app.Services.CreateScope())
     catch (Exception ex)
     {
         Console.WriteLine($"Error al conectar con la base de datos: {ex.Message}");
+    }
+
+    // Crea los roles necesarios si no existen
+    string[] roles = { "USER", "ADMIN", "SUPERADMIN" };
+    foreach (var role in roles)
+    {
+        if (!await roleManager.RoleExistsAsync(role))
+        {
+            await roleManager.CreateAsync(new IdentityRole(role));
+        }
     }
 }
 

@@ -7,7 +7,6 @@ namespace DAL.Models
 {
     public class Users : IdentityUser
     {
-
         public bool Activo { get; set; }
 
         [ForeignKey("Personas")]
@@ -16,19 +15,31 @@ namespace DAL.Models
         [Required]
         public Personas Personas { get; set; }
 
+        [NotMapped]
+        public string Username
+        {
+            get => UserName;  
+            set => UserName = value; 
+        }
+
+        [NotMapped]
+        public List<string> Roles { get; set; } = new List<string>();
+
         public User GetEntity(UserManager<Users> userManager, RoleManager<IdentityRole> roleManager, bool addRoles)
         {
-            User usuario = new User
+            var usuario = new User
             {
                 Id = Id,
-                Persona = Personas.GetEntity(),
-                Username = UserName ?? "",
+                Persona = Personas.GetEntity(),  
+                Username = UserName ?? "",  
                 Email = Email ?? "",
                 Activo = Activo
             };
 
             if (addRoles)
+            {
                 usuario.Roles = userManager?.GetRolesAsync(this).Result.ToList() ?? new List<string>();
+            }
 
             return usuario;
         }

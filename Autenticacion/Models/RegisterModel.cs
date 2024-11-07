@@ -4,8 +4,6 @@ namespace Autenticacion.Models
 {
     public class RegisterModel
     {
-        [Required(ErrorMessage = "El Id es requerido"), MinLength(1), MaxLength(128)]
-        public required string Id { get; set; }
 
         [Required(ErrorMessage = "El documento es requerido"), MinLength(3), MaxLength(128)]
         public string Documento { get; set; } = string.Empty;
@@ -19,6 +17,10 @@ namespace Autenticacion.Models
         [EmailAddress]
         [Required(ErrorMessage = "El email es requerido"), MinLength(4), MaxLength(128)]
         public string Email { get; set; } = string.Empty;
+
+        public string Password { get; set; } = string.Empty;
+
+        public string Telefono { get; set; } = string.Empty;
 
         public bool Activo { get; set; }
     }

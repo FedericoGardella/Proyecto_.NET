@@ -26,7 +26,7 @@ namespace DAL.DALs
             throw new NotImplementedException();
         }
 
-        public Pacientes GetPacienteByDocumento(string documento)
+        public Paciente GetPacienteByDocumento(string documento)
         {
             throw new NotImplementedException();
         }

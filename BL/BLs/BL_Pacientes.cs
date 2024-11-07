@@ -1,48 +1,46 @@
 ﻿using BL.IBLs;
 using DAL.IDALs;
-using DAL.Models;
 using Shared.Entities;
 
 namespace BL.BLs
 {
     public class BL_Pacientes : IBL_Pacientes
     {
-        private IDAL_Pacientes dal;
+        private readonly IDAL_Pacientes _dal;
 
-        private readonly IDAL_Pacientes _pacientes;
-
-        public BL_Pacientes(IDAL_Pacientes pacientes)
+        public BL_Pacientes(IDAL_Pacientes dal)
         {
-            _pacientes = pacientes;
+            _dal = dal ?? throw new ArgumentNullException(nameof(dal));
         }
+
         public Paciente Get(long Id)
         {
-            return dal.Get(Id);
+            return _dal.Get(Id);
         }
 
         public List<Paciente> GetAll()
         {
-            return dal.GetAll();
+            return _dal.GetAll();
         }
 
         public Paciente Add(Paciente x)
         {
-            return dal.Add(x);
+            return _dal.Add(x);
         }
 
         public Paciente Update(Paciente x)
         {
-            return dal.Update(x);
+            return _dal.Update(x);
         }
 
         public void Delete(long Id)
         {
-            dal.Delete(Id);
+            _dal.Delete(Id);
         }
 
-        public Pacientes GetPacienteByDocumento(string documento)
+        public Paciente GetPacienteByDocumento(string documento)
         {
-            return _pacientes.GetPacienteByDocumento(documento);
+            return _dal.GetPacienteByDocumento(documento);
         }
     }
 }

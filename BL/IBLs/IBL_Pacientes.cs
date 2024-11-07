@@ -10,6 +10,6 @@ namespace BL.IBLs
         Paciente Add(Paciente x);
         Paciente Update(Paciente x);
         void Delete(long Id);
-        Pacientes GetPacienteByDocumento(string documento);
+        Paciente GetPacienteByDocumento(string documento);
     }
 }

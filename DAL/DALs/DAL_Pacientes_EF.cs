@@ -1,5 +1,6 @@
 ﻿using DAL.IDALs;
 using DAL.Models;
+using Microsoft.EntityFrameworkCore;
 using Shared.Entities;
 
 namespace DAL.DALs
@@ -26,10 +27,26 @@ namespace DAL.DALs
 
         public Paciente Add(Paciente x)
         {
-            Pacientes toSave = new Pacientes();
-            toSave = Pacientes.FromEntity(x, toSave);
-            db.Pacientes.Add(toSave);
+            // Convertimos `Paciente` a `Pacientes` para almacenarlo en la base de datos.
+            Pacientes toSave = Pacientes.FromEntity(x, new Pacientes());
+
+            // Verificamos si el `dbContext` ya está rastreando esta entidad.
+            var trackedEntity = db.Pacientes.Local.FirstOrDefault(p => p.Id == toSave.Id);
+
+            if (trackedEntity != null)
+            {
+                // Si ya existe una instancia en el contexto, actualizamos los valores
+                db.Entry(trackedEntity).CurrentValues.SetValues(toSave);
+            }
+            else
+            {
+                // Si es una entidad nueva, la añadimos al contexto
+                db.Pacientes.Add(toSave);
+            }
+
             db.SaveChanges();
+
+            // Retornamos la entidad recién agregada, utilizando el método `Get` para obtener su versión más actualizada.
             return Get(toSave.Id);
         }
 
@@ -51,9 +68,10 @@ namespace DAL.DALs
             db.SaveChanges();
         }
 
-        public Pacientes GetPacienteByDocumento(string documento)
+        public Paciente GetPacienteByDocumento(string documento)
         {
-            return db.Pacientes.FirstOrDefault(p => p.Documento == documento);
+            var paciente = db.Pacientes.AsNoTracking().FirstOrDefault(p => p.Documento == documento);
+            return paciente?.GetEntity();
         }
 
 
