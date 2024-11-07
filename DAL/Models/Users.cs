@@ -11,7 +11,7 @@ namespace DAL.Models
         public bool Activo { get; set; }
 
         [ForeignKey("Personas")]
-        public long PersonaId { get; set; }
+        public long PersonasId { get; set; }
 
         [Required]
         public Personas Personas { get; set; }

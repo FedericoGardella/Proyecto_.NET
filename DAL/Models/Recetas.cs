@@ -1,4 +1,5 @@
 ﻿using Shared.Entities;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DAL.Models
 {
@@ -9,6 +10,9 @@ namespace DAL.Models
         public HistoriasClinicas historiaClinica { get; set; }
         public DateTime Fecha { get; set; }
         public string Tipo { get; set; } // Tipo de receta, por ejemplo, "Receta controlada"
+
+        [ForeignKey("HistoriasClinicas")]
+        public long HistoriasClinicasId { get; set; }
 
         public List<Medicamentos> Medicamentos { get; set; }
 

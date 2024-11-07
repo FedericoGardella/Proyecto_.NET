@@ -1,4 +1,5 @@
 ﻿using Shared.Entities;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DAL.Models
 {
@@ -7,9 +8,22 @@ namespace DAL.Models
         public Citas() { }
         public long Id { get; set; }
         public TimeSpan Hora { get; set; }
-        public Pacientes paciente { get; set; }
-        public GruposCitas grupoCita { get; set; }
-        public PreciosEspecialidades precioEspecialidad { get; set; }
+
+        [ForeignKey("Pacientes")]
+        public long PacienteId { get; set; }
+        public Pacientes Pacientes { get; set; }
+
+        [ForeignKey("GruposCitas")]
+        public long GruposCitasId { get; set; }
+        public GruposCitas GruposCitas { get; set; }
+
+        [ForeignKey("Facturas")]
+        public long FacturasId { get; set; }
+        public Facturas Facturas { get; set; }
+
+        [ForeignKey("PreciosEspecialidades")]
+        public long PreciosEspecialidadesId { get; set; }
+        public PreciosEspecialidades PreciosEspecialidades { get; set; }
 
         public Cita GetEntity()
         {

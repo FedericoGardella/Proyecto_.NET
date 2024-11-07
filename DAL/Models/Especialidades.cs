@@ -18,7 +18,8 @@ namespace DAL.Models
 
         public TimeSpan tiempoCita { get; set; }
 
-        public List<Medicos> Medicos { get; set; } // Podria ser necesario ver todos los medicos con una especialidad especifica, sino se saca
+
+        public List<Medicos> Medicos { get; set; }
 
         public Especialidad GetEntity()
         {

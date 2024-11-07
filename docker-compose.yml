@@ -24,6 +24,9 @@ services:
       - "8082:8080"  # Puerto host único
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - JWT_SECRET=mySuperSecretKey12345!
+      - JWT_ISSUER=http://localhost:8082
+      - JWT_AUDIENCE=http://localhost:8082
     depends_on:
       - sqlserver
     networks:

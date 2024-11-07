@@ -63,7 +63,7 @@ namespace Autenticacion.Controllers
                     var token = GetToken(authClaims);
 
                     // 5. Preparar la respuesta exitosa con información del usuario
-                    Persona persona = blPersonas.Get(user.PersonaId);
+                    Persona persona = blPersonas.Get(user.PersonasId);
                     await userManager.ResetAccessFailedCountAsync(user);
 
                     return Ok(new LoginResponse
