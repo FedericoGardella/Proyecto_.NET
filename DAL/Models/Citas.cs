@@ -16,7 +16,6 @@ namespace DAL.Models
         [ForeignKey("GruposCitas")]
         public long GruposCitasId { get; set; }
         public GruposCitas GruposCitas { get; set; }
-        public PreciosEspecialidades precioEspecialidad { get; set; }
 
         [ForeignKey("Facturas")]
         public long FacturasId { get; set; }

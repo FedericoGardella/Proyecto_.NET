@@ -16,7 +16,7 @@ namespace DAL
             if (!optionsBuilder.IsConfigured)
             {
                 // Configura la cadena de conexión y resiliencia en caso de que no esté configurada
-                optionsBuilder.UseSqlServer("Server=sqlserver,1433;Database=master;User Id=sa;Password=P45w0rd.N3T;TrustServerCertificate=True",
+                optionsBuilder.UseSqlServer("Server=localhost,1433;Database=master;User Id=sa;Password=P45w0rd.N3T;TrustServerCertificate=True",
                     sqlOptions => sqlOptions.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null));
             }
         }
@@ -28,6 +28,62 @@ namespace DAL
             modelBuilder.Entity<Articulo>()
                 .Property(a => a.Costo)
                 .HasPrecision(10, 2);
+
+            // Configura la relación entre Articulos y TiposSeguros sin cascada
+            modelBuilder.Entity<Articulos>()
+                .HasOne(a => a.TiposSeguros)
+                .WithMany(t => t.Articulos)
+                .HasForeignKey(a => a.TiposSegurosId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            // Configura la relación entre Articulos y PreciosEspecialidades sin cascada
+            modelBuilder.Entity<Articulos>()
+                .HasOne(a => a.PreciosEspecialidades)
+                .WithMany() // Sin navegabilidad inversa en PreciosEspecialidades
+                .HasForeignKey("PreciosEspecialidadesId") // Define la clave foránea directamente
+                .OnDelete(DeleteBehavior.NoAction);
+
+            // Configura la relación entre PreciosEspecialidades y TiposSeguros sin cascada
+            modelBuilder.Entity<PreciosEspecialidades>()
+                .HasOne(p => p.TiposSeguros)
+                .WithMany()
+                .HasForeignKey(p => p.TiposSegurosId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            // Configura la relación entre PreciosEspecialidades y Especialidades sin cascada
+            modelBuilder.Entity<PreciosEspecialidades>()
+                .HasOne(p => p.Especialidades)
+                .WithMany()
+                .HasForeignKey(p => p.EspecialidadesId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            // Configura la relación entre Citas y Pacientes
+            modelBuilder.Entity<Citas>()
+                .HasOne(c => c.Pacientes)
+                .WithMany() // No navegabilidad inversa si no es necesaria
+                .HasForeignKey(c => c.PacienteId)
+                .OnDelete(DeleteBehavior.NoAction); // Evita cascada
+
+            // Configura la relación entre Citas y GruposCitas
+            modelBuilder.Entity<Citas>()
+                .HasOne(c => c.GruposCitas)
+                .WithMany(g => g.Citas)
+                .HasForeignKey(c => c.GruposCitasId)
+                .OnDelete(DeleteBehavior.NoAction); // Evita cascada para prevenir múltiples caminos
+
+            // Configura la relación entre Citas y Facturas
+            modelBuilder.Entity<Citas>()
+                .HasOne(c => c.Facturas)
+                .WithMany(f => f.Citas)
+                .HasForeignKey(c => c.FacturasId)
+                .OnDelete(DeleteBehavior.NoAction); // Evita cascada para prevenir múltiples caminos
+
+            // Configura la relación entre Citas y PreciosEspecialidades
+            modelBuilder.Entity<Citas>()
+                .HasOne(c => c.PreciosEspecialidades)
+                .WithMany() // Sin navegabilidad inversa
+                .HasForeignKey(c => c.PreciosEspecialidadesId)
+                .OnDelete(DeleteBehavior.NoAction); // Evita cascada para evitar conflictos
 
         }
 

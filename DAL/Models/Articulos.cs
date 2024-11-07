@@ -14,8 +14,6 @@ namespace DAL.Models
         public long TiposSegurosId { get; set; }
         public TiposSeguros TiposSeguros { get; set; }
 
-        [ForeignKey("PreciosEspecialidades")]
-        public long PreciosEspecialidadesId { get; set; }
         public PreciosEspecialidades PreciosEspecialidades { get; set; }
 
         [Column(TypeName = "decimal(10,2)")]
