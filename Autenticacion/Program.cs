@@ -38,7 +38,18 @@ builder.Services.AddIdentity<Users, IdentityRole>(options =>
 builder.Services.AddScoped<IBL_Pacientes, BL_Pacientes>();
 builder.Services.AddScoped<IDAL_Pacientes, DAL_Pacientes_EF>();
 
-// Authentication
+// Configuración de CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", builder =>
+    {
+        builder.AllowAnyOrigin()
+               .AllowAnyMethod()
+               .AllowAnyHeader();
+    });
+});
+
+// Configuración de autenticación JWT
 string? JWT_SECRET = Environment.GetEnvironmentVariable("JWT_SECRET");
 string? JWT_ISSUER = Environment.GetEnvironmentVariable("JWT_ISSUER");
 string? JWT_AUDIENCE = Environment.GetEnvironmentVariable("JWT_AUDIENCE");
@@ -73,7 +84,6 @@ builder.Services.AddControllers();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
-    // Configuración opcional para añadir JWT a Swagger
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         In = ParameterLocation.Header,
@@ -147,6 +157,9 @@ if (app.Environment.IsDevelopment())
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
     });
 }
+
+// Configuración del middleware de CORS
+app.UseCors("AllowAll");
 
 app.UseAuthentication();
 app.UseAuthorization();
