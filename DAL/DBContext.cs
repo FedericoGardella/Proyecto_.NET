@@ -1,6 +1,8 @@
 ﻿using DAL.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
 using Shared.Entities;
 
@@ -114,5 +116,7 @@ namespace DAL
                 context.Database.Migrate();
             }
         }
+
     }
 }
+

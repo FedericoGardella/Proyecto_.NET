@@ -14,6 +14,14 @@ services:
       - sqlserver
     networks:
       - backend
+    command: >
+      /bin/bash -c "
+      while ! nc -z sqlserver 1433; do
+        echo 'Esperando SQL Server...';
+        sleep 3;
+      done;
+      dotnet ef database update -p DAL -s Administrativo &&
+      dotnet Administrativo.dll"
 
   autenticacion-service:
     build:
@@ -104,6 +112,16 @@ services:
       - gestion-usuarios-service
     networks:
       - backend
+
+  frontend:
+    build:
+      context: ../Front.Net
+      dockerfile: Dockerfile
+    image: frontend:latest
+    networks:
+      - backend
+    ports:
+      - "3000:3000"
 
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2019-latest
