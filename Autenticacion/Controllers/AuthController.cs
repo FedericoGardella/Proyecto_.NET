@@ -46,35 +46,114 @@ namespace Autenticacion.Controllers
         [ProducesResponseType(typeof(LoginResponse), 200)]
         public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
+            customLogger.LogInformation("Iniciando proceso de autenticación para el usuario.");
+
             try
             {
-                // 1. Buscar el usuario por nombre de usuario
-                Users user = await userManager.FindByNameAsync(model.Username);
-
-                // 2. Verificar si el usuario cumple con los requisitos de autenticación
-                if (user != null && user.Activo && !await userManager.IsLockedOutAsync(user) &&
-                    await userManager.CheckPasswordAsync(user, model.Password))
+                Users user = null;
+                try
                 {
-                    // 3. Obtener los roles del usuario y crear los claims para el token
-                    var userRoles = await userManager.GetRolesAsync(user);
-                    var authClaims = new List<Claim>
+                    user = await userManager.FindByNameAsync(model.Username);
+                    customLogger.LogInformation($"Usuario encontrado: {user?.UserName ?? "No encontrado"}");
+                }
+                catch (Exception ex)
+                {
+                    customLogger.LogError(new Exception("Error al buscar usuario", ex), ex.Message);
+                    return StatusCode(StatusCodes.Status400BadRequest, "Error al buscar usuario");
+                }
+
+                bool isUserActive = false;
+                try
+                {
+                    isUserActive = user != null && user.Activo;
+                    customLogger.LogInformation($"Usuario activo: {isUserActive}");
+                }
+                catch (Exception ex)
+                {
+                    customLogger.LogError(new Exception("Error al verificar si el usuario está activo", ex), ex.Message);
+                    return StatusCode(StatusCodes.Status400BadRequest, "Error al verificar si el usuario está activo");
+                }
+
+                bool isUserLockedOut = false;
+                if (isUserActive)
+                {
+                    try
                     {
-                        new Claim(ClaimTypes.Name, user.UserName),
-                        new Claim(ClaimTypes.NameIdentifier, user.Id),
-                        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                    };
+                        isUserLockedOut = !await userManager.IsLockedOutAsync(user);
+                        customLogger.LogInformation($"Usuario bloqueado: {!isUserLockedOut}");
+                    }
+                    catch (Exception ex)
+                    {
+                        customLogger.LogError(new Exception("Error al verificar si el usuario está bloqueado", ex), ex.Message);
+                        return StatusCode(StatusCodes.Status400BadRequest, "Error al verificar si el usuario está bloqueado");
+                    }
+                }
+
+                bool isPasswordCorrect = false;
+                if (isUserLockedOut)
+                {
+                    try
+                    {
+                        isPasswordCorrect = await userManager.CheckPasswordAsync(user, model.Password);
+                        customLogger.LogInformation($"Contraseña correcta: {isPasswordCorrect}");
+                    }
+                    catch (Exception ex)
+                    {
+                        customLogger.LogError(new Exception("Error al verificar la contraseña del usuario", ex), ex.Message);
+                        return StatusCode(StatusCodes.Status400BadRequest, "Error al verificar la contraseña del usuario");
+                    }
+                }
+
+                if (isUserActive && isUserLockedOut && isPasswordCorrect)
+                {
+                    List<string> userRoles = new List<string>();
+                    try
+                    {
+                        userRoles = (await userManager.GetRolesAsync(user)).ToList();
+                        customLogger.LogInformation("Roles obtenidos correctamente.");
+                    }
+                    catch (Exception ex)
+                    {
+                        customLogger.LogError(new Exception("Error al obtener roles del usuario", ex), ex.Message);
+                        return StatusCode(StatusCodes.Status400BadRequest, "Error al obtener roles del usuario");
+                    }
+
+                    var authClaims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            };
 
                     foreach (var role in userRoles)
                     {
                         authClaims.Add(new Claim(ClaimTypes.Role, role));
                     }
 
-                    // 4. Generar el token JWT
-                    var token = GetToken(authClaims);
+                    SecurityToken token = null;
+                    try
+                    {
+                        token = GetToken(authClaims);
+                        customLogger.LogInformation("Token generado correctamente.");
+                    }
+                    catch (Exception ex)
+                    {
+                        customLogger.LogError(new Exception("Error al generar el token JWT", ex), ex.Message);
+                        return StatusCode(StatusCodes.Status400BadRequest, "Error al generar el token JWT");
+                    }
 
-                    // 5. Preparar la respuesta exitosa con información del usuario
-                    Persona persona = blPacientes.Get(user.PersonasId);
-                    await userManager.ResetAccessFailedCountAsync(user);
+                    Persona persona = null;
+                    try
+                    {
+                        persona = blPacientes.Get(user.PersonasId);
+                        await userManager.ResetAccessFailedCountAsync(user);
+                        customLogger.LogInformation("Información de la persona obtenida correctamente.");
+                    }
+                    catch (Exception ex)
+                    {
+                        customLogger.LogError(new Exception("Error al obtener información del usuario", ex), ex.Message);
+                        return StatusCode(StatusCodes.Status400BadRequest, "Error al obtener información del usuario");
+                    }
 
                     return Ok(new LoginResponse
                     {
@@ -87,31 +166,37 @@ namespace Autenticacion.Controllers
                         ExpirationMinutes = Convert.ToInt32((token.ValidTo - DateTime.UtcNow).TotalMinutes),
                         Nombre = $"{persona.Apellidos}, {persona.Nombres}",
                         Documento = persona.Documento,
-                        Roles = userRoles.ToList()
+                        Roles = userRoles
                     });
                 }
 
-                // 6. Manejo de errores de autenticación
                 string errorMessage = user == null ? "Usuario o contraseña incorrecta" :
                                       !user.Activo ? $"El usuario {user.Email} no está habilitado." :
                                       await userManager.IsLockedOutAsync(user) ? "Cuenta bloqueada." :
                                       "Usuario o contraseña incorrecta";
 
-                // Incrementar contador de fallos si el usuario existe
                 if (user != null)
                 {
-                    await userManager.AccessFailedAsync(user);
+                    try
+                    {
+                        await userManager.AccessFailedAsync(user);
+                    }
+                    catch (Exception ex)
+                    {
+                        customLogger.LogError(new Exception("Error al incrementar el contador de fallos", ex), ex.Message);
+                    }
                 }
 
+                customLogger.LogInformation("Autenticación fallida.");
                 return Unauthorized(new LoginResponse { StatusOk = false, StatusMessage = errorMessage });
             }
             catch (Exception ex)
             {
-                // 7. Registrar y retornar el error en caso de excepción
                 customLogger.LogError(new Exception("Error en Login", ex), ex.Message);
-                return StatusCode(StatusCodes.Status400BadRequest, "Error en Login");
+                return StatusCode(StatusCodes.Status400BadRequest, $"Error en Login: {ex.Message}");
             }
         }
+
 
         [HttpPost]
         [Route("RegisterPaciente")]
