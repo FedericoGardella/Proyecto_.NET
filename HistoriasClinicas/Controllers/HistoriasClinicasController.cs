@@ -8,6 +8,8 @@ using StatusResponse = HistoriasClinicas.Models.StatusResponse;
 
 namespace HistoriasClinicas.Controllers
 {
+    [ApiController] // Asegúrate de incluir este atributo
+    [Route("api/[controller]")] // Define la ruta base para el controlador
     public class HistoriasClinicasController : ControllerBase
     {
         private readonly IBL_HistoriasClinicas bl;
@@ -19,7 +21,7 @@ namespace HistoriasClinicas.Controllers
             logger = _logger;
         }
 
-        // GET: api/<HistoriasClinicasController>
+        // GET: api/HistoriasClinicas
         [Authorize(Roles = "ADMIN, X")]
         [ProducesResponseType(typeof(List<HistoriaClinica>), 200)]
         [HttpGet]
@@ -36,9 +38,7 @@ namespace HistoriasClinicas.Controllers
             }
         }
 
-
-
-        // GET api/<HistoriasClinicasController>/5
+        // GET api/HistoriasClinicas/5
         [Authorize(Roles = "ADMIN, X")]
         [ProducesResponseType(typeof(HistoriaClinica), 200)]
         [HttpGet("{Id}")]
@@ -54,25 +54,32 @@ namespace HistoriasClinicas.Controllers
                 return StatusCode(StatusCodes.Status400BadRequest, new StatusDTO(false, "Error al obtener historia clinica"));
             }
         }
-
-        // POST api/<HistoriasClinicasController>
+        // POST api/HistoriasClinicas
         [Authorize(Roles = "ADMIN")]
         [ProducesResponseType(typeof(HistoriaClinica), 200)]
         [HttpPost]
-        public IActionResult Post([FromBody] HistoriaClinica x)
+        public IActionResult Post([FromBody] HistoriaClinicaDTO historiaClinicaDTO)
         {
             try
             {
-                return Ok(bl.Add(x));
+                // Mapea el DTO a la entidad HistoriasClinicas
+                var historiaClinicaEntity = new HistoriaClinica
+                {
+                    FechaCreacion = historiaClinicaDTO.FechaCreacion,
+                    PacienteId = historiaClinicaDTO.PacienteId
+                };
+
+                var historiaClinica = bl.Add(historiaClinicaEntity);
+                return Ok(historiaClinica);
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error al guardar historia clinica");
-                return StatusCode(StatusCodes.Status400BadRequest, new StatusDTO(false, "Error al guardar historia clinica"));
+                logger.LogError(ex, "Error al guardar historia clínica");
+                return StatusCode(StatusCodes.Status400BadRequest, new StatusDTO(false, "Error al guardar historia clínica"));
             }
         }
 
-        // PUT api/<HistoriasClinicasController>/5
+        // PUT api/HistoriasClinicas/5
         [Authorize(Roles = "ADMIN")]
         [ProducesResponseType(typeof(HistoriaClinica), 200)]
         [HttpPut("{Id}")]
@@ -89,7 +96,7 @@ namespace HistoriasClinicas.Controllers
             }
         }
 
-        // DELETE api/<HistoriasClinicasController>/5
+        // DELETE api/HistoriasClinicas/5
         [Authorize(Roles = "ADMIN")]
         [ProducesResponseType(typeof(StatusResponse), 200)]
         [HttpDelete("{Id}")]

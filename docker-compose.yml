@@ -51,7 +51,7 @@ services:
       dockerfile: ./HistoriasClinicas/Dockerfile
     image: historiasclinicas:latest
     ports:
-      - "8084:80"
+      - "8084:8080"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
     depends_on:
