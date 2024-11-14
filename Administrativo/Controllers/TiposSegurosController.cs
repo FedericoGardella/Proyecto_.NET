@@ -3,10 +3,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shared.DTOs;
 using Shared.Entities;
-using StatusResponse = Administrativo.Models.StatusResponse;
+using System.Collections.Generic;
 
 namespace Administrativo.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class TiposSegurosController : ControllerBase
     {
         private readonly IBL_TiposSeguros bl;
@@ -18,10 +20,10 @@ namespace Administrativo.Controllers
             logger = _logger;
         }
 
-        // GET: api/<TiposSegurosController>
-        [Authorize(Roles = "ADMIN, X")]
-        [ProducesResponseType(typeof(List<TipoSeguro>), 200)]
+        // GET: api/TiposSeguros
         [HttpGet]
+        //[Authorize(Roles = "ADMIN, USER")]
+        [ProducesResponseType(typeof(List<TipoSeguro>), 200)]
         public IActionResult Get()
         {
             try
@@ -30,78 +32,92 @@ namespace Administrativo.Controllers
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error al obtener tiposSeguro");
-                return StatusCode(StatusCodes.Status400BadRequest, new StatusDTO(false, "Error al obtener tiposSeguro"));
+                logger.LogError(ex, "Error al obtener tipos de seguro");
+                return StatusCode(StatusCodes.Status500InternalServerError, new StatusDTO(false, "Error al obtener tipos de seguro"));
             }
         }
 
-
-        // GET api/<TiposSegurosController>/5
-        [Authorize(Roles = "ADMIN, X")]
+        // GET: api/TiposSeguros/5
+        [HttpGet("{id}")]
+        //[Authorize(Roles = "ADMIN, USER")]
         [ProducesResponseType(typeof(TipoSeguro), 200)]
-        [HttpGet("{Id}")]
-        public IActionResult Get(long Id)
+        public IActionResult Get(long id)
         {
             try
             {
-                return Ok(bl.Get(Id));
+                var tipoSeguro = bl.Get(id);
+                if (tipoSeguro == null)
+                    return NotFound(new StatusDTO(false, "Tipo de seguro no encontrado"));
+
+                return Ok(tipoSeguro);
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error al obtener tipoSeguro");
-                return StatusCode(StatusCodes.Status400BadRequest, new StatusDTO(false, "Error al obtener tipoSeguro"));
+                logger.LogError(ex, "Error al obtener el tipo de seguro");
+                return StatusCode(StatusCodes.Status500InternalServerError, new StatusDTO(false, "Error al obtener el tipo de seguro"));
             }
         }
 
-        // POST api/<TiposSegurosController>
-        [Authorize(Roles = "ADMIN")]
-        [ProducesResponseType(typeof(TipoSeguro), 200)]
+        // POST: api/TiposSeguros
         [HttpPost]
-        public IActionResult Post([FromBody] TipoSeguro x)
+        //[Authorize(Roles = "ADMIN")]
+        [ProducesResponseType(typeof(TipoSeguro), 201)]
+        public IActionResult Post([FromBody] TipoSeguro tipoSeguro)
         {
             try
             {
-                return Ok(bl.Add(x));
+                var createdTipoSeguro = bl.Add(tipoSeguro);
+                return CreatedAtAction(nameof(Get), new { id = createdTipoSeguro.Id }, createdTipoSeguro);
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error al guardar tipoSeguro");
-                return StatusCode(StatusCodes.Status400BadRequest, new StatusDTO(false, "Error al guardar tipoSeguro"));
+                logger.LogError(ex, "Error al crear el tipo de seguro");
+                return StatusCode(StatusCodes.Status500InternalServerError, new StatusDTO(false, "Error al crear el tipo de seguro"));
             }
         }
 
-        // PUT api/<TiposSegurosController>/5
-        [Authorize(Roles = "ADMIN")]
+        // PUT: api/TiposSeguros/5
+        [HttpPut("{id}")]
+        //[Authorize(Roles = "ADMIN")]
         [ProducesResponseType(typeof(TipoSeguro), 200)]
-        [HttpPut("{Id}")]
-        public IActionResult Put(long Id, [FromBody] TipoSeguro x)
+        public IActionResult Put(long id, [FromBody] TipoSeguro tipoSeguro)
         {
             try
             {
-                return Ok(bl.Update(x));
+                var existingTipoSeguro = bl.Get(id);
+                if (existingTipoSeguro == null)
+                    return NotFound(new StatusDTO(false, "Tipo de seguro no encontrado"));
+
+                tipoSeguro.Id = id; // Aseguramos que el ID sea el mismo que el que queremos actualizar
+                var updatedTipoSeguro = bl.Update(tipoSeguro);
+                return Ok(updatedTipoSeguro);
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error al actualizar tipoSeguro");
-                return StatusCode(StatusCodes.Status400BadRequest, new StatusDTO(false, "Error al actualizar tipoSeguro"));
+                logger.LogError(ex, "Error al actualizar el tipo de seguro");
+                return StatusCode(StatusCodes.Status500InternalServerError, new StatusDTO(false, "Error al actualizar el tipo de seguro"));
             }
         }
 
-        // DELETE api/<TiposSegurosController>/5
-        [Authorize(Roles = "ADMIN")]
-        [ProducesResponseType(typeof(StatusResponse), 200)]
-        [HttpDelete("{Id}")]
-        public IActionResult Delete(long Id)
+        // DELETE: api/TiposSeguros/5
+        [HttpDelete("{id}")]
+        //[Authorize(Roles = "ADMIN")]
+        [ProducesResponseType(typeof(StatusDTO), 200)]
+        public IActionResult Delete(long id)
         {
             try
             {
-                bl.Delete(Id);
-                return Ok(new StatusResponse() { StatusOk = true, StatusMessage = "" });
+                var existingTipoSeguro = bl.Get(id);
+                if (existingTipoSeguro == null)
+                    return NotFound(new StatusDTO(false, "Tipo de seguro no encontrado"));
+
+                bl.Delete(id);
+                return Ok(new StatusDTO(true, "Tipo de seguro eliminado correctamente"));
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error al eliminar tipoSeguro");
-                return StatusCode(StatusCodes.Status400BadRequest, new StatusDTO(false, "Error al eliminar tipoSeguro"));
+                logger.LogError(ex, "Error al eliminar el tipo de seguro");
+                return StatusCode(StatusCodes.Status500InternalServerError, new StatusDTO(false, "Error al eliminar el tipo de seguro"));
             }
         }
     }
