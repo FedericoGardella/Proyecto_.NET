@@ -7,7 +7,7 @@ FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 USER app
 WORKDIR /app
 EXPOSE 8080
-EXPOSE 8081
+EXPOSE 8084
 
 
 # Esta fase se usa para compilar el proyecto de servicio
