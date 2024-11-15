@@ -22,7 +22,7 @@ namespace Administrativo.Controllers
 
         // GET: api/TiposSeguros
         [HttpGet]
-        //[Authorize(Roles = "ADMIN, USER")]
+        [Authorize(Roles = "ADMIN, USER")]
         [ProducesResponseType(typeof(List<TipoSeguro>), 200)]
         public IActionResult Get()
         {
@@ -39,7 +39,7 @@ namespace Administrativo.Controllers
 
         // GET: api/TiposSeguros/5
         [HttpGet("{id}")]
-        //[Authorize(Roles = "ADMIN, USER")]
+        [Authorize(Roles = "ADMIN, USER")]
         [ProducesResponseType(typeof(TipoSeguro), 200)]
         public IActionResult Get(long id)
         {
@@ -60,7 +60,7 @@ namespace Administrativo.Controllers
 
         // POST: api/TiposSeguros
         [HttpPost]
-        //[Authorize(Roles = "ADMIN")]
+        [Authorize(Roles = "ADMIN")]
         [ProducesResponseType(typeof(TipoSeguro), 201)]
         public IActionResult Post([FromBody] TipoSeguro tipoSeguro)
         {
@@ -78,7 +78,7 @@ namespace Administrativo.Controllers
 
         // PUT: api/TiposSeguros/5
         [HttpPut("{id}")]
-        //[Authorize(Roles = "ADMIN")]
+        [Authorize(Roles = "ADMIN")]
         [ProducesResponseType(typeof(TipoSeguro), 200)]
         public IActionResult Put(long id, [FromBody] TipoSeguro tipoSeguro)
         {
@@ -101,7 +101,7 @@ namespace Administrativo.Controllers
 
         // DELETE: api/TiposSeguros/5
         [HttpDelete("{id}")]
-        //[Authorize(Roles = "ADMIN")]
+        [Authorize(Roles = "ADMIN")]
         [ProducesResponseType(typeof(StatusDTO), 200)]
         public IActionResult Delete(long id)
         {

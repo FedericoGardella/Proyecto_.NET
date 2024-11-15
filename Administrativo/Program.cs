@@ -6,6 +6,9 @@ using BL.BLs;
 using DAL.IDALs;
 using DAL.DALs;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,7 +20,6 @@ builder.Services.AddDbContext<DBContext>(options =>
         sqlOptions => sqlOptions.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null)
     ));
 
-
 // Registrar servicios en el contenedor de inyección de dependencias
 builder.Services.AddScoped<IBL_TiposSeguros, BL_TiposSeguros>();
 builder.Services.AddScoped<IDAL_TiposSeguros, DAL_TiposSeguros_EF>();
@@ -28,13 +30,66 @@ builder.WebHost.ConfigureKestrel(options =>
     options.ListenAnyIP(80); // Escucha en el puerto 80 en todas las interfaces
 });
 
-// Agrega los servicios
+// Configuración de autenticación JWT
+string? JWT_SECRET = Environment.GetEnvironmentVariable("JWT_SECRET");
+string? JWT_ISSUER = Environment.GetEnvironmentVariable("JWT_ISSUER");
+string? JWT_AUDIENCE = Environment.GetEnvironmentVariable("JWT_AUDIENCE");
+
+
+Console.WriteLine($"JWT_SECRET: {JWT_SECRET}");
+Console.WriteLine($"JWT_ISSUER: {JWT_ISSUER}");
+Console.WriteLine($"JWT_AUDIENCE: {JWT_AUDIENCE}");
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidAudience = JWT_AUDIENCE,
+        ValidIssuer = JWT_ISSUER,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JWT_SECRET)),
+        ClockSkew = TimeSpan.Zero
+    };
+});
+
+// Agrega servicios de autorización
+builder.Services.AddAuthorization();
+
+// Agrega los servicios de controladores
 builder.Services.AddControllers();
 
 // Configura Swagger
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Administrativo API", Version = "v1" });
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Description = "Inserte el token JWT aquí usando el formato 'Bearer {token}'",
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
+    });
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
 });
 
 // Configuración de CORS
@@ -61,12 +116,12 @@ if (app.Environment.IsDevelopment())
 }
 
 // Aplica la política de CORS
-app.UseCors("AllowFrontend");
+app.UseCors("AllowAll");
 
-app.UseHttpsRedirection();
+// Habilita el uso de autenticación y autorización
+app.UseAuthentication();
 
 app.UseAuthorization();
-
+app.UseHttpsRedirection();
 app.MapControllers();
-
 app.Run();
