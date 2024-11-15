@@ -113,5 +113,38 @@ namespace HistoriasClinicas.Controllers
                 return StatusCode(StatusCodes.Status400BadRequest, new StatusDTO(false, "Error al eliminar historia clinica"));
             }
         }
+
+        // GET api/HistoriasClinicas/MockPacientes
+        [HttpGet("MockPacientes")]
+        [ProducesResponseType(typeof(List<PacienteDTO>), 200)]
+        public IActionResult GetMockPacientes()
+        {
+            // Datos de ejemplo
+            var pacientesMock = new List<PacienteDTO>
+            {
+                new PacienteDTO { Id = 1, Nombres = "Juan", Apellidos = "Pérez", Documento = "12345678", Telefono = "555-1234" },
+                new PacienteDTO { Id = 2, Nombres = "Ana", Apellidos = "Gómez", Documento = "87654321", Telefono = "555-5678" },
+                new PacienteDTO { Id = 3, Nombres = "Luis", Apellidos = "Martínez", Documento = "11223344", Telefono = "555-9012" },
+                new PacienteDTO { Id = 4, Nombres = "María", Apellidos = "Rodríguez", Documento = "44332211", Telefono = "555-3456" }
+            };
+
+            return Ok(pacientesMock);
+        }
+
+        // Endpoint mock para obtener diagnósticos de un paciente
+        [HttpGet("{id}/diagnosticos")]
+        public IActionResult GetDiagnosticosMock(long id)
+        {
+            // Mock de diagnósticos para un paciente
+            var diagnosticosMock = new List<Diagnostico>
+            {
+                new Diagnostico { Id = 1, Descripcion = "Gripe común", Fecha = new DateTime(2023, 1, 15) },
+                new Diagnostico { Id = 2, Descripcion = "Fractura de pierna", Fecha = new DateTime(2022, 6, 20) },
+                new Diagnostico { Id = 3, Descripcion = "Alergia estacional", Fecha = new DateTime(2023, 4, 10) }
+            };
+
+            // Devolvemos los diagnósticos mock como ejemplo
+            return Ok(diagnosticosMock);
+        }
     }
 }

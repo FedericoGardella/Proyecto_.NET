@@ -2,13 +2,17 @@ using DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
+using BL.BLs;
+using BL.IBLs;
+using DAL.IDALs;
+using DAL.DALs;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Configura la cadena de conexión a la base de datos
 string connectionString = "Server=sqlserver,1433;Database=master;User Id=sa;Password=P45w0rd.N3T;TrustServerCertificate=True";
 
-// DbContext
+// Configuración de DbContext
 builder.Services.AddDbContext<DBContext>(options =>
     options.UseSqlServer(
         connectionString,
@@ -26,9 +30,20 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(
-                System.Text.Encoding.UTF8.GetBytes("TuClaveSecretaParaJWT")) // Reemplaza esto por una clave segura
+                System.Text.Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT_SECRET")))
         };
     });
+
+// Configura CORS para permitir todos los orígenes
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
 
 // Configura Swagger para usar la autenticación JWT
 builder.Services.AddSwaggerGen(options =>
@@ -69,6 +84,9 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
+builder.Services.AddScoped<IBL_HistoriasClinicas, BL_HistoriasClinicas>();
+builder.Services.AddScoped<IDAL_HistoriasClinicas, DAL_HistoriasClinicas_EF>();
+
 var app = builder.Build();
 
 // Configuración del pipeline de solicitudes HTTP
@@ -83,6 +101,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// Middleware de CORS
+app.UseCors("AllowAll");
 
 // Agrega el middleware de enrutamiento antes de autenticación y autorización
 app.UseRouting();

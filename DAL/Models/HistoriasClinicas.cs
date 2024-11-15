@@ -24,6 +24,7 @@ namespace DAL.Models
 
             historiaClinica.Id = Id;
             historiaClinica.FechaCreacion = FechaCreacion;
+            historiaClinica.PacienteId = PacientesId;
 
             return historiaClinica;
         }
@@ -38,6 +39,7 @@ namespace DAL.Models
 
             historiaToSave.Id = historiaClinica.Id;
             historiaToSave.FechaCreacion = historiaClinica.FechaCreacion;
+            historiaToSave.PacientesId = historiaClinica.PacienteId;
 
             return historiaToSave;
         }
