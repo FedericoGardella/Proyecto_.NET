@@ -87,6 +87,11 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddScoped<IBL_HistoriasClinicas, BL_HistoriasClinicas>();
 builder.Services.AddScoped<IDAL_HistoriasClinicas, DAL_HistoriasClinicas_EF>();
 
+builder.Services.AddScoped<IBL_Diagnosticos, BL_Diagnosticos>();
+builder.Services.AddScoped<IDAL_Diagnosticos, DAL_Diagnosticos_EF>();
+
+
+
 var app = builder.Build();
 
 // Configuración del pipeline de solicitudes HTTP

@@ -1,4 +1,5 @@
-﻿using Shared.Entities;
+﻿using Shared.DTOs;
+using Shared.Entities;
 
 namespace DAL.IDALs
 {
@@ -9,5 +10,6 @@ namespace DAL.IDALs
         HistoriaClinica Add(HistoriaClinica x);
         HistoriaClinica Update(HistoriaClinica x);
         void Delete(long Id);
+        List<DiagnosticoDTO> GetDiagnosticos(long historiaClinicaId);
     }
 }

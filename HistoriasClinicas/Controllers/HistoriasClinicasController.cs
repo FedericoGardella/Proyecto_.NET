@@ -131,20 +131,28 @@ namespace HistoriasClinicas.Controllers
             return Ok(pacientesMock);
         }
 
-        // Endpoint mock para obtener diagnósticos de un paciente
-        [HttpGet("{id}/diagnosticos")]
-        public IActionResult GetDiagnosticosMock(long id)
+        [HttpGet("{id}/Diagnosticos")]
+        [Authorize(Roles = "ADMIN")]
+        [ProducesResponseType(typeof(List<DiagnosticoDTO>), 200)]
+        [ProducesResponseType(typeof(StatusDTO), 400)]
+        public IActionResult GetDiagnosticos(long id)
         {
-            // Mock de diagnósticos para un paciente
-            var diagnosticosMock = new List<Diagnostico>
+            try
             {
-                new Diagnostico { Id = 1, Descripcion = "Gripe común", Fecha = new DateTime(2023, 1, 15) },
-                new Diagnostico { Id = 2, Descripcion = "Fractura de pierna", Fecha = new DateTime(2022, 6, 20) },
-                new Diagnostico { Id = 3, Descripcion = "Alergia estacional", Fecha = new DateTime(2023, 4, 10) }
-            };
+                var diagnosticos = bl.GetDiagnosticos(id);
 
-            // Devolvemos los diagnósticos mock como ejemplo
-            return Ok(diagnosticosMock);
+                if (diagnosticos == null || !diagnosticos.Any())
+                {
+                    return BadRequest(new StatusDTO(false, "No se encontró ningún diagnóstico para esta historia clínica."));
+                }
+
+                return Ok(diagnosticos);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error al obtener diagnósticos para la historia clínica.");
+                return StatusCode(StatusCodes.Status500InternalServerError, new StatusDTO(false, "Ocurrió un error inesperado al obtener diagnósticos."));
+            }
         }
     }
 }

@@ -91,6 +91,12 @@ namespace DAL
                 .HasForeignKey<Pacientes>(p => p.HistoriasClinicasId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            modelBuilder.Entity<Diagnosticos>()
+                .HasOne(d => d.HistoriasClinicas)
+                .WithMany(h => h.Diagnosticos)
+                .HasForeignKey(d => d.HistoriasClinicasId)
+                .OnDelete(DeleteBehavior.Cascade);
+
         }
 
 

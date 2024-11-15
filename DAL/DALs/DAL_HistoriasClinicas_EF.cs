@@ -1,6 +1,10 @@
 ﻿using DAL.IDALs;
 using DAL.Models;
+using Shared.DTOs;
 using Shared.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace DAL.DALs
 {
@@ -23,7 +27,6 @@ namespace DAL.DALs
         {
             return db.HistoriasClinicas.Select(x => x.GetEntity()).ToList();
         }
-
 
         public HistoriaClinica Add(HistoriaClinica x)
         {
@@ -50,6 +53,22 @@ namespace DAL.DALs
                 throw new Exception($"No existe un {entityName} con Id {Id}");
             db.HistoriasClinicas.Remove(toDelete);
             db.SaveChanges();
+        }
+
+        public List<DiagnosticoDTO> GetDiagnosticos(long historiaClinicaId)
+        {
+            var diagnosticos = db.HistoriasClinicas
+                .Where(h => h.Id == historiaClinicaId)
+                .SelectMany(h => h.Diagnosticos)
+                .ToList();
+
+            return diagnosticos.Select(d => new DiagnosticoDTO
+            {
+                Id = d.Id,
+                Descripcion = d.Descripcion,
+                Fecha = d.Fecha,
+                HistoriaClinicaId = d.HistoriasClinicasId
+            }).ToList();
         }
     }
 }
