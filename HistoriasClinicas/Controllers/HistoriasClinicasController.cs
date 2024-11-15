@@ -113,5 +113,46 @@ namespace HistoriasClinicas.Controllers
                 return StatusCode(StatusCodes.Status400BadRequest, new StatusDTO(false, "Error al eliminar historia clinica"));
             }
         }
+
+        // GET api/HistoriasClinicas/MockPacientes
+        [HttpGet("MockPacientes")]
+        [ProducesResponseType(typeof(List<PacienteDTO>), 200)]
+        public IActionResult GetMockPacientes()
+        {
+            // Datos de ejemplo
+            var pacientesMock = new List<PacienteDTO>
+            {
+                new PacienteDTO { Id = 1, Nombres = "Juan", Apellidos = "Pérez", Documento = "12345678", Telefono = "555-1234" },
+                new PacienteDTO { Id = 2, Nombres = "Ana", Apellidos = "Gómez", Documento = "87654321", Telefono = "555-5678" },
+                new PacienteDTO { Id = 3, Nombres = "Luis", Apellidos = "Martínez", Documento = "11223344", Telefono = "555-9012" },
+                new PacienteDTO { Id = 4, Nombres = "María", Apellidos = "Rodríguez", Documento = "44332211", Telefono = "555-3456" }
+            };
+
+            return Ok(pacientesMock);
+        }
+
+        [HttpGet("{id}/Diagnosticos")]
+        [Authorize(Roles = "ADMIN")]
+        [ProducesResponseType(typeof(List<DiagnosticoDTO>), 200)]
+        [ProducesResponseType(typeof(StatusDTO), 400)]
+        public IActionResult GetDiagnosticos(long id)
+        {
+            try
+            {
+                var diagnosticos = bl.GetDiagnosticos(id);
+
+                if (diagnosticos == null || !diagnosticos.Any())
+                {
+                    return BadRequest(new StatusDTO(false, "No se encontró ningún diagnóstico para esta historia clínica."));
+                }
+
+                return Ok(diagnosticos);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error al obtener diagnósticos para la historia clínica.");
+                return StatusCode(StatusCodes.Status500InternalServerError, new StatusDTO(false, "Ocurrió un error inesperado al obtener diagnósticos."));
+            }
+        }
     }
 }

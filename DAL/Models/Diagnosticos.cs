@@ -8,9 +8,7 @@ namespace DAL.Models
         public Diagnosticos() { }
 
         public long Id { get; set; }
-
         public string Descripcion { get; set; }
-
         public DateTime Fecha { get; set; }
 
         [ForeignKey("HistoriasClinicas")]
@@ -19,26 +17,24 @@ namespace DAL.Models
 
         public Diagnostico GetEntity()
         {
-            Diagnostico diagnostico = new Diagnostico();
-
-            diagnostico.Id = Id;
-            diagnostico.Descripcion = Descripcion;
-            diagnostico.Fecha = Fecha;
-
-            return diagnostico;
+            return new Diagnostico
+            {
+                Id = Id,
+                Descripcion = Descripcion,
+                Fecha = Fecha,
+                HistoriaClinicaId = HistoriasClinicasId,
+                HistoriaClinica = HistoriasClinicas?.GetEntity()
+            };
         }
 
         public static Diagnosticos FromEntity(Diagnostico diagnostico, Diagnosticos diagnosticos)
         {
-            Diagnosticos diagnosticoToSave;
-            if (diagnosticos == null)
-                diagnosticoToSave = new Diagnosticos();
-            else
-                diagnosticoToSave = diagnosticos;
+            Diagnosticos diagnosticoToSave = diagnosticos ?? new Diagnosticos();
 
             diagnosticoToSave.Id = diagnostico.Id;
             diagnosticoToSave.Descripcion = diagnostico.Descripcion;
             diagnosticoToSave.Fecha = diagnostico.Fecha;
+            diagnosticoToSave.HistoriasClinicasId = diagnostico.HistoriaClinicaId;
 
             return diagnosticoToSave;
         }

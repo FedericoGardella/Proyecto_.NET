@@ -6,6 +6,7 @@
         public DateTime FechaCreacion { get; set; }
         public long PacienteId { get; set; } 
         public Paciente Paciente { get; set; }
+        public List<Diagnostico> Diagnosticos { get; set; }
 
     }
 }

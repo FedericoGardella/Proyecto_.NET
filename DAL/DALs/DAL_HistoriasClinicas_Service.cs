@@ -1,4 +1,5 @@
 ﻿using DAL.IDALs;
+using Shared.DTOs;
 using Shared.Entities;
 
 namespace DAL.DALs
@@ -26,6 +27,11 @@ namespace DAL.DALs
         }
 
         public List<HistoriaClinica> GetAll()
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<DiagnosticoDTO> GetDiagnosticos(long historiaClinicaId)
         {
             throw new NotImplementedException();
         }
