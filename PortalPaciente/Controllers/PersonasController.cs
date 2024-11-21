@@ -10,18 +10,22 @@ namespace PortalPaciente.Controllers
     public class PacientesController : Controller
     {
         private readonly IBL_Pacientes bl;
+        private readonly IBL_HistoriasClinicas hc;
+        private readonly IBL_Citas bL_Citas;
         private readonly ILogger<PacientesController> logger;
 
-        public PacientesController(IBL_Pacientes _bl, ILogger<PacientesController> _logger)
+        public PacientesController(IBL_Pacientes _bl,IBL_HistoriasClinicas _hc, IBL_Citas _bl_Citas ,ILogger<PacientesController> _logger)
         {
             bl = _bl;
+            hc = _hc;
+            bL_Citas = _bl_Citas;
             logger = _logger;
         }
 
         // GET: api/<PersonasController>
         [Authorize(Roles = "ADMIN, X")]
         [ProducesResponseType(typeof(List<Paciente>), 200)]
-        [HttpGet]
+        [HttpGet("api/portalpaciente")]
         public IActionResult Get()
         {
             try
@@ -40,7 +44,7 @@ namespace PortalPaciente.Controllers
         // GET api/<PersonasController>/5
         [Authorize(Roles = "ADMIN, X")]
         [ProducesResponseType(typeof(Paciente), 200)]
-        [HttpGet("{Id}")]
+        [HttpGet("api/portalpaciente{Id}")]
         public IActionResult Get(long Id)
         {
             try
@@ -57,7 +61,7 @@ namespace PortalPaciente.Controllers
         // POST api/<PersonasController>
         [Authorize(Roles = "ADMIN")]
         [ProducesResponseType(typeof(Paciente), 200)]
-        [HttpPost]
+        [HttpPost("api/portalpaciente")]
         public IActionResult Post([FromBody] Paciente x)
         {
             try
@@ -91,7 +95,7 @@ namespace PortalPaciente.Controllers
         // DELETE api/<PersonasController>/5
         [Authorize(Roles = "ADMIN")]
         [ProducesResponseType(typeof(StatusResponse), 200)]
-        [HttpDelete("{Id}")]
+        [HttpDelete("api/portalpaciente{Id}")]
         public IActionResult Delete(long Id)
         {
             try
@@ -101,9 +105,43 @@ namespace PortalPaciente.Controllers
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error al eliminar diagnostico");
-                return StatusCode(StatusCodes.Status400BadRequest, new StatusDTO(false, "Error al eliminar diagnostico"));
+                logger.LogError(ex, "Error al eliminar historia clinica");
+                return StatusCode(StatusCodes.Status400BadRequest, new StatusDTO(false, "Error al eliminar paciente"));
             }
         }
+        // HistoriaClinica api/<PersonasController>/5
+        [Authorize(Roles = "ADMIN")]
+        [ProducesResponseType(typeof(StatusResponse), 200)]
+        [HttpGet("api/portalpaciente/historiaclinica/{Id}")]
+        public IActionResult HistoriaClinica(long Id)
+        {
+            try
+            {                
+                return Ok( hc.Get(Id));
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error al buscar historia clinica");
+                return StatusCode(StatusCodes.Status400BadRequest, new StatusDTO(false, "Error al buscar  historia clinica"));
+            }
+        }
+
+        // Citas api/<PersonasController>/5
+        [Authorize(Roles = "ADMIN")]
+        [ProducesResponseType(typeof(StatusResponse), 200)]
+        [HttpGet("api/portalpaciente/cita/{Id}")]
+        public IActionResult Cita(long Id)
+        {
+            try
+            {
+                return Ok(bL_Citas.GetCitasPorPacienteID(Id));
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error al buscar citas");
+                return StatusCode(StatusCodes.Status400BadRequest, new StatusDTO(false, "Error al buscar citas"));
+            }
+        }
+
     }
 }

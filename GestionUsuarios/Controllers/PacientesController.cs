@@ -22,7 +22,7 @@ namespace GestionUsuarios.Controllers
         // GET: api/<PacientesController>
         [Authorize(Roles = "ADMIN, X")]
         [ProducesResponseType(typeof(List<Paciente>), 200)]
-        [HttpGet]
+        [HttpGet("api/paciente")]
         public IActionResult Get()
         {
             try
@@ -41,7 +41,7 @@ namespace GestionUsuarios.Controllers
         // GET api/<PacientesController>/5
         [Authorize(Roles = "ADMIN, X, PACIENTE")]
         [ProducesResponseType(typeof(Paciente), 200)]
-        [HttpGet("{Id}")]
+        [HttpGet("api/paciente/{Id}")]
         public IActionResult Get(long Id)
         {
             try
@@ -76,7 +76,7 @@ namespace GestionUsuarios.Controllers
         // POST api/<PacientesController>
         [Authorize(Roles = "ADMIN")]
         [ProducesResponseType(typeof(Paciente), 200)]
-        [HttpPost]
+        [HttpPost("api/paciente")]
         public IActionResult Post([FromBody] Paciente x)
         {
             try
@@ -93,7 +93,7 @@ namespace GestionUsuarios.Controllers
         // PUT api/<PacientesController>/5
         [Authorize(Roles = "ADMIN")]
         [ProducesResponseType(typeof(Paciente), 200)]
-        [HttpPut("{Id}")]
+        [HttpPut("api/paciente/{Id}")]
         public IActionResult Put(long Id, [FromBody] Paciente x)
         {
             try
@@ -110,7 +110,7 @@ namespace GestionUsuarios.Controllers
         // DELETE api/<PacientesController>/5
         [Authorize(Roles = "ADMIN")]
         [ProducesResponseType(typeof(StatusResponse), 200)]
-        [HttpDelete("{Id}")]
+        [HttpDelete("api/paciente{Id}")]
         public IActionResult Delete(long Id)
         {
             try
