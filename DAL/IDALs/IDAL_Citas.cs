@@ -9,5 +9,6 @@ namespace DAL.IDALs
         Cita Add(Cita x);
         Cita Update(Cita x);
         void Delete(long Id);
+        List<Cita> GetCitasPorPacienteId(long pacienteId);
     }
 }

@@ -51,5 +51,14 @@ namespace DAL.DALs
             db.Citas.Remove(toDelete);
             db.SaveChanges();
         }
+
+        public List<Cita> GetCitasPorPacienteId(long pacienteId)
+        {
+            return db.Citas
+                     .Where(c => c.PacienteId == pacienteId)
+                     .Select(c => c.GetEntity())
+                     .ToList();
+        }
+
     }
 }

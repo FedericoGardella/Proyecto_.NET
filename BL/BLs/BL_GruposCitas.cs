@@ -37,5 +37,10 @@ namespace BL.BLs
         {
             dal.Delete(Id);
         }
+
+        List<GrupoCita> GetGrupoCitasMedico(long MedicoID)
+        {
+            return dal.GetGrupoCitasMedico(MedicoID);
+        }
     }
 }

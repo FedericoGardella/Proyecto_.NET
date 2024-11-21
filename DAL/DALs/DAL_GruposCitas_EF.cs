@@ -51,5 +51,12 @@ namespace DAL.DALs
             db.GruposCitas.Remove(toDelete);
             db.SaveChanges();
         }
+        public List<GrupoCita> GetGrupoCitasMedico(long MedicosId)
+        {
+            return db.GruposCitas
+                     .Where(gc => gc.MedicosId == MedicosId)
+                     .Select(gc => gc.GetEntity())
+                     .ToList();
+        }
     }
 }

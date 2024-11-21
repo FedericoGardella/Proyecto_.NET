@@ -9,5 +9,6 @@ namespace BL.IBLs
         GrupoCita Add(GrupoCita x);
         GrupoCita Update(GrupoCita x);
         void Delete(long Id);
+        List<GrupoCita> GetGrupoCitasMedico(long MedicoID);
     }
 }

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shared.DTOs;
 using Shared.Entities;
+using System.Security.Claims;
 using StatusResponse = GestionUsuarios.Models.StatusResponse;
 
 namespace GestionUsuarios.Controllers
@@ -45,6 +46,26 @@ namespace GestionUsuarios.Controllers
         {
             try
             {
+                var userRoles = User.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value).ToList();
+                var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+                if (!long.TryParse(userIdClaim, out var userId))
+                {
+                    logger.LogWarning("No se pudo convertir el userId del JWT a un valor válido de tipo long.");
+                    return Unauthorized(new StatusDTO(false, "Token inválido."));
+                }
+
+                if (userRoles.Contains("MEDICO"))
+                {
+
+                    var medico = bl.Get(userId);
+                    if (medico == null)
+                    {
+                        logger.LogWarning($"Médico no encontrado para el usuario {userId}");
+                        return NotFound(new StatusDTO(false, "Médico no encontrado."));
+                    }
+                    return Ok(medico);
+                }
                 return Ok(bl.Get(Id));
             }
             catch (Exception ex)

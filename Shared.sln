@@ -25,6 +25,7 @@ Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-co
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Elementos de la solución", "Elementos de la solución", "{C154E2D5-CB47-4310-93AC-72EAAA65E462}"
 	ProjectSection(SolutionItems) = preProject
+		.env = .env
 		nginx.conf = nginx.conf
 	EndProjectSection
 EndProject

@@ -37,5 +37,10 @@ namespace BL.BLs
         {
             dal.Delete(Id);
         }
+
+        public List<Cita> GetCitasPorPacienteID(long PacienteID)
+        {
+           return dal.GetCitasPorPacienteId(PacienteID);
+        }
     }
 }

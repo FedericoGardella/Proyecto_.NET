@@ -9,5 +9,6 @@ namespace BL.IBLs
         Cita Add(Cita x);
         Cita Update(Cita x);
         void Delete(long Id);
+        List<Cita> GetCitasPorPacienteID(long PacienteID);
     }
 }
