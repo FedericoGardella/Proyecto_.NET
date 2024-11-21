@@ -154,5 +154,29 @@ namespace HistoriasClinicas.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new StatusDTO(false, "Ocurrió un error inesperado al obtener diagnósticos."));
             }
         }
+
+        [HttpGet("{id}/ResultadoEstudios")]
+        [Authorize(Roles = "ADMIN")]
+        [ProducesResponseType(typeof(List<ResultadoEstudio>), 200)]
+        [ProducesResponseType(typeof(StatusDTO), 400)]
+        public IActionResult GetResultadoEstudios(long id)
+        {
+            try
+            {
+                var resultadoEstudios = bl.GetResultadoEstudios(id);
+
+                if (resultadoEstudios == null || !resultadoEstudios.Any())
+                {
+                    return BadRequest(new StatusDTO(false, "No se encontró ningún resultado de estudio para esta historia clínica."));
+                }
+
+                return Ok(resultadoEstudios);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error al obtener resultados de estudios para la historia clínica.");
+                return StatusCode(StatusCodes.Status500InternalServerError, new StatusDTO(false, "Ocurrió un error inesperado al obtener resultados de estudios."));
+            }
+        }
     }
 }

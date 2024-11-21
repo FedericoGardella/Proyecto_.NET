@@ -12,29 +12,28 @@ namespace DAL.Models
 
         [ForeignKey("HistoriasClinicas")]
         public long HistoriasClinicasId { get; set; }
+        public HistoriasClinicas HistoriasClinicas { get; set; }
 
         public ResultadoEstudio GetEntity()
         {
-            ResultadoEstudio resultadoEstudio = new ResultadoEstudio();
-
-            resultadoEstudio.Id = Id;
-            resultadoEstudio.Descripcion = Descripcion;
-            resultadoEstudio.Fecha = Fecha;
-
-            return resultadoEstudio;
+            return new ResultadoEstudio
+            {
+                Id = Id,
+                Descripcion = Descripcion,
+                Fecha = Fecha,
+                HistoriaClinicaId = HistoriasClinicasId,
+                HistoriaClinica = HistoriasClinicas?.GetEntity()
+            };
         }
 
         public static ResultadosEstudios FromEntity(ResultadoEstudio resultadoEstudio, ResultadosEstudios resultadosEstudios)
         {
-            ResultadosEstudios resultadoEstudioToSave;
-            if (resultadosEstudios == null)
-                resultadoEstudioToSave = new ResultadosEstudios();
-            else
-                resultadoEstudioToSave = resultadosEstudios;
+            ResultadosEstudios resultadoEstudioToSave = resultadosEstudios ?? new ResultadosEstudios();
 
             resultadoEstudioToSave.Id = resultadoEstudio.Id;
             resultadoEstudioToSave.Descripcion = resultadoEstudio.Descripcion;
             resultadoEstudioToSave.Fecha = resultadoEstudio.Fecha;
+            resultadoEstudioToSave.HistoriasClinicasId = resultadoEstudio.HistoriaClinicaId;
 
             return resultadoEstudioToSave;
         }

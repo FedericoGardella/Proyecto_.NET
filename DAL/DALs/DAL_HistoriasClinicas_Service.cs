@@ -35,5 +35,10 @@ namespace DAL.DALs
         {
             throw new NotImplementedException();
         }
+
+        public List<ResultadoEstudio> GetResultadoEstudios(long historiaClinicaId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

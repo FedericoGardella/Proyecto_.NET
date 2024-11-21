@@ -90,6 +90,9 @@ builder.Services.AddScoped<IDAL_HistoriasClinicas, DAL_HistoriasClinicas_EF>();
 builder.Services.AddScoped<IBL_Diagnosticos, BL_Diagnosticos>();
 builder.Services.AddScoped<IDAL_Diagnosticos, DAL_Diagnosticos_EF>();
 
+builder.Services.AddScoped<IBL_ResultadosEstudios, BL_ResultadosEstudios>();
+builder.Services.AddScoped<IDAL_ResultadosEstudios, DAL_ResultadosEstudios_EF>();
+
 
 
 var app = builder.Build();

@@ -1,9 +1,10 @@
-﻿using DAL.IDALs;
+﻿using BL.IBLs;
+using DAL.IDALs;
 using Shared.Entities;
 
 namespace BL.BLs
 {
-    public class BL_ResultadosEstudios : IDAL_ResultadosEstudios
+    public class BL_ResultadosEstudios : IBL_ResultadosEstudios
     {
         private IDAL_ResultadosEstudios dal;
 

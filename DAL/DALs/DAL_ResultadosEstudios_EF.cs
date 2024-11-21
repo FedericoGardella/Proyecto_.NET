@@ -1,5 +1,6 @@
 ﻿using DAL.IDALs;
 using DAL.Models;
+using Microsoft.EntityFrameworkCore;
 using Shared.Entities;
 
 namespace DAL.DALs
@@ -16,7 +17,12 @@ namespace DAL.DALs
 
         public ResultadoEstudio Get(long Id)
         {
-            return db.ResultadosEstudios.Find(Id)?.GetEntity();
+            var resultadoEstudio = db.ResultadosEstudios
+                .Include(d => d.HistoriasClinicas)
+                .ThenInclude(h => h.Pacientes)
+                .FirstOrDefault(d => d.Id == Id);
+
+            return resultadoEstudio?.GetEntity();
         }
 
         public List<ResultadoEstudio> GetAll()

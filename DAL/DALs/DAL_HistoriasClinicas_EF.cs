@@ -70,5 +70,20 @@ namespace DAL.DALs
                 HistoriaClinicaId = d.HistoriasClinicasId
             }).ToList();
         }
+
+        public List<ResultadoEstudio> GetResultadoEstudios(long historiaClinicaId)
+        {
+            var diagnosticos = db.HistoriasClinicas
+                .Where(h => h.Id == historiaClinicaId)
+                .SelectMany(h => h.ResultadosEstudios)
+                .ToList();
+
+            return diagnosticos.Select(d => new ResultadoEstudio
+            {
+                Id = d.Id,
+                Descripcion = d.Descripcion,
+                Fecha = d.Fecha,
+            }).ToList();
+        }
     }
 }

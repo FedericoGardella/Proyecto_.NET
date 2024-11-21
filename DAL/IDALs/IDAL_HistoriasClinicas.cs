@@ -11,5 +11,6 @@ namespace DAL.IDALs
         HistoriaClinica Update(HistoriaClinica x);
         void Delete(long Id);
         List<DiagnosticoDTO> GetDiagnosticos(long historiaClinicaId);
+        List<ResultadoEstudio> GetResultadoEstudios(long historiaClinicaId);
     }
 }

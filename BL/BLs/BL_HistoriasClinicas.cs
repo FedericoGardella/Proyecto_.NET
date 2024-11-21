@@ -43,5 +43,10 @@ namespace BL.BLs
         {
             return dal.GetDiagnosticos(historiaClinicaId);
         }
+
+        public List<ResultadoEstudio> GetResultadoEstudios(long historiaClinicaId)
+        {
+            return dal.GetResultadoEstudios(historiaClinicaId);
+        }
     }
 }
