@@ -103,6 +103,17 @@ namespace DAL
                 .HasForeignKey(d => d.HistoriasClinicasId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            modelBuilder.Entity<Recetas>()
+                .HasOne(d => d.HistoriasClinicas)
+                .WithMany(h => h.Recetas)
+                .HasForeignKey(d => d.HistoriasClinicasId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Recetas>()
+                .HasMany(r => r.Medicamentos)
+                .WithMany(m => m.Recetas)
+                .UsingEntity(j => j.ToTable("RecetasMedicamentos"));
+
         }
 
 

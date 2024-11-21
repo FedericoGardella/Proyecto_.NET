@@ -25,6 +25,11 @@ namespace DAL.DALs
             throw new NotImplementedException();
         }
 
+        public List<Medicamento> GetByIds(List<long> ids)
+        {
+            throw new NotImplementedException();
+        }
+
         public List<Medicamento> GetAll()
         {
             throw new NotImplementedException();

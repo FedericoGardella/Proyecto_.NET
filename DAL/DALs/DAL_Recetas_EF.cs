@@ -27,12 +27,29 @@ namespace DAL.DALs
 
         public Receta Add(Receta x)
         {
-            Recetas toSave = new Recetas();
-            toSave = Recetas.FromEntity(x, toSave);
+            // Convertir la receta a su modelo de base de datos
+            Recetas toSave = Recetas.FromEntity(x, new Recetas());
+
+            // Verificar si hay medicamentos asociados
+            if (x.Medicamentos != null && x.Medicamentos.Count > 0)
+            {
+                // Obtener los medicamentos por sus IDs y asociarlos
+                var medicamentos = db.Medicamentos
+                                     .Where(m => x.Medicamentos.Select(med => med.Id).Contains(m.Id))
+                                     .ToList();
+
+                toSave.Medicamentos.AddRange(medicamentos);
+            }
+
+            // Agregar y guardar la receta con sus relaciones
             db.Recetas.Add(toSave);
             db.SaveChanges();
+
+            // Retornar la receta recién creada
             return Get(toSave.Id);
         }
+
+
 
         public Receta Update(Receta x)
         {

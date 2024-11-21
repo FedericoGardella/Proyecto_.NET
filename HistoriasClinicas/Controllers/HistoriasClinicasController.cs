@@ -178,5 +178,29 @@ namespace HistoriasClinicas.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new StatusDTO(false, "Ocurrió un error inesperado al obtener resultados de estudios."));
             }
         }
+
+        [HttpGet("{id}/Recetas")]
+        [Authorize(Roles = "ADMIN")]
+        [ProducesResponseType(typeof(List<Receta>), 200)]
+        [ProducesResponseType(typeof(StatusDTO), 400)]
+        public IActionResult GetRecetas(long id)
+        {
+            try
+            {
+                var receta = bl.GetRecetas(id);
+
+                if (receta == null || !receta.Any())
+                {
+                    return BadRequest(new StatusDTO(false, "No se encontró ningúna receta para esta historia clínica."));
+                }
+
+                return Ok(receta);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error al obtener recetas para la historia clínica.");
+                return StatusCode(StatusCodes.Status500InternalServerError, new StatusDTO(false, "Ocurrió un error inesperado al obtener recetas."));
+            }
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using DAL.IDALs;
 using DAL.Models;
+using Microsoft.EntityFrameworkCore;
 using Shared.Entities;
 
 namespace DAL.DALs
@@ -18,6 +19,19 @@ namespace DAL.DALs
         {
             return db.Medicamentos.Find(Id)?.GetEntity();
         }
+
+        public List<Medicamento> GetByIds(List<long> ids)
+        {
+            if (ids == null || ids.Count == 0)
+            {
+                return new List<Medicamento>();
+            }
+
+            return db.Set<Medicamentos>()
+                     .Where(m => ids.Contains(m.Id))
+                     .Select(m => m.GetEntity()) // Convierte cada entidad en su modelo correspondiente
+                     .ToList();
+        } 
 
         public List<Medicamento> GetAll()
         {

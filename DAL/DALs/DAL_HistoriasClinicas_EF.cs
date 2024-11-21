@@ -85,5 +85,21 @@ namespace DAL.DALs
                 Fecha = d.Fecha,
             }).ToList();
         }
+
+        public List<Receta> GetRecetas(long historiaClinicaId)
+        {
+            var receta = db.HistoriasClinicas
+                .Where(h => h.Id == historiaClinicaId)
+                .SelectMany(h => h.Recetas)
+                .ToList();
+
+            return receta.Select(d => new Receta
+            {
+                Id = d.Id,
+                Descripcion = d.Descripcion,
+                Fecha = d.Fecha,
+                Tipo = d.Tipo,
+            }).ToList();
+        }
     }
 }

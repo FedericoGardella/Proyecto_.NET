@@ -93,6 +93,12 @@ builder.Services.AddScoped<IDAL_Diagnosticos, DAL_Diagnosticos_EF>();
 builder.Services.AddScoped<IBL_ResultadosEstudios, BL_ResultadosEstudios>();
 builder.Services.AddScoped<IDAL_ResultadosEstudios, DAL_ResultadosEstudios_EF>();
 
+builder.Services.AddScoped<IBL_Recetas, BL_Recetas>();
+builder.Services.AddScoped<IDAL_Recetas, DAL_Recetas_EF>();
+
+builder.Services.AddScoped<IBL_Medicamentos, BL_Medicamentos>();
+builder.Services.AddScoped<IDAL_Medicamentos, DAL_Medicamentos_EF>();
+
 
 
 var app = builder.Build();

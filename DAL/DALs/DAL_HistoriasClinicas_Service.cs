@@ -40,5 +40,10 @@ namespace DAL.DALs
         {
             throw new NotImplementedException();
         }
+
+        public List<Receta> GetRecetas(long historiaClinicaId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -18,6 +18,17 @@ namespace BL.BLs
             return dal.Get(Id);
         }
 
+        public List<Medicamento> GetByIds(List<long> ids)
+        {
+            if (ids == null || ids.Count == 0)
+            {
+                return new List<Medicamento>();
+            }
+
+            return dal.GetByIds(ids);
+        }
+
+
         public List<Medicamento> GetAll()
         {
             return dal.GetAll();
