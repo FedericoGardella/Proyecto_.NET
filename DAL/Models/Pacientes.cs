@@ -16,9 +16,7 @@ namespace DAL.Models
         public long? ContratosSegurosId { get; set; }
         public ContratosSeguros? ContratosSeguros { get; set; }
 
-        [ForeignKey("HistoriasClinicas")]
-        public long? HistoriasClinicasId { get; set; }  
-        public HistoriasClinicas? HistoriasClinicas { get; set; }
+        public List<HistoriasClinicas> HistoriasClinicas { get; set; } // Relación uno a muchos
 
         public Paciente GetEntity()
         {
@@ -29,21 +27,23 @@ namespace DAL.Models
                 Apellidos = Apellidos,
                 Telefono = Telefono,
                 Documento = Documento,
-                HistoriaClinicaId = HistoriasClinicasId,
-                ContratoSeguroId = ContratosSegurosId
+                ContratoSeguroId = ContratosSegurosId,
+                HistoriasClinicas = HistoriasClinicas?.Select(h => h.GetEntity()).ToList()
             };
         }
 
-        public static Pacientes FromEntity(Paciente paciente, Pacientes pacientes)
+        public static Pacientes FromEntity(Paciente paciente, Pacientes pacientes = null)
         {
+            // Inicializar la instancia de Pacientes si no existe
             Pacientes pacienteToSave = pacientes ?? new Pacientes();
 
+            // Mapear propiedades simples
             pacienteToSave.Id = paciente.Id;
             pacienteToSave.Nombres = paciente.Nombres;
             pacienteToSave.Apellidos = paciente.Apellidos;
             pacienteToSave.Telefono = paciente.Telefono;
             pacienteToSave.Documento = paciente.Documento;
-            pacienteToSave.HistoriasClinicasId = paciente.HistoriaClinicaId;
+
             pacienteToSave.ContratosSegurosId = paciente.ContratoSeguroId;
 
             return pacienteToSave;

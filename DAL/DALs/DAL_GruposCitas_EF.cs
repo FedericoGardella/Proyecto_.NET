@@ -24,6 +24,10 @@ namespace DAL.DALs
             return db.GruposCitas.Select(x => x.GetEntity()).ToList();
         }
 
+        public GrupoCita GetGrupoCitasMedico(long medicoId, DateTime fecha)
+        {
+            throw new NotImplementedException();
+        }
 
         public GrupoCita Add(GrupoCita x)
         {

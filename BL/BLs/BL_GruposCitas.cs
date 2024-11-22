@@ -1,9 +1,11 @@
-﻿using DAL.IDALs;
+﻿using BL.IBLs;
+using DAL.IDALs;
+using DAL.Models;
 using Shared.Entities;
 
 namespace BL.BLs
 {
-    public class BL_GruposCitas
+    public class BL_GruposCitas : IBL_GruposCitas
     {
         private IDAL_GruposCitas dal;
 
@@ -21,6 +23,14 @@ namespace BL.BLs
         public List<GrupoCita> GetAll()
         {
             return dal.GetAll();
+        }
+
+        public GrupoCita GetGrupoCitasMedico(long medicoDoc, DateTime fecha)
+        {
+
+            var grupoCitas = dal.GetGrupoCitasMedico(medicoDoc, fecha);
+
+            return grupoCitas;
         }
 
         public GrupoCita Add(GrupoCita x)

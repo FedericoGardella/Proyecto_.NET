@@ -4,7 +4,7 @@
     {
         public bool StatusOk { get; set; }
         public string StatusMessage { get; set; } = string.Empty;
-        public string IdUsuario { get; set; } = string.Empty;
+        public long IdUsuario { get; set; }
         public string Token { get; set; } = string.Empty;
         public DateTime Expiration { get; set; }
         public int ExpirationMinutes { get; set; }

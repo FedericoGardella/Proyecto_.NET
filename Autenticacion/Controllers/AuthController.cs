@@ -162,7 +162,7 @@ namespace Autenticacion.Controllers
                     {
                         StatusOk = true,
                         StatusMessage = "Usuario logueado correctamente!",
-                        IdUsuario = user.Id,
+                        IdUsuario = user.PersonasId,
                         Token = new JwtSecurityTokenHandler().WriteToken(token),
                         Expiration = token.ValidTo,
                         Email = user.Email,

@@ -7,11 +7,8 @@ namespace Shared.Entities
     {
         public string Telefono { get; set; }
         public List<Cita> Citas { get; set; }
-
-        public long? HistoriaClinicaId { get; set; }
-        public HistoriaClinica? HistoriaClinica { get; set; }
+        public List<HistoriaClinica> HistoriasClinicas { get; set; }
         public long? ContratoSeguroId { get; set; }
         public ContratoSeguro? ContratoSeguro { get; set; }
-
     }
 }

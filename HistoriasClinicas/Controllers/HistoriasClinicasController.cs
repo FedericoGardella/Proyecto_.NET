@@ -22,7 +22,7 @@ namespace HistoriasClinicas.Controllers
         }
 
         // GET: api/HistoriasClinicas
-        [Authorize(Roles = "ADMIN, X")]
+        [Authorize(Roles = "ADMIN, MEDICO")]
         [ProducesResponseType(typeof(List<HistoriaClinica>), 200)]
         [HttpGet]
         public IActionResult Get()
@@ -39,7 +39,7 @@ namespace HistoriasClinicas.Controllers
         }
 
         // GET api/HistoriasClinicas/5
-        [Authorize(Roles = "ADMIN, X")]
+        [Authorize(Roles = "ADMIN, MEDICO")]
         [ProducesResponseType(typeof(HistoriaClinica), 200)]
         [HttpGet("{Id}")]
         public IActionResult Get(long Id)
@@ -55,7 +55,7 @@ namespace HistoriasClinicas.Controllers
             }
         }
         // POST api/HistoriasClinicas
-        [Authorize(Roles = "ADMIN")]
+        [Authorize(Roles = "ADMIN, MEDICO")]
         [ProducesResponseType(typeof(HistoriaClinica), 200)]
         [HttpPost]
         public IActionResult Post([FromBody] HistoriaClinicaDTO historiaClinicaDTO)
@@ -80,7 +80,7 @@ namespace HistoriasClinicas.Controllers
         }
 
         // PUT api/HistoriasClinicas/5
-        [Authorize(Roles = "ADMIN")]
+        [Authorize(Roles = "ADMIN, MEDICO")]
         [ProducesResponseType(typeof(HistoriaClinica), 200)]
         [HttpPut("{Id}")]
         public IActionResult Put(long Id, [FromBody] HistoriaClinica x)
@@ -97,7 +97,7 @@ namespace HistoriasClinicas.Controllers
         }
 
         // DELETE api/HistoriasClinicas/5
-        [Authorize(Roles = "ADMIN")]
+        [Authorize(Roles = "ADMIN, MEDICO")]
         [ProducesResponseType(typeof(StatusResponse), 200)]
         [HttpDelete("{Id}")]
         public IActionResult Delete(long Id)
@@ -122,17 +122,17 @@ namespace HistoriasClinicas.Controllers
             // Datos de ejemplo
             var pacientesMock = new List<PacienteDTO>
             {
-                new PacienteDTO { Id = 1, Nombres = "Juan", Apellidos = "Pérez", Documento = "12345678", Telefono = "555-1234" },
-                new PacienteDTO { Id = 2, Nombres = "Ana", Apellidos = "Gómez", Documento = "87654321", Telefono = "555-5678" },
-                new PacienteDTO { Id = 3, Nombres = "Luis", Apellidos = "Martínez", Documento = "11223344", Telefono = "555-9012" },
-                new PacienteDTO { Id = 4, Nombres = "María", Apellidos = "Rodríguez", Documento = "44332211", Telefono = "555-3456" }
+                new PacienteDTO { Id = 1, Nombres = "Juan", Apellidos = "Pérez", Documento = "12345678", Telefono = "555-1234", HistoriaClinicaId = 10007},
+                new PacienteDTO { Id = 2, Nombres = "Ana", Apellidos = "Gómez", Documento = "87654321", Telefono = "555-5678", HistoriaClinicaId = 10007 },
+                new PacienteDTO { Id = 3, Nombres = "Luis", Apellidos = "Martínez", Documento = "11223344", Telefono = "555-9012", HistoriaClinicaId = 10007 },
+                new PacienteDTO { Id = 4, Nombres = "María", Apellidos = "Rodríguez", Documento = "44332211", Telefono = "555-3456", HistoriaClinicaId = 10007 }
             };
 
             return Ok(pacientesMock);
         }
 
         [HttpGet("{id}/Diagnosticos")]
-        [Authorize(Roles = "ADMIN")]
+        [Authorize(Roles = "ADMIN, MEDICO")]
         [ProducesResponseType(typeof(List<DiagnosticoDTO>), 200)]
         [ProducesResponseType(typeof(StatusDTO), 400)]
         public IActionResult GetDiagnosticos(long id)
@@ -156,7 +156,7 @@ namespace HistoriasClinicas.Controllers
         }
 
         [HttpGet("{id}/ResultadoEstudios")]
-        [Authorize(Roles = "ADMIN")]
+        [Authorize(Roles = "ADMIN, MEDICO")]
         [ProducesResponseType(typeof(List<ResultadoEstudio>), 200)]
         [ProducesResponseType(typeof(StatusDTO), 400)]
         public IActionResult GetResultadoEstudios(long id)
@@ -180,7 +180,7 @@ namespace HistoriasClinicas.Controllers
         }
 
         [HttpGet("{id}/Recetas")]
-        [Authorize(Roles = "ADMIN")]
+        [Authorize(Roles = "ADMIN, MEDICO")]
         [ProducesResponseType(typeof(List<Receta>), 200)]
         [ProducesResponseType(typeof(StatusDTO), 400)]
         public IActionResult GetRecetas(long id)

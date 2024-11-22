@@ -16,7 +16,7 @@ namespace DAL
             if (!optionsBuilder.IsConfigured)
             {
                 // Configura la cadena de conexión y resiliencia en caso de que no esté configurada
-                optionsBuilder.UseSqlServer("Server=sqlserver,1433;Database=master;User Id=sa;Password=P45w0rd.N3T;TrustServerCertificate=True",
+                optionsBuilder.UseSqlServer("Server=localhost,1433;Database=master;User Id=sa;Password=P45w0rd.N3T;TrustServerCertificate=True",
                     sqlOptions => sqlOptions.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null));
             }
         }
@@ -86,9 +86,9 @@ namespace DAL
                 .OnDelete(DeleteBehavior.NoAction); // Evita cascada para evitar conflictos
 
             modelBuilder.Entity<Pacientes>()
-                .HasOne(p => p.HistoriasClinicas)
-                .WithOne(h => h.Pacientes) // Configuración en ambos lados de la relación
-                .HasForeignKey<Pacientes>(p => p.HistoriasClinicasId)
+                .HasMany(p => p.HistoriasClinicas)
+                .WithOne(h => h.Pacientes)
+                .HasForeignKey(h => h.PacientesId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Diagnosticos>()

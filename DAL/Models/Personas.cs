@@ -22,37 +22,52 @@ namespace DAL.Models
 
         public Persona GetEntity()
         {
-            Persona persona = new Persona();
+            Persona persona = new Persona
+            {
+                Id = Id,
+                Nombres = Nombres,
+                Apellidos = Apellidos,
+                Documento = Documento
+            };
 
-            persona.Id = Id;
-            persona.Nombres = Nombres;
-            persona.Apellidos = Apellidos;
-            persona.Documento = Documento;
+            if (this is Pacientes pacientes)
+            {
+                persona = new Paciente
+                {
+                    Id = pacientes.Id,
+                    Nombres = pacientes.Nombres,
+                    Apellidos = pacientes.Apellidos,
+                    Documento = pacientes.Documento,
+                    Telefono = pacientes.Telefono,
+                    ContratoSeguroId = pacientes.ContratosSegurosId,
+                    HistoriasClinicas = pacientes.HistoriasClinicas?.Select(h => h.GetEntity()).ToList()
+                };
+            }
 
             return persona;
         }
 
         public static Personas FromEntity(Persona persona, Personas personas = null)
         {
-            Personas personaToSave = personas ?? new Personas();
-
-            personaToSave.Id = persona.Id;
-            personaToSave.Nombres = persona.Nombres;
-            personaToSave.Apellidos = persona.Apellidos;
-            personaToSave.Documento = persona.Documento;
+            Personas personaToSave = personas ?? new Personas
+            {
+                Id = persona.Id,
+                Nombres = persona.Nombres,
+                Apellidos = persona.Apellidos,
+                Documento = persona.Documento
+            };
 
             if (persona is Paciente paciente)
             {
                 if (personaToSave is Pacientes pacientes)
                 {
                     pacientes.Telefono = paciente.Telefono;
-                    pacientes.HistoriasClinicasId = paciente.HistoriaClinicaId;
+                    pacientes.HistoriasClinicas = paciente.HistoriasClinicas?.Select(h => HistoriasClinicas.FromEntity(h, null)).ToList();
                     pacientes.ContratosSegurosId = paciente.ContratoSeguroId;
                 }
             }
 
             return personaToSave;
         }
-
     }
 }

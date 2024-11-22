@@ -1,16 +1,15 @@
 ﻿using Shared.Entities;
 using System.ComponentModel.DataAnnotations.Schema;
 
-
-
 namespace DAL.Models
 {
     public class HistoriasClinicas
     {
-
         public HistoriasClinicas() { }
         public long Id { get; set; }
         public DateTime FechaCreacion { get; set; }
+
+        [ForeignKey("Pacientes")]
         public long PacientesId { get; set; }
         public Pacientes Pacientes { get; set; }
 
@@ -20,22 +19,17 @@ namespace DAL.Models
 
         public HistoriaClinica GetEntity()
         {
-            HistoriaClinica historiaClinica = new HistoriaClinica();
-
-            historiaClinica.Id = Id;
-            historiaClinica.FechaCreacion = FechaCreacion;
-            historiaClinica.PacienteId = PacientesId;
-
-            return historiaClinica;
+            return new HistoriaClinica
+            {
+                Id = Id,
+                FechaCreacion = FechaCreacion,
+                PacienteId = PacientesId
+            };
         }
 
         public static HistoriasClinicas FromEntity(HistoriaClinica historiaClinica, HistoriasClinicas historiasClinicas)
         {
-            HistoriasClinicas historiaToSave;
-            if (historiasClinicas == null)
-                historiaToSave = new HistoriasClinicas();
-            else
-                historiaToSave = historiasClinicas;
+            HistoriasClinicas historiaToSave = historiasClinicas ?? new HistoriasClinicas();
 
             historiaToSave.Id = historiaClinica.Id;
             historiaToSave.FechaCreacion = historiaClinica.FechaCreacion;
