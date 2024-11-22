@@ -1,5 +1,6 @@
 ﻿using DAL.IDALs;
 using DAL.Models;
+using Microsoft.EntityFrameworkCore;
 using Shared.Entities;
 
 namespace DAL.DALs
@@ -49,6 +50,12 @@ namespace DAL.DALs
                 throw new Exception($"No existe un {entityName} con Id {Id}");
             db.Medicos.Remove(toDelete);
             db.SaveChanges();
+        }
+        public Medico GetByMatricula(string matricula)
+        {
+            var medico = db.Medicos.AsNoTracking().FirstOrDefault(m => m.Matricula == matricula);
+            return medico.GetEntity();
+
         }
     }
 }

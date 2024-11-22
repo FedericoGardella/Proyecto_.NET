@@ -25,9 +25,17 @@ namespace DAL.DALs
             throw new NotImplementedException();
         }
 
+        public Medico GetByMatricula(string matricula)
+        {
+            throw new NotImplementedException();
+        }
+
         public Medico Update(Medico x)
         {
             throw new NotImplementedException();
         }
+
+        
+
     }
 }

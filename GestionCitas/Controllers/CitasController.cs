@@ -7,6 +7,8 @@ using StatusResponse = GestionCitas.Models.StatusResponse;
 
 namespace GestionCitas.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class CitasController : ControllerBase
     {
         private readonly IBL_Citas bl;
@@ -19,7 +21,7 @@ namespace GestionCitas.Controllers
         }
 
         // GET: api/<CitasController>
-        [Authorize(Roles = "ADMIN, X")]
+        //[Authorize(Roles = "ADMIN, X")]
         [ProducesResponseType(typeof(List<Cita>), 200)]
         [HttpGet]
         public IActionResult Get()
@@ -36,7 +38,7 @@ namespace GestionCitas.Controllers
         }
 
         // GET api/<CitasController>/5
-        [Authorize(Roles = "ADMIN, X")]
+        //[Authorize(Roles = "ADMIN, X")]
         [ProducesResponseType(typeof(Cita), 200)]
         [HttpGet("{Id}")]
         public IActionResult Get(long Id)
@@ -53,7 +55,7 @@ namespace GestionCitas.Controllers
         }
 
         // POST api/<CitasController>
-        [Authorize(Roles = "ADMIN")]
+        //[Authorize(Roles = "ADMIN")]
         [ProducesResponseType(typeof(Cita), 200)]
         [HttpPost]
         public IActionResult Post([FromBody] Cita x)
@@ -70,7 +72,7 @@ namespace GestionCitas.Controllers
         }
 
         // PUT api/<CitasController>/5
-        [Authorize(Roles = "ADMIN")]
+        //[Authorize(Roles = "ADMIN")]
         [ProducesResponseType(typeof(Cita), 200)]
         [HttpPut("{Id}")]
         public IActionResult Put(long Id, [FromBody] Cita x)
@@ -87,7 +89,7 @@ namespace GestionCitas.Controllers
         }
 
         // DELETE api/<CitasController>/5
-        [Authorize(Roles = "ADMIN")]
+        //[Authorize(Roles = "ADMIN")]
         [ProducesResponseType(typeof(StatusResponse), 200)]
         [HttpDelete("{Id}")]
         public IActionResult Delete(long Id)
@@ -103,5 +105,6 @@ namespace GestionCitas.Controllers
                 return StatusCode(StatusCodes.Status400BadRequest, new StatusDTO(false, "Error al eliminar cita"));
             }
         }
+        
     }
 }

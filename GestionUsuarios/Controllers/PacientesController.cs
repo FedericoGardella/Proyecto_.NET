@@ -8,6 +8,8 @@ using StatusResponse = GestionUsuarios.Models.StatusResponse;
 
 namespace GestionUsuarios.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class PacientesController : ControllerBase
     {
         private readonly IBL_Pacientes bl;
@@ -20,9 +22,9 @@ namespace GestionUsuarios.Controllers
         }
 
         // GET: api/<PacientesController>
-        [Authorize(Roles = "ADMIN, X")]
+        //[Authorize(Roles = "ADMIN, X")]
         [ProducesResponseType(typeof(List<Paciente>), 200)]
-        [HttpGet("api/paciente")]
+        [HttpGet]
         public IActionResult Get()
         {
             try
@@ -39,31 +41,13 @@ namespace GestionUsuarios.Controllers
 
 
         // GET api/<PacientesController>/5
-        [Authorize(Roles = "ADMIN, X, PACIENTE")]
+        //[Authorize(Roles = "ADMIN, X")]
         [ProducesResponseType(typeof(Paciente), 200)]
-        [HttpGet("api/paciente/{Id}")]
+        [HttpGet("{Id}")]
         public IActionResult Get(long Id)
         {
             try
             {
-                var userRoles = User.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value).ToList();
-                var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-                if (!long.TryParse(userIdClaim, out var userId))
-                {
-                    logger.LogWarning("No se pudo convertir el userId del JWT a un valor válido de tipo long.");
-                    return Unauthorized(new StatusDTO(false, "Token inválido."));
-                }
-                if (userRoles.Contains("PACIENTE"))
-                {
-                    // Obtener el ID del paciente logueado
-                    var paciente = bl.Get(userId);
-                    if (paciente == null)
-                    {
-                        logger.LogWarning($"Paciente no encontrado para el usuario {userId}");
-                        return NotFound(new StatusDTO(false, "Paciente no encontrado."));
-                    }
-                    return Ok(paciente);
-                }
                 return Ok(bl.Get(Id));
             }
             catch (Exception ex)
@@ -74,9 +58,9 @@ namespace GestionUsuarios.Controllers
         }
 
         // POST api/<PacientesController>
-        [Authorize(Roles = "ADMIN")]
+        //[Authorize(Roles = "ADMIN")]
         [ProducesResponseType(typeof(Paciente), 200)]
-        [HttpPost("api/paciente")]
+        [HttpPost]
         public IActionResult Post([FromBody] Paciente x)
         {
             try
@@ -91,9 +75,9 @@ namespace GestionUsuarios.Controllers
         }
 
         // PUT api/<PacientesController>/5
-        [Authorize(Roles = "ADMIN")]
+        //[Authorize(Roles = "ADMIN")]
         [ProducesResponseType(typeof(Paciente), 200)]
-        [HttpPut("api/paciente/{Id}")]
+        [HttpPut("{Id}")]
         public IActionResult Put(long Id, [FromBody] Paciente x)
         {
             try
@@ -108,9 +92,9 @@ namespace GestionUsuarios.Controllers
         }
 
         // DELETE api/<PacientesController>/5
-        [Authorize(Roles = "ADMIN")]
+        //[Authorize(Roles = "ADMIN")]
         [ProducesResponseType(typeof(StatusResponse), 200)]
-        [HttpDelete("api/paciente{Id}")]
+        [HttpDelete("{Id}")]
         public IActionResult Delete(long Id)
         {
             try
@@ -124,5 +108,23 @@ namespace GestionUsuarios.Controllers
                 return StatusCode(StatusCodes.Status400BadRequest, new StatusDTO(false, "Error al eliminar paciente"));
             }
         }
+
+        // GET: api/<PacientesController>
+        //[Authorize(Roles = "ADMIN, X")]
+        [ProducesResponseType(typeof(List<Paciente>), 200)]
+        [HttpGet("/documento/{Documento}")]
+        public IActionResult Getbydocumento(string Documento)
+        {
+            try
+            {
+                return Ok(bl.GetPacienteByDocumento(Documento));
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error al obtener pacientes");
+                return StatusCode(StatusCodes.Status400BadRequest, new StatusDTO(false, "Error al obtener pacientes"));
+            }
+        }
+
     }
 }

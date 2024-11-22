@@ -8,6 +8,8 @@ using StatusResponse = GestionUsuarios.Models.StatusResponse;
 
 namespace GestionUsuarios.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class MedicosController : ControllerBase
     {
         private readonly IBL_Medicos bl;
@@ -124,6 +126,23 @@ namespace GestionUsuarios.Controllers
             {
                 logger.LogError(ex, "Error al eliminar medico");
                 return StatusCode(StatusCodes.Status400BadRequest, new StatusDTO(false, "Error al eliminar medico"));
+            }
+        }
+
+        // GET api/<MedicosController>/5
+        [Authorize(Roles = "ADMIN, X")]
+        [ProducesResponseType(typeof(Medico), 200)]
+        [HttpGet("api/medico/matricula/{Documento}")]
+        public IActionResult GetByMatricula(string Documento)
+        {
+            try
+            {
+                return Ok(bl.GetByMatricula(Documento));
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error al obtener medico");
+                return StatusCode(StatusCodes.Status400BadRequest, new StatusDTO(false, "Error al obtener medico"));
             }
         }
     }

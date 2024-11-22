@@ -9,5 +9,6 @@ namespace BL.IBLs
         Medico Add(Medico x);
         Medico Update(Medico x);
         void Delete(long Id);
+        Medico GetByMatricula(string matricula);
     }
 }

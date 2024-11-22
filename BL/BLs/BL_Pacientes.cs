@@ -40,7 +40,8 @@ namespace BL.BLs
 
         public Paciente GetPacienteByDocumento(string documento)
         {
-            return _dal.GetPacienteByDocumento(documento);
+            var paciente = _dal.GetPacienteByDocumento(documento);
+            return paciente;
         }
     }
 }

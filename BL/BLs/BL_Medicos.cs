@@ -37,5 +37,9 @@ namespace BL.BLs
         {
             dal.Delete(Id);
         }
+        public Medico GetByMatricula(string matricula) {
+            var medico = dal.GetByMatricula(matricula);
+            return medico;
+        }
     }
 }
