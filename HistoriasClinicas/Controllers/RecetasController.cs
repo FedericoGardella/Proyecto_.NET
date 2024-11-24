@@ -34,7 +34,7 @@ namespace HistoriasClinicas.Controllers
 
         // GET: api/Recetas
         [HttpGet]
-        [Authorize(Roles = "ADMIN")]
+        [Authorize(Roles = "ADMIN, MEDICO")]
         [ProducesResponseType(typeof(List<Receta>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(StatusDTO), StatusCodes.Status400BadRequest)]
         public IActionResult Get()
@@ -53,7 +53,7 @@ namespace HistoriasClinicas.Controllers
 
         // GET: api/Recetas/5
         [HttpGet("{id:long}")]
-        [Authorize(Roles = "ADMIN")]
+        [Authorize(Roles = "ADMIN, MEDICO")]
         [ProducesResponseType(typeof(Receta), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(StatusDTO), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(StatusDTO), StatusCodes.Status400BadRequest)]
@@ -76,7 +76,7 @@ namespace HistoriasClinicas.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "ADMIN")]
+        [Authorize(Roles = "ADMIN, MEDICO")]
         [ProducesResponseType(typeof(Receta), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(StatusDTO), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(StatusDTO), StatusCodes.Status404NotFound)]
@@ -132,7 +132,7 @@ namespace HistoriasClinicas.Controllers
 
         // PUT: api/Recetas/5
         [HttpPut("{id:long}")]
-        [Authorize(Roles = "ADMIN")]
+        [Authorize(Roles = "ADMIN, MEDICO")]
         [ProducesResponseType(typeof(Receta), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(StatusDTO), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(StatusDTO), StatusCodes.Status404NotFound)]
@@ -178,7 +178,7 @@ namespace HistoriasClinicas.Controllers
 
         // DELETE: api/Recetas/5
         [HttpDelete("{id:long}")]
-        [Authorize(Roles = "ADMIN")]
+        [Authorize(Roles = "ADMIN, MEDICO")]
         [ProducesResponseType(typeof(StatusResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(StatusDTO), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(StatusDTO), StatusCodes.Status404NotFound)]

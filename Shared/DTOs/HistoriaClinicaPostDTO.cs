@@ -6,12 +6,9 @@ using System.Threading.Tasks;
 
 namespace Shared.DTOs
 {
-    public class HistoriaClinicaDTO
+    public class HistoriaClinicaPostDTO
     {
-        public long Id { get; set; }
         public long PacienteId { get; set; }
-        public string PacienteNombres { get; set; }
-        public string PacienteApellidos { get; set; }
         public DateTime FechaCreacion { get; set; } = DateTime.UtcNow;
         public string Comentarios { get; set; }
         public string NombreMedico { get; set; }

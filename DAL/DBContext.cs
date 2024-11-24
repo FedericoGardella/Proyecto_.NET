@@ -16,7 +16,7 @@ namespace DAL
             if (!optionsBuilder.IsConfigured)
             {
                 // Configura la cadena de conexión y resiliencia en caso de que no esté configurada
-                optionsBuilder.UseSqlServer("Server=localhost,1433;Database=master;User Id=sa;Password=P45w0rd.N3T;TrustServerCertificate=True",
+                optionsBuilder.UseSqlServer("Server=sqlserver,1433;Database=master;User Id=sa;Password=P45w0rd.N3T;TrustServerCertificate=True",
                     sqlOptions => sqlOptions.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null));
             }
         }

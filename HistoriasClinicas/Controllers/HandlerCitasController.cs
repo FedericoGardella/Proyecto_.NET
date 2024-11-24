@@ -12,11 +12,13 @@ namespace HistoriasClinicas.Controllers
     public class HandlerCitasController : ControllerBase
     {
         private readonly IBL_GruposCitas blGruposCitas;
+        private readonly IBL_Pacientes blPacientes;
         private readonly ILogger<DiagnosticosController> _logger;
 
-        public HandlerCitasController(IBL_GruposCitas _blGruposCitas, ILogger<DiagnosticosController> logger)
+        public HandlerCitasController(IBL_GruposCitas _blGruposCitas, IBL_Pacientes _blPacientes, ILogger<DiagnosticosController> logger)
         {
             blGruposCitas = _blGruposCitas;
+            blPacientes = _blPacientes;
             _logger = logger;
         }
 
@@ -44,5 +46,27 @@ namespace HistoriasClinicas.Controllers
             return Ok(grupoCitas);
         }
 
+        [HttpGet("{id}/GetPaciente")]
+        [Authorize(Roles = "ADMIN, MEDICO")]
+        [ProducesResponseType(typeof(Paciente), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(StatusDTO), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(StatusDTO), StatusCodes.Status404NotFound)]
+        public IActionResult GetPaciente(long id)
+        {
+            try
+            {
+                var paciente = blPacientes.Get(id);
+                if (paciente == null)
+                {
+                    return NotFound(new StatusDTO(false, "Paciente no encontrado."));
+                }
+                return Ok(paciente);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al obtener paciente.");
+                return BadRequest(new StatusDTO(false, "Error al obtener paciente."));
+            }
+        }
     }
 }

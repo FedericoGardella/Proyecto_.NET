@@ -1,4 +1,5 @@
 ﻿using DAL.IDALs;
+using DAL.Models;
 using Shared.DTOs;
 using Shared.Entities;
 
@@ -42,6 +43,11 @@ namespace DAL.DALs
         }
 
         public List<Receta> GetRecetas(long historiaClinicaId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<HistoriaClinicaDTO> GetHistoriasByDocumento(string documento)
         {
             throw new NotImplementedException();
         }

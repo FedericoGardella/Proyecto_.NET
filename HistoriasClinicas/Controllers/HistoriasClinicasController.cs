@@ -38,6 +38,29 @@ namespace HistoriasClinicas.Controllers
             }
         }
 
+        [HttpGet("{documento}/HistoriasXDocumento")]
+        [Authorize(Roles = "ADMIN, MEDICO")]
+        [ProducesResponseType(typeof(List<HistoriaClinicaDTO>), 200)]
+        [ProducesResponseType(typeof(StatusDTO), 400)]
+        public IActionResult GetHistoriasXDocumento(string documento)
+        {
+            try
+            {
+                var historias = bl.GetHistoriasXDocumento(documento);
+                if (historias == null || !historias.Any())
+                {
+                    return NotFound(new StatusDTO(false, "No se encontraron historias clínicas para este documento."));
+                }
+
+                return Ok(historias);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error al obtener historias clínicas");
+                return StatusCode(StatusCodes.Status500InternalServerError, new StatusDTO(false, "Error al obtener historias clínicas."));
+            }
+        }
+
         // GET api/HistoriasClinicas/5
         [Authorize(Roles = "ADMIN, MEDICO")]
         [ProducesResponseType(typeof(HistoriaClinica), 200)]
@@ -58,7 +81,7 @@ namespace HistoriasClinicas.Controllers
         [Authorize(Roles = "ADMIN, MEDICO")]
         [ProducesResponseType(typeof(HistoriaClinica), 200)]
         [HttpPost]
-        public IActionResult Post([FromBody] HistoriaClinicaDTO historiaClinicaDTO)
+        public IActionResult Post([FromBody] HistoriaClinicaPostDTO historiaClinicaDTO)
         {
             try
             {
@@ -66,7 +89,10 @@ namespace HistoriasClinicas.Controllers
                 var historiaClinicaEntity = new HistoriaClinica
                 {
                     FechaCreacion = historiaClinicaDTO.FechaCreacion,
-                    PacienteId = historiaClinicaDTO.PacienteId
+                    Comentarios = historiaClinicaDTO.Comentarios,
+                    NombreMedico = historiaClinicaDTO.NombreMedico,
+                    CitaId = historiaClinicaDTO.CitaId,
+                    PacienteId = historiaClinicaDTO.PacienteId,
                 };
 
                 var historiaClinica = bl.Add(historiaClinicaEntity);
@@ -135,22 +161,30 @@ namespace HistoriasClinicas.Controllers
         [Authorize(Roles = "ADMIN, MEDICO")]
         [ProducesResponseType(typeof(List<DiagnosticoDTO>), 200)]
         [ProducesResponseType(typeof(StatusDTO), 400)]
+        [ProducesResponseType(typeof(StatusDTO), 404)]
+        [ProducesResponseType(typeof(StatusDTO), 500)]
         public IActionResult GetDiagnosticos(long id)
         {
             try
             {
+                // Llamar a la capa de negocio para obtener los diagnósticos
                 var diagnosticos = bl.GetDiagnosticos(id);
 
                 if (diagnosticos == null || !diagnosticos.Any())
                 {
-                    return BadRequest(new StatusDTO(false, "No se encontró ningún diagnóstico para esta historia clínica."));
+                    // Devolver 404 si no se encuentran diagnósticos
+                    return NotFound(new StatusDTO(false, "No se encontró ningún diagnóstico para esta historia clínica."));
                 }
 
+                // Devolver 200 con los diagnósticos encontrados
                 return Ok(diagnosticos);
             }
             catch (Exception ex)
             {
+                // Registrar el error en el logger
                 logger.LogError(ex, "Error al obtener diagnósticos para la historia clínica.");
+
+                // Devolver 500 para errores inesperados
                 return StatusCode(StatusCodes.Status500InternalServerError, new StatusDTO(false, "Ocurrió un error inesperado al obtener diagnósticos."));
             }
         }
@@ -159,22 +193,30 @@ namespace HistoriasClinicas.Controllers
         [Authorize(Roles = "ADMIN, MEDICO")]
         [ProducesResponseType(typeof(List<ResultadoEstudio>), 200)]
         [ProducesResponseType(typeof(StatusDTO), 400)]
+        [ProducesResponseType(typeof(StatusDTO), 404)]
+        [ProducesResponseType(typeof(StatusDTO), 500)]
         public IActionResult GetResultadoEstudios(long id)
         {
             try
             {
+                // Llamar a la capa de negocio para obtener los resultados de estudios
                 var resultadoEstudios = bl.GetResultadoEstudios(id);
 
                 if (resultadoEstudios == null || !resultadoEstudios.Any())
                 {
-                    return BadRequest(new StatusDTO(false, "No se encontró ningún resultado de estudio para esta historia clínica."));
+                    // Devolver 404 si no se encuentran resultados de estudios
+                    return NotFound(new StatusDTO(false, "No se encontró ningún resultado de estudio para esta historia clínica."));
                 }
 
+                // Devolver 200 con los resultados encontrados
                 return Ok(resultadoEstudios);
             }
             catch (Exception ex)
             {
+                // Registrar el error en el logger
                 logger.LogError(ex, "Error al obtener resultados de estudios para la historia clínica.");
+
+                // Devolver 500 para errores inesperados
                 return StatusCode(StatusCodes.Status500InternalServerError, new StatusDTO(false, "Ocurrió un error inesperado al obtener resultados de estudios."));
             }
         }
@@ -183,24 +225,33 @@ namespace HistoriasClinicas.Controllers
         [Authorize(Roles = "ADMIN, MEDICO")]
         [ProducesResponseType(typeof(List<Receta>), 200)]
         [ProducesResponseType(typeof(StatusDTO), 400)]
+        [ProducesResponseType(typeof(StatusDTO), 404)]
+        [ProducesResponseType(typeof(StatusDTO), 500)]
         public IActionResult GetRecetas(long id)
         {
             try
             {
-                var receta = bl.GetRecetas(id);
+                // Llamar a la capa de negocio para obtener las recetas
+                var recetas = bl.GetRecetas(id);
 
-                if (receta == null || !receta.Any())
+                if (recetas == null || !recetas.Any())
                 {
-                    return BadRequest(new StatusDTO(false, "No se encontró ningúna receta para esta historia clínica."));
+                    // Devolver 404 si no se encuentran recetas
+                    return NotFound(new StatusDTO(false, "No se encontró ninguna receta para esta historia clínica."));
                 }
 
-                return Ok(receta);
+                // Devolver 200 con las recetas encontradas
+                return Ok(recetas);
             }
             catch (Exception ex)
             {
+                // Registrar el error en el logger
                 logger.LogError(ex, "Error al obtener recetas para la historia clínica.");
+
+                // Devolver 500 para errores inesperados
                 return StatusCode(StatusCodes.Status500InternalServerError, new StatusDTO(false, "Ocurrió un error inesperado al obtener recetas."));
             }
         }
+
     }
 }

@@ -53,5 +53,15 @@ namespace BL.BLs
         {
             return dal.GetRecetas(historiaClinicaId);
         }
+
+        public List<HistoriaClinicaDTO> GetHistoriasXDocumento(string documento)
+        {
+            if (string.IsNullOrWhiteSpace(documento))
+            {
+                throw new ArgumentException("El documento no puede estar vacío.", nameof(documento));
+            }
+
+            return dal.GetHistoriasByDocumento(documento);
+        }
     }
 }

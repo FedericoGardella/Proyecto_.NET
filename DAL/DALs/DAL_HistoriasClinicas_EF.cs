@@ -1,5 +1,6 @@
 ﻿using DAL.IDALs;
 using DAL.Models;
+using Microsoft.EntityFrameworkCore;
 using Shared.DTOs;
 using Shared.Entities;
 using System;
@@ -101,5 +102,36 @@ namespace DAL.DALs
                 Tipo = d.Tipo,
             }).ToList();
         }
+        public List<HistoriaClinicaDTO> GetHistoriasByDocumento(string documento)
+        {
+            if (string.IsNullOrWhiteSpace(documento))
+            {
+                throw new ArgumentException("El documento no puede estar vacío.", nameof(documento));
+            }
+
+            // Obtener el paciente por documento y sus historias clínicas
+            var paciente = db.Pacientes
+                .Include(p => p.HistoriasClinicas) // Incluir las historias clínicas en la consulta
+                .FirstOrDefault(p => p.Documento == documento);
+
+            if (paciente == null || paciente.HistoriasClinicas == null || !paciente.HistoriasClinicas.Any())
+            {
+                return new List<HistoriaClinicaDTO>(); // Devuelve una lista vacía si no hay resultados
+            }
+
+            // Mapear HistoriasClinicas a HistoriaClinicaDTO
+            return paciente.HistoriasClinicas.Select(h => new HistoriaClinicaDTO
+            {
+                Id = h.Id,
+                PacienteId = paciente.Id,
+                PacienteNombres = paciente.Nombres,
+                PacienteApellidos = paciente.Apellidos,
+                FechaCreacion = h.FechaCreacion,
+                Comentarios = h.Comentarios,
+                NombreMedico = h.NombreMedico,
+                CitaId = h.CitasId
+            }).ToList();
+        }
+
     }
 }

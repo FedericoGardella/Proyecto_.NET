@@ -8,6 +8,9 @@ namespace DAL.Models
         public HistoriasClinicas() { }
         public long Id { get; set; }
         public DateTime FechaCreacion { get; set; }
+        public string Comentarios { get; set; }
+        public string NombreMedico { get; set; }
+        public long CitasId { get; set; }
 
         [ForeignKey("Pacientes")]
         public long PacientesId { get; set; }
@@ -23,6 +26,9 @@ namespace DAL.Models
             {
                 Id = Id,
                 FechaCreacion = FechaCreacion,
+                Comentarios = Comentarios,
+                NombreMedico = NombreMedico,
+                CitaId = CitasId,
                 PacienteId = PacientesId
             };
         }
@@ -33,6 +39,9 @@ namespace DAL.Models
 
             historiaToSave.Id = historiaClinica.Id;
             historiaToSave.FechaCreacion = historiaClinica.FechaCreacion;
+            historiaToSave.Comentarios = historiaClinica.Comentarios;
+            historiaToSave.NombreMedico = historiaClinica.NombreMedico;
+            historiaToSave.CitasId = historiaClinica.CitaId;
             historiaToSave.PacientesId = historiaClinica.PacienteId;
 
             return historiaToSave;

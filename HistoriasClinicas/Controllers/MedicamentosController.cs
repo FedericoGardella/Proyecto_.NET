@@ -22,7 +22,7 @@ namespace HistoriasClinicas.Controllers
 
         // GET: api/Medicamentos
         [HttpGet]
-        [Authorize(Roles = "ADMIN")]
+        [Authorize(Roles = "ADMIN, MEDICO")]
         [ProducesResponseType(typeof(List<Medicamento>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(StatusResponse), StatusCodes.Status400BadRequest)]
         public IActionResult Get()

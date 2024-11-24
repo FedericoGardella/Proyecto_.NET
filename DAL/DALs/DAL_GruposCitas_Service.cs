@@ -39,13 +39,13 @@ namespace DAL.DALs
                 {
                     Id = 1,
                     Lugar = "Clínica Central",
-                    Fecha = new DateTime(2024, 11, 22),
-                    MedicosId = 60003,
+                    Fecha = new DateTime(2024, 11, 24),
+                    MedicosId = 60006,
                     EspecialidadesId = 201,
                     Citas = new List<Citas>
                     {
-                        new Citas { Id = 1, PacienteId = 12345678, Hora = new DateTime(2024, 11, 22, 9, 0, 0).TimeOfDay  },
-                        new Citas { Id = 2, PacienteId = 24343432, Hora = new DateTime(2024, 11, 22, 10, 0, 0).TimeOfDay  }
+                        new Citas { Id = 5432, PacienteId = 60005, Hora = new DateTime(2024, 11, 24, 9, 0, 0).TimeOfDay  },
+                        new Citas { Id = 9864, PacienteId = 12522, Hora = new DateTime(2024, 11, 24, 10, 0, 0).TimeOfDay  }
                     }
                 },
                 new GruposCitas
