@@ -25,36 +25,22 @@ namespace DAL
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Articulo>()
+            modelBuilder.Entity<Articulos>()
                 .Property(a => a.Costo)
                 .HasPrecision(10, 2);
 
             // Configura la relación entre Articulos y TiposSeguros sin cascada
             modelBuilder.Entity<Articulos>()
                 .HasOne(a => a.TiposSeguros)
-                .WithMany(t => t.Articulos)
+                .WithMany() // No hay navegabilidad inversa desde TiposSeguros hacia Articulos
                 .HasForeignKey(a => a.TiposSegurosId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            // Configura la relación entre Articulos y PreciosEspecialidades sin cascada
-            modelBuilder.Entity<Articulos>()
-                .HasOne(a => a.PreciosEspecialidades)
-                .WithMany() // Sin navegabilidad inversa en PreciosEspecialidades
-                .HasForeignKey("PreciosEspecialidadesId") // Define la clave foránea directamente
-                .OnDelete(DeleteBehavior.NoAction);
-
-            // Configura la relación entre PreciosEspecialidades y TiposSeguros sin cascada
+            // Relación entre PreciosEspecialidades y Articulos
             modelBuilder.Entity<PreciosEspecialidades>()
-                .HasOne(p => p.TiposSeguros)
-                .WithMany()
-                .HasForeignKey(p => p.TiposSegurosId)
-                .OnDelete(DeleteBehavior.NoAction);
-
-            // Configura la relación entre PreciosEspecialidades y Especialidades sin cascada
-            modelBuilder.Entity<PreciosEspecialidades>()
-                .HasOne(p => p.Especialidades)
-                .WithMany()
-                .HasForeignKey(p => p.EspecialidadesId)
+                .HasOne(pe => pe.Articulos)
+                .WithMany() // Sin navegabilidad inversa desde Articulos hacia PreciosEspecialidades
+                .HasForeignKey(pe => pe.ArticulosId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             // Configura la relación entre Citas y Pacientes
@@ -96,6 +82,27 @@ namespace DAL
                 .WithMany(h => h.Diagnosticos)
                 .HasForeignKey(d => d.HistoriasClinicasId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            // Relación entre Pacientes y ContratosSeguros (uno a muchos)
+            modelBuilder.Entity<ContratosSeguros>()
+                .HasOne(cs => cs.Pacientes)
+                .WithMany(p => p.ContratosSeguros)
+                .HasForeignKey(cs => cs.PacientesId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Relación entre ContratosSeguros y TiposSeguros
+            modelBuilder.Entity<ContratosSeguros>()
+                .HasOne(cs => cs.TiposSeguros)
+                .WithMany() // Asume que TiposSeguros no tiene una colección de ContratosSeguros
+                .HasForeignKey(cs => cs.TiposSegurosId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Relación entre Articulos y Especialidades
+            modelBuilder.Entity<Articulos>()
+                .HasOne(a => a.Especialidades)
+                .WithMany() // No hay navegabilidad inversa desde Especialidades hacia Articulos
+                .HasForeignKey(a => a.EspecialidadesId)
+                .OnDelete(DeleteBehavior.NoAction);
 
         }
 

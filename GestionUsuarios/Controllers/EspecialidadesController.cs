@@ -7,6 +7,8 @@ using StatusResponse = GestionUsuarios.Models.StatusResponse;
 
 namespace GestionUsuarios.Controllers
 {
+    [ApiController]
+    [Route("api/[controller]")]
     public class EspecialidadesController : ControllerBase
     {
         private readonly IBL_Especialidades bl;
@@ -26,7 +28,14 @@ namespace GestionUsuarios.Controllers
         {
             try
             {
-                return Ok(bl.GetAll());
+
+                var especialidades = bl.GetAll();
+                if (especialidades == null || !especialidades.Any())
+                {
+                    return NotFound(new StatusDTO(false, "No se encontraron especialidades."));
+                }
+
+                return Ok(especialidades);
             }
             catch (Exception ex)
             {
@@ -45,7 +54,13 @@ namespace GestionUsuarios.Controllers
         {
             try
             {
-                return Ok(bl.Get(Id));
+                var especialidad = bl.Get(Id);
+                if (especialidad == null)
+                {
+                    return NotFound(new StatusDTO(false, "Especialidad no encontrada."));
+                }
+
+                return Ok(especialidad);
             }
             catch (Exception ex)
             {

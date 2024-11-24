@@ -9,8 +9,6 @@ namespace DAL.Models
         public string Nombre { get; set; }
         public string Descripcion { get; set; }
 
-        public List<Articulos> Articulos { get; set; }
-
 
         public TipoSeguro GetEntity()
         {

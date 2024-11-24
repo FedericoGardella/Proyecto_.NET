@@ -8,33 +8,27 @@ namespace DAL.Models
         public PreciosEspecialidades() { }
         public long Id { get; set; }
 
+        [ForeignKey("Articulos")]
+        public long ArticulosId { get; set; }
+        public Articulos Articulos { get; set; }
 
-        [ForeignKey("TiposSeguros")]
-        public long TiposSegurosId { get; set; }
-        public TiposSeguros TiposSeguros { get; set; }
-
-        [ForeignKey("Especialidades")]
-        public long EspecialidadesId { get; set; }
-        public Especialidades Especialidades { get; set; }
 
         public PrecioEspecialidad GetEntity()
         {
-            PrecioEspecialidad precioEspecialidad = new PrecioEspecialidad();
-
-            precioEspecialidad.Id = Id;
-
-            return precioEspecialidad;
+            return new PrecioEspecialidad
+            {
+                Id = Id,
+                ArticuloId = ArticulosId,
+                Articulo = Articulos?.GetEntity()
+            };
         }
 
         public static PreciosEspecialidades FromEntity(PrecioEspecialidad precioEspecialidad, PreciosEspecialidades preciosEspecialidades)
         {
-            PreciosEspecialidades precioEspecialidadToSave;
-            if (precioEspecialidad == null)
-                precioEspecialidadToSave = new PreciosEspecialidades();
-            else
-                precioEspecialidadToSave = preciosEspecialidades;
+            PreciosEspecialidades precioEspecialidadToSave = preciosEspecialidades ?? new PreciosEspecialidades();
 
             precioEspecialidadToSave.Id = precioEspecialidad.Id;
+            precioEspecialidadToSave.ArticulosId = precioEspecialidad.ArticuloId;
 
             return precioEspecialidadToSave;
         }

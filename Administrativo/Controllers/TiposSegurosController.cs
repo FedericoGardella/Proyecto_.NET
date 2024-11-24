@@ -22,7 +22,7 @@ namespace Administrativo.Controllers
 
         // GET: api/TiposSeguros
         [HttpGet]
-        [Authorize(Roles = "ADMIN, USER")]
+        [Authorize(Roles = "ADMIN, PACIENTE")]
         [ProducesResponseType(typeof(List<TipoSeguro>), 200)]
         public IActionResult Get()
         {
@@ -39,7 +39,7 @@ namespace Administrativo.Controllers
 
         // GET: api/TiposSeguros/5
         [HttpGet("{id}")]
-        [Authorize(Roles = "ADMIN, USER")]
+        [Authorize(Roles = "ADMIN, PACIENTE")]
         [ProducesResponseType(typeof(TipoSeguro), 200)]
         public IActionResult Get(long id)
         {

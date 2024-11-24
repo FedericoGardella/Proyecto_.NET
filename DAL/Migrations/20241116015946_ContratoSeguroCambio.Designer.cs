@@ -4,6 +4,7 @@ using DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DAL.Migrations
 {
     [DbContext(typeof(DBContext))]
-    partial class DBContextModelSnapshot : ModelSnapshot
+    [Migration("20241116015946_ContratoSeguroCambio")]
+    partial class ContratoSeguroCambio
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -31,11 +34,7 @@ namespace DAL.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<decimal>("Costo")
-                        .HasPrecision(10, 2)
                         .HasColumnType("decimal(10,2)");
-
-                    b.Property<long>("EspecialidadesId")
-                        .HasColumnType("bigint");
 
                     b.Property<DateTime>("Fecha")
                         .HasColumnType("datetime2");
@@ -44,12 +43,15 @@ namespace DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<long>("PreciosEspecialidadesId")
+                        .HasColumnType("bigint");
+
                     b.Property<long>("TiposSegurosId")
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EspecialidadesId");
+                    b.HasIndex("PreciosEspecialidadesId");
 
                     b.HasIndex("TiposSegurosId");
 
@@ -112,7 +114,7 @@ namespace DAL.Migrations
                     b.Property<DateTime>("FechaInicio")
                         .HasColumnType("datetime2");
 
-                    b.Property<long>("PacientesId")
+                    b.Property<long>("PacienteId")
                         .HasColumnType("bigint");
 
                     b.Property<long>("TiposSegurosId")
@@ -120,7 +122,8 @@ namespace DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PacientesId");
+                    b.HasIndex("PacienteId")
+                        .IsUnique();
 
                     b.HasIndex("TiposSegurosId");
 
@@ -316,12 +319,17 @@ namespace DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
-                    b.Property<long>("ArticulosId")
+                    b.Property<long>("EspecialidadesId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("TiposSegurosId")
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ArticulosId");
+                    b.HasIndex("EspecialidadesId");
+
+                    b.HasIndex("TiposSegurosId");
 
                     b.ToTable("PreciosEspecialidades");
                 });
@@ -618,6 +626,30 @@ namespace DAL.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Shared.Entities.Articulo", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<decimal>("Costo")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<DateTime>("Fecha")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Articulo");
+                });
+
             modelBuilder.Entity("DAL.Models.Medicos", b =>
                 {
                     b.HasBaseType("DAL.Models.Personas");
@@ -633,6 +665,9 @@ namespace DAL.Migrations
                 {
                     b.HasBaseType("DAL.Models.Personas");
 
+                    b.Property<long?>("ContratosSegurosId")
+                        .HasColumnType("bigint");
+
                     b.Property<long?>("HistoriasClinicasId")
                         .HasColumnType("bigint");
 
@@ -640,6 +675,8 @@ namespace DAL.Migrations
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
+
+                    b.HasIndex("ContratosSegurosId");
 
                     b.HasIndex("HistoriasClinicasId")
                         .IsUnique()
@@ -650,19 +687,19 @@ namespace DAL.Migrations
 
             modelBuilder.Entity("DAL.Models.Articulos", b =>
                 {
-                    b.HasOne("DAL.Models.Especialidades", "Especialidades")
+                    b.HasOne("DAL.Models.PreciosEspecialidades", "PreciosEspecialidades")
                         .WithMany()
-                        .HasForeignKey("EspecialidadesId")
+                        .HasForeignKey("PreciosEspecialidadesId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("DAL.Models.TiposSeguros", "TiposSeguros")
-                        .WithMany()
+                        .WithMany("Articulos")
                         .HasForeignKey("TiposSegurosId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("Especialidades");
+                    b.Navigation("PreciosEspecialidades");
 
                     b.Navigation("TiposSeguros");
                 });
@@ -709,8 +746,8 @@ namespace DAL.Migrations
             modelBuilder.Entity("DAL.Models.ContratosSeguros", b =>
                 {
                     b.HasOne("DAL.Models.Pacientes", "Pacientes")
-                        .WithMany("ContratosSeguros")
-                        .HasForeignKey("PacientesId")
+                        .WithOne()
+                        .HasForeignKey("DAL.Models.ContratosSeguros", "PacienteId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -779,13 +816,21 @@ namespace DAL.Migrations
 
             modelBuilder.Entity("DAL.Models.PreciosEspecialidades", b =>
                 {
-                    b.HasOne("DAL.Models.Articulos", "Articulos")
+                    b.HasOne("DAL.Models.Especialidades", "Especialidades")
                         .WithMany()
-                        .HasForeignKey("ArticulosId")
+                        .HasForeignKey("EspecialidadesId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("Articulos");
+                    b.HasOne("DAL.Models.TiposSeguros", "TiposSeguros")
+                        .WithMany()
+                        .HasForeignKey("TiposSegurosId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Especialidades");
+
+                    b.Navigation("TiposSeguros");
                 });
 
             modelBuilder.Entity("DAL.Models.Recetas", b =>
@@ -887,10 +932,16 @@ namespace DAL.Migrations
 
             modelBuilder.Entity("DAL.Models.Pacientes", b =>
                 {
+                    b.HasOne("DAL.Models.ContratosSeguros", "ContratosSeguros")
+                        .WithMany()
+                        .HasForeignKey("ContratosSegurosId");
+
                     b.HasOne("DAL.Models.HistoriasClinicas", "HistoriasClinicas")
                         .WithOne("Pacientes")
                         .HasForeignKey("DAL.Models.Pacientes", "HistoriasClinicasId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("ContratosSeguros");
 
                     b.Navigation("HistoriasClinicas");
                 });
@@ -922,6 +973,11 @@ namespace DAL.Migrations
                     b.Navigation("Medicamentos");
                 });
 
+            modelBuilder.Entity("DAL.Models.TiposSeguros", b =>
+                {
+                    b.Navigation("Articulos");
+                });
+
             modelBuilder.Entity("DAL.Models.Medicos", b =>
                 {
                     b.Navigation("GruposCitas");
@@ -930,8 +986,6 @@ namespace DAL.Migrations
             modelBuilder.Entity("DAL.Models.Pacientes", b =>
                 {
                     b.Navigation("Citas");
-
-                    b.Navigation("ContratosSeguros");
                 });
 #pragma warning restore 612, 618
         }

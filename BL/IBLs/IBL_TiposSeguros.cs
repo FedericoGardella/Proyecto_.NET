@@ -1,4 +1,5 @@
-﻿using Shared.Entities;
+﻿using Shared.DTOs;
+using Shared.Entities;
 
 namespace BL.IBLs
 {
@@ -9,5 +10,6 @@ namespace BL.IBLs
         TipoSeguro Add(TipoSeguro x);
         TipoSeguro Update(TipoSeguro x);
         void Delete(long Id);
+        //List<ContratoSeguroDTO> GetContratosSeguros(long TipoSeguroId);
     }
 }

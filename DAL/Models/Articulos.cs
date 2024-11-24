@@ -9,26 +9,31 @@ namespace DAL.Models
         public long Id { get; set; }
         public string Nombre { get; set; }
         public DateTime Fecha { get; set; }
+        public decimal Costo { get; set; }
+
 
         [ForeignKey("TiposSeguros")]
         public long TiposSegurosId { get; set; }
-        public TiposSeguros TiposSeguros { get; set; }
+        public TiposSeguros? TiposSeguros { get; set; }
 
-        public PreciosEspecialidades PreciosEspecialidades { get; set; }
 
-        [Column(TypeName = "decimal(10,2)")]
-        public decimal Costo { get; set; }
+        [ForeignKey("Especialidades")]
+        public long EspecialidadesId { get; set; }
+        public Especialidades? Especialidades { get; set; }
 
         public Articulo GetEntity()
         {
-            Articulo articulo = new Articulo();
-
-            articulo.Id = Id;
-            articulo.Nombre = Nombre;
-            articulo.Fecha = Fecha;
-            articulo.Costo = Costo;
-
-            return articulo;
+            return new Articulo
+            {
+                Id = Id,
+                Nombre = Nombre,
+                Fecha = Fecha,
+                Costo = Costo,
+                TipoSeguroId = TiposSegurosId,
+                TipoSeguro = TiposSeguros?.GetEntity(),
+                EspecialidadId = EspecialidadesId,
+                Especialidad = Especialidades?.GetEntity()
+            };
         }
 
         public static Articulos FromEntity(Articulo articulo, Articulos articulos)
@@ -43,6 +48,8 @@ namespace DAL.Models
             articuloToSave.Nombre = articulo.Nombre;
             articuloToSave.Fecha = articulo.Fecha;
             articuloToSave.Costo = articulo.Costo;
+            articuloToSave.TiposSegurosId = articulo.TipoSeguroId;
+            articuloToSave.EspecialidadesId = articulo.EspecialidadId;
 
             return articuloToSave;
         }

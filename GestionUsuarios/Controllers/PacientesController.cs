@@ -7,6 +7,8 @@ using StatusResponse = GestionUsuarios.Models.StatusResponse;
 
 namespace GestionUsuarios.Controllers
 {
+    [ApiController]
+    [Route("api/[controller]")]
     public class PacientesController : ControllerBase
     {
         private readonly IBL_Pacientes bl;

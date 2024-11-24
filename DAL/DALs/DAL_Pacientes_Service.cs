@@ -1,10 +1,11 @@
 ﻿using DAL.IDALs;
 using DAL.Models;
+using Shared.DTOs;
 using Shared.Entities;
 
 namespace DAL.DALs
 {
-    public class DAL_Paciente_Service : IDAL_Pacientes
+    public class DAL_Pacientes_Service : IDAL_Pacientes
     {
         public Paciente Add(Paciente x)
         {
@@ -34,6 +35,11 @@ namespace DAL.DALs
         public Paciente Update(Paciente x)
         {
             throw new NotImplementedException();
+        }
+
+        public List<ContratoSeguroDTO> GetContratosSeguros(long PacienteId) 
+        { 
+            throw new NotImplementedException(); 
         }
     }
 }

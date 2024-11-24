@@ -12,6 +12,7 @@ namespace Shared.Entities
         public HistoriaClinica? HistoriaClinica { get; set; }
         public long? ContratoSeguroId { get; set; }
         public ContratoSeguro? ContratoSeguro { get; set; }
+        public List<ContratoSeguro> ContratosSeguros { get; set; }
 
     }
 }

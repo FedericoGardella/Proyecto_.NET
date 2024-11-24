@@ -4,6 +4,7 @@ using DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DAL.Migrations
 {
     [DbContext(typeof(DBContext))]
-    partial class DBContextModelSnapshot : ModelSnapshot
+    [Migration("20241123174201_UpdateArticulos")]
+    partial class UpdateArticulos
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -47,11 +50,16 @@ namespace DAL.Migrations
                     b.Property<long>("TiposSegurosId")
                         .HasColumnType("bigint");
 
+                    b.Property<long?>("TiposSegurosId1")
+                        .HasColumnType("bigint");
+
                     b.HasKey("Id");
 
                     b.HasIndex("EspecialidadesId");
 
                     b.HasIndex("TiposSegurosId");
+
+                    b.HasIndex("TiposSegurosId1");
 
                     b.ToTable("Articulos");
                 });
@@ -662,6 +670,10 @@ namespace DAL.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
+                    b.HasOne("DAL.Models.TiposSeguros", null)
+                        .WithMany("Articulos")
+                        .HasForeignKey("TiposSegurosId1");
+
                     b.Navigation("Especialidades");
 
                     b.Navigation("TiposSeguros");
@@ -920,6 +932,11 @@ namespace DAL.Migrations
             modelBuilder.Entity("DAL.Models.Recetas", b =>
                 {
                     b.Navigation("Medicamentos");
+                });
+
+            modelBuilder.Entity("DAL.Models.TiposSeguros", b =>
+                {
+                    b.Navigation("Articulos");
                 });
 
             modelBuilder.Entity("DAL.Models.Medicos", b =>

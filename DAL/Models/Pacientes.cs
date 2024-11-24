@@ -12,12 +12,12 @@ namespace DAL.Models
 
         public List<Citas> Citas { get; set; }
 
-        [ForeignKey("ContratosSeguros")]
-        public long? ContratosSegurosId { get; set; }
-        public ContratosSeguros? ContratosSeguros { get; set; }
+        // Relación de uno a muchos con ContratosSeguros
+        public List<ContratosSeguros> ContratosSeguros { get; set; }
+
 
         [ForeignKey("HistoriasClinicas")]
-        public long? HistoriasClinicasId { get; set; }  
+        public long? HistoriasClinicasId { get; set; }
         public HistoriasClinicas? HistoriasClinicas { get; set; }
 
         public Paciente GetEntity()
@@ -29,8 +29,7 @@ namespace DAL.Models
                 Apellidos = Apellidos,
                 Telefono = Telefono,
                 Documento = Documento,
-                HistoriaClinicaId = HistoriasClinicasId,
-                ContratoSeguroId = ContratosSegurosId
+                HistoriaClinicaId = HistoriasClinicasId
             };
         }
 
@@ -44,8 +43,7 @@ namespace DAL.Models
             pacienteToSave.Telefono = paciente.Telefono;
             pacienteToSave.Documento = paciente.Documento;
             pacienteToSave.HistoriasClinicasId = paciente.HistoriaClinicaId;
-            pacienteToSave.ContratosSegurosId = paciente.ContratoSeguroId;
-
+           
             return pacienteToSave;
         }
     }

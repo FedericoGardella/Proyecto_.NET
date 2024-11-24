@@ -47,7 +47,7 @@ namespace DAL.Models
                 {
                     pacientes.Telefono = paciente.Telefono;
                     pacientes.HistoriasClinicasId = paciente.HistoriaClinicaId;
-                    pacientes.ContratosSegurosId = paciente.ContratoSeguroId;
+                    
                 }
             }
 
