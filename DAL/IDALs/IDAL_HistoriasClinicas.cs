@@ -15,5 +15,6 @@ namespace DAL.IDALs
         List<ResultadoEstudio> GetResultadoEstudios(long historiaClinicaId);
         List<Receta> GetRecetas(long historiaClinicaId);
         public List<HistoriaClinicaDTO> GetHistoriasByDocumento(string documento);
+        HistoriaClinica GetUltimaHistoriaClinicaPorPaciente(long pacienteId, string token);
     }
 }

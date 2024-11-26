@@ -253,5 +253,27 @@ namespace HistoriasClinicas.Controllers
             }
         }
 
+        [HttpGet("Pacientes/{id}/UltimaHistoriaClinica")]
+        [Authorize(Roles = "ADMIN, MEDICO")]
+        public IActionResult GetUltimaHistoriaClinica(long id)
+        {
+            try
+            {
+                var ultimaHistoria = bl.GetUltimaHistoriaClinicaPorPaciente(id, null);
+
+                if (ultimaHistoria == null)
+                {
+                    return NotFound(new StatusDTO(false, "No se encontraron historias clínicas para este documento."));
+                }
+
+                return Ok(ultimaHistoria);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error al obtener la última historia clínica para el paciente con ID {PacienteId}", id);
+                return StatusCode(500, new StatusDTO(false, "Ocurrio un error al procesar la solicitud."));
+            }
+        }
+
     }
 }

@@ -14,5 +14,6 @@ namespace BL.IBLs
         List<ResultadoEstudio> GetResultadoEstudios(long historiaClinicaId);
         List<Receta> GetRecetas(long historiaClinicaId);
         List<HistoriaClinicaDTO> GetHistoriasXDocumento(string documento);
+        HistoriaClinica GetUltimaHistoriaClinicaPorPaciente(long pacienteId, string token);
     }
 }

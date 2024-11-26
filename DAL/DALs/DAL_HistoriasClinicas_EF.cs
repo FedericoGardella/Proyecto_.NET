@@ -132,6 +132,15 @@ namespace DAL.DALs
                 CitaId = h.CitasId
             }).ToList();
         }
+        public HistoriaClinica GetUltimaHistoriaClinicaPorPaciente(long pacienteId, string token)
+        {
+            var ultimaHistoria = db.HistoriasClinicas
+                .Include(h => h.ResultadosEstudios)
+                .Where(h => h.PacientesId == pacienteId)
+                .OrderByDescending(h => h.FechaCreacion)
+                .FirstOrDefault();
 
+            return ultimaHistoria?.GetEntity();
+        }
     }
 }

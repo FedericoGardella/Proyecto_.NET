@@ -63,5 +63,10 @@ namespace BL.BLs
 
             return dal.GetHistoriasByDocumento(documento);
         }
+
+        public HistoriaClinica GetUltimaHistoriaClinicaPorPaciente(long pacienteId, string token)
+        {
+                return dal.GetUltimaHistoriaClinicaPorPaciente(pacienteId, token);
+        }
     }
 }
