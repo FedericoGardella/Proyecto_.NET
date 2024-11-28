@@ -8,6 +8,7 @@ namespace DAL.Models
         public Citas() { }
         public long Id { get; set; }
         public TimeSpan Hora { get; set; }
+        public decimal Costo { get; set; }
 
         [ForeignKey("Pacientes")]
         public long PacienteId { get; set; }
@@ -17,9 +18,9 @@ namespace DAL.Models
         public long GruposCitasId { get; set; }
         public GruposCitas GruposCitas { get; set; }
 
-        [ForeignKey("Facturas")]
-        public long FacturasId { get; set; }
-        public Facturas Facturas { get; set; }
+        
+        public long? FacturasId { get; set; }
+        public Facturas? Facturas { get; set; }
 
         [ForeignKey("PreciosEspecialidades")]
         public long PreciosEspecialidadesId { get; set; }
@@ -27,12 +28,15 @@ namespace DAL.Models
 
         public Cita GetEntity()
         {
-            Cita cita = new Cita();
-
-            cita.Id = Id;
-            cita.Hora = Hora;
-
-            return cita;
+            return new Cita
+            {
+                Id = Id,
+                Hora = Hora,
+                Costo = Costo,
+                PacienteId = PacienteId,
+                GrupoCitaId = GruposCitasId,
+                PrecioEspecialidadId = PreciosEspecialidadesId
+            };
         }
 
         public static Citas FromEntity(Cita cita, Citas citas)
@@ -45,6 +49,10 @@ namespace DAL.Models
 
             citaToSave.Id = cita.Id;
             citaToSave.Hora = cita.Hora;
+            citaToSave.Costo = cita.Costo;
+            citaToSave.PacienteId = cita.PacienteId;
+            citaToSave.GruposCitasId = cita.GrupoCitaId;
+            citaToSave.PreciosEspecialidadesId = cita.PrecioEspecialidadId;
 
             return citaToSave;
         }

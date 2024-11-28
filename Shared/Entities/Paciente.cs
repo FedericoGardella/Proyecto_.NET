@@ -13,6 +13,8 @@ namespace Shared.Entities
         public long? ContratoSeguroId { get; set; }
         public ContratoSeguro? ContratoSeguro { get; set; }
         public List<ContratoSeguro> ContratosSeguros { get; set; }
+        public long? FacturaId { get; set; }
+        public Factura? Factura { get; set; }
 
     }
 }

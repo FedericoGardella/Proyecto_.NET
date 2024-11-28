@@ -8,7 +8,7 @@
         public decimal Costo { get; set; }
         public long TipoSeguroId { get; set; }
         public TipoSeguro TipoSeguro { get; set; }
-        public long EspecialidadId { get; set; }
-        public Especialidad Especialidad { get; set; }
+        public long PrecioEspecialidadId { get; set; }
+        public PrecioEspecialidad PrecioEspecialidad { get; set; }
     }
 }

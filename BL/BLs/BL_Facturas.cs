@@ -1,5 +1,6 @@
 ﻿using BL.IBLs;
 using DAL.IDALs;
+using Shared.DTOs;
 using Shared.Entities;
 
 namespace BL.BLs
@@ -36,6 +37,16 @@ namespace BL.BLs
         public void Delete(long Id)
         {
             dal.Delete(Id);
+        }
+
+        public List<CitaDTO> GetCitas(long facturaId)
+        {
+            return dal.GetCitas(facturaId);
+        }
+
+        public List<FacturaMesDTO> GetFacturasMes(long facturaId)
+        {
+            return dal.GetFacturasMes(facturaId);
         }
     }
 }

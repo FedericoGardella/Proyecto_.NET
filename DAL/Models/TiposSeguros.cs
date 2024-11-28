@@ -1,4 +1,5 @@
-﻿using Shared.Entities;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using Shared.Entities;
 
 namespace DAL.Models
 {
@@ -9,29 +10,31 @@ namespace DAL.Models
         public string Nombre { get; set; }
         public string Descripcion { get; set; }
 
+        public long ArticulosId { get; set; }
+        public Articulos Articulos { get; set; }
+
 
         public TipoSeguro GetEntity()
         {
-            TipoSeguro tipoSeguro = new TipoSeguro();
+            return new TipoSeguro
+            {
+                Id = Id,
+                Nombre = Nombre,
+                Descripcion = Descripcion,
+                ArticuloId = ArticulosId,
+                //Articulo = Articulos?.GetEntity()
+            };
 
-            tipoSeguro.Id = Id;
-            tipoSeguro.Nombre = Nombre;
-            tipoSeguro.Descripcion = Descripcion;
-
-            return tipoSeguro;
         }
 
         public static TiposSeguros FromEntity(TipoSeguro tipoSeguro, TiposSeguros tiposSeguros)
         {
-            TiposSeguros tipoSeguroToSave;
-            if (tiposSeguros == null)
-                tipoSeguroToSave = new TiposSeguros();
-            else
-                tipoSeguroToSave = tiposSeguros;
+            TiposSeguros tipoSeguroToSave = tiposSeguros ?? new TiposSeguros();
 
             tipoSeguroToSave.Id = tipoSeguro.Id;
             tipoSeguroToSave.Nombre = tipoSeguro.Nombre;
             tipoSeguroToSave.Descripcion = tipoSeguro.Descripcion;
+            tipoSeguroToSave.ArticulosId = tipoSeguro.ArticuloId;
 
             return tipoSeguroToSave;
         }

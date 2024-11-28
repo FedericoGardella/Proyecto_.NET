@@ -7,32 +7,35 @@ namespace DAL.Models
     {
         public Articulos() { }
         public long Id { get; set; }
-        public string Nombre { get; set; }
         public DateTime Fecha { get; set; }
         public decimal Costo { get; set; }
 
 
-        [ForeignKey("TiposSeguros")]
-        public long TiposSegurosId { get; set; }
+        public long? TiposSegurosId { get; set; }
         public TiposSeguros? TiposSeguros { get; set; }
 
 
-        [ForeignKey("Especialidades")]
-        public long EspecialidadesId { get; set; }
-        public Especialidades? Especialidades { get; set; }
+        public long? PreciosEspecialidadesId { get; set; }
+        public PreciosEspecialidades? PreciosEspecialidades { get; set; }
 
         public Articulo GetEntity()
         {
             return new Articulo
             {
                 Id = Id,
-                Nombre = Nombre,
                 Fecha = Fecha,
                 Costo = Costo,
-                TipoSeguroId = TiposSegurosId,
-                TipoSeguro = TiposSeguros?.GetEntity(),
-                EspecialidadId = EspecialidadesId,
-                Especialidad = Especialidades?.GetEntity()
+                TipoSeguroId = TiposSegurosId.HasValue ? TiposSegurosId.Value : 0,
+                //TipoSeguro = TiposSeguros?.GetEntity(),
+                TipoSeguro = TiposSeguros != null ? new TipoSeguro
+                {
+                    Id = TiposSeguros.Id,
+                    Nombre = TiposSeguros.Nombre,
+                    Descripcion = TiposSeguros.Descripcion
+                    // Nota: No incluyas aquí el Articulo relacionado para evitar la recursión
+                } : null,
+                PrecioEspecialidadId = PreciosEspecialidadesId.HasValue ? PreciosEspecialidadesId.Value : 0,
+                PrecioEspecialidad = PreciosEspecialidades?.GetEntity()
             };
         }
 
@@ -45,11 +48,10 @@ namespace DAL.Models
                 articuloToSave = articulos;
 
             articuloToSave.Id = articulo.Id;
-            articuloToSave.Nombre = articulo.Nombre;
             articuloToSave.Fecha = articulo.Fecha;
             articuloToSave.Costo = articulo.Costo;
             articuloToSave.TiposSegurosId = articulo.TipoSeguroId;
-            articuloToSave.EspecialidadesId = articulo.EspecialidadId;
+            articuloToSave.PreciosEspecialidadesId = articulo.PrecioEspecialidadId;
 
             return articuloToSave;
         }

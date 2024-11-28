@@ -1,4 +1,6 @@
-﻿using BL.IBLs;
+﻿using BL.BLs;
+using BL.IBLs;
+using DAL.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shared.DTOs;
@@ -12,11 +14,13 @@ namespace Administrativo.Controllers
     public class TiposSegurosController : ControllerBase
     {
         private readonly IBL_TiposSeguros bl;
+        private readonly IBL_Articulos blArticulos;
         private readonly ILogger<TiposSegurosController> logger;
 
-        public TiposSegurosController(IBL_TiposSeguros _bl, ILogger<TiposSegurosController> _logger)
+        public TiposSegurosController(IBL_TiposSeguros _bl, IBL_Articulos _blArticulos, ILogger<TiposSegurosController> _logger)
         {
             bl = _bl;
+            blArticulos = _blArticulos;
             logger = _logger;
         }
 
@@ -58,23 +62,57 @@ namespace Administrativo.Controllers
             }
         }
 
-        // POST: api/TiposSeguros
         [HttpPost]
         [Authorize(Roles = "ADMIN")]
-        [ProducesResponseType(typeof(TipoSeguro), 201)]
-        public IActionResult Post([FromBody] TipoSeguro tipoSeguro)
+        [ProducesResponseType(typeof(TiposSeguros), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(StatusDTO), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(StatusDTO), StatusCodes.Status404NotFound)]
+        public IActionResult Post([FromBody] TipoSeguroDTO tiposSegurosDTO)
         {
             try
             {
-                var createdTipoSeguro = bl.Add(tipoSeguro);
-                return CreatedAtAction(nameof(Get), new { id = createdTipoSeguro.Id }, createdTipoSeguro);
+                if (tiposSegurosDTO == null)
+                {
+                    return BadRequest(new StatusDTO(false, "El tipo de seguro no puede ser nulo."));
+                }
+
+                // Crear un nuevo artículo con precio y fecha actual para este tipo de seguro
+                var nuevoArticulo = new Articulo
+                {
+                    Fecha = DateTime.UtcNow,
+                    Costo = tiposSegurosDTO.Costo
+                };
+                var articuloCreado = blArticulos.Add(nuevoArticulo);
+
+                logger.LogInformation("Nuevo artículo creado con ID: {ArticuloId}", articuloCreado.Id);
+
+                // Crear el TipoSeguro basado en el DTO
+                var tipoSeguro = new TipoSeguro
+                {
+                    Nombre = tiposSegurosDTO.Nombre,
+                    Descripcion = tiposSegurosDTO.Descripcion,
+                    ArticuloId = articuloCreado.Id // Asociar al nuevo artículo creado
+                };
+                var tipoSeguroCreado = bl.Add(tipoSeguro);
+
+                logger.LogInformation("Tipo de seguro creado con ID: {TipoSeguroId}", tipoSeguroCreado.Id);
+
+                // Actualizar el artículo creado con el TipoSeguroId
+                articuloCreado.TipoSeguroId = tipoSeguroCreado.Id;
+                blArticulos.Update(articuloCreado);
+
+                logger.LogInformation("Artículo actualizado con TipoSeguroId: {TipoSeguroId}", tipoSeguroCreado.Id);
+
+                return Ok(tipoSeguroCreado);
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error al crear el tipo de seguro");
-                return StatusCode(StatusCodes.Status500InternalServerError, new StatusDTO(false, "Error al crear el tipo de seguro"));
+                logger.LogError(ex, "Error al guardar el tipo de seguro.");
+                return BadRequest(new StatusDTO(false, "Error al guardar el tipo de seguro."));
             }
         }
+
+
 
         // PUT: api/TiposSeguros/5
         [HttpPut("{id}")]

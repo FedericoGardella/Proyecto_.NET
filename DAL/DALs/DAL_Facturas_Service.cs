@@ -1,4 +1,5 @@
 ﻿using DAL.IDALs;
+using Shared.DTOs;
 using Shared.Entities;
 
 namespace DAL.DALs
@@ -26,6 +27,16 @@ namespace DAL.DALs
         }
 
         public List<Factura> GetAll()
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<CitaDTO> GetCitas(long facturaId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<FacturaMesDTO> GetFacturasMes(long facturaId)
         {
             throw new NotImplementedException();
         }

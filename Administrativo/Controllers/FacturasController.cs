@@ -1,4 +1,6 @@
-﻿using BL.IBLs;
+﻿using BL.BLs;
+using BL.IBLs;
+using DAL.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shared.DTOs;
@@ -12,11 +14,13 @@ namespace Administrativo.Controllers
     public class FacturasController : ControllerBase
     {
         private readonly IBL_Facturas bl;
+        private readonly IBL_Pacientes blPacientes;
         private readonly ILogger<FacturasController> logger;
 
-        public FacturasController(IBL_Facturas _bl, ILogger<FacturasController> _logger)
+        public FacturasController(IBL_Facturas _bl, IBL_Pacientes _blPacientes, ILogger<FacturasController> _logger)
         {
             bl = _bl;
+            blPacientes = _blPacientes;
             logger = _logger;
         }
 
@@ -58,23 +62,58 @@ namespace Administrativo.Controllers
             }
         }
 
-        // POST: api/Facturas
         [HttpPost]
         [Authorize(Roles = "ADMIN")]
-        [ProducesResponseType(typeof(Factura), 201)]
-        public IActionResult Post([FromBody] Factura factura)
+        [ProducesResponseType(typeof(Facturas), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(StatusDTO), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(StatusDTO), StatusCodes.Status404NotFound)]
+        public IActionResult PostFactura([FromBody] FacturaDTO facturaDTO)
         {
             try
             {
-                var createdFactura = bl.Add(factura);
-                return CreatedAtAction(nameof(Get), new { id = createdFactura.Id }, createdFactura);
+                if (facturaDTO == null)
+                {
+                    return BadRequest(new StatusDTO(false, "La factura no puede ser nula."));
+                }
+
+                // Validar la existencia del paciente
+                var paciente = blPacientes.Get(facturaDTO.PacienteId);
+                if (paciente == null)
+                {
+                    return NotFound(new StatusDTO(false, "Paciente no encontrado."));
+                }
+
+                logger.LogInformation("Paciente encontrado con ID: {PacienteId}", facturaDTO.PacienteId);
+
+                // Crear la nueva factura
+                var nuevaFactura = new Factura
+                {
+                    PacienteId = facturaDTO.PacienteId,
+                    Citas = new List<Cita>(), // Inicializa la lista vacía de citas
+                    FacturasMes = new List<FacturaMes>() // Inicializa la lista vacía de facturas mensuales
+                };
+
+
+
+                // Guardar la factura
+                var facturaCreada = bl.Add(nuevaFactura);
+
+                // Actualizar el Paciente con el FacturaId
+                paciente.FacturaId = facturaCreada.Id;
+                blPacientes.Update(paciente);
+
+
+                logger.LogInformation("Nueva factura creada con ID: {FacturaId}", facturaCreada.Id);
+
+                return Ok(facturaCreada);
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error al crear la factura");
-                return StatusCode(StatusCodes.Status500InternalServerError, new StatusDTO(false, "Error al crear la factura"));
+                logger.LogError(ex, "Error al crear la factura.");
+                return BadRequest(new StatusDTO(false, "Error al crear la factura."));
             }
         }
+
 
         // PUT: api/Facturas/5
         [HttpPut("{id}")]

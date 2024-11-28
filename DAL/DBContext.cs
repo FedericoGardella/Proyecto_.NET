@@ -29,19 +29,11 @@ namespace DAL
                 .Property(a => a.Costo)
                 .HasPrecision(10, 2);
 
-            // Configura la relación entre Articulos y TiposSeguros sin cascada
-            modelBuilder.Entity<Articulos>()
-                .HasOne(a => a.TiposSeguros)
-                .WithMany() // No hay navegabilidad inversa desde TiposSeguros hacia Articulos
-                .HasForeignKey(a => a.TiposSegurosId)
-                .OnDelete(DeleteBehavior.NoAction);
-
-            // Relación entre PreciosEspecialidades y Articulos
             modelBuilder.Entity<PreciosEspecialidades>()
-                .HasOne(pe => pe.Articulos)
-                .WithMany() // Sin navegabilidad inversa desde Articulos hacia PreciosEspecialidades
-                .HasForeignKey(pe => pe.ArticulosId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .HasOne(pe => pe.Articulos) // PreciosEspecialidades tiene un Articulo relacionado
+                .WithOne(a => a.PreciosEspecialidades) // Articulo tiene un PreciosEspecialidades relacionado
+                .HasForeignKey<PreciosEspecialidades>(pe => pe.ArticulosId) // La clave foránea está en PreciosEspecialidades
+                .OnDelete(DeleteBehavior.NoAction); // Configuración del comportamiento de eliminación
 
             // Configura la relación entre Citas y Pacientes
             modelBuilder.Entity<Citas>()
@@ -97,11 +89,44 @@ namespace DAL
                 .HasForeignKey(cs => cs.TiposSegurosId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // Relación entre Articulos y Especialidades
+            // Relación uno a uno entre Articulos y TiposSeguros
             modelBuilder.Entity<Articulos>()
-                .HasOne(a => a.Especialidades)
-                .WithMany() // No hay navegabilidad inversa desde Especialidades hacia Articulos
-                .HasForeignKey(a => a.EspecialidadesId)
+                .HasOne(a => a.TiposSeguros) // Articulo tiene un TiposSeguros relacionado
+                .WithOne(ts => ts.Articulos) // TiposSeguros tiene un Articulo relacionado
+                .HasForeignKey<TiposSeguros>(ts => ts.ArticulosId) // Clave foránea en TiposSeguros
+                .OnDelete(DeleteBehavior.NoAction); // Configuración del comportamiento de eliminación
+
+            // Relación uno a muchos con TiposSeguros sin navegabilidad inversa
+            modelBuilder.Entity<PreciosEspecialidades>()
+                .HasOne(pe => pe.TiposSeguros)
+                .WithMany() // Sin navegabilidad inversa
+                .HasForeignKey(pe => pe.TiposSegurosId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            // Relación uno a muchos con Especialidades sin navegabilidad inversa
+            modelBuilder.Entity<PreciosEspecialidades>()
+                .HasOne(pe => pe.Especialidades)
+                .WithMany() // Sin navegabilidad inversa
+                .HasForeignKey(pe => pe.EspecialidadesId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            // Relación uno a uno entre Pacientes y Facturas
+            modelBuilder.Entity<Pacientes>()
+                .HasOne(p => p.Facturas)
+                .WithOne(f => f.Pacientes)
+                .HasForeignKey<Pacientes>(p => p.FacturasId) // La clave foránea está en Pacientes
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Facturas>()
+                .HasMany(f => f.FacturasMes)
+                .WithOne(fm => fm.Facturas)
+                .HasForeignKey(fm => fm.FacturasId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<FacturasMes>()
+                .HasOne(fm => fm.ContratosSeguros)
+                .WithMany()
+                .HasForeignKey(fm => fm.ContratosSegurosId)
                 .OnDelete(DeleteBehavior.NoAction);
 
         }
@@ -124,6 +149,7 @@ namespace DAL
         public DbSet<Citas> Citas { get; set; }
         public DbSet<GruposCitas> GruposCitas { get; set; }
         public DbSet<Personas> Personas { get; set; }
+        public DbSet<FacturasMes> FacturasMes { get; set; }
 
         // Método para aplicar migraciones manualmente si es necesario
         public static void UpdateDatabase(IServiceProvider serviceProvider)

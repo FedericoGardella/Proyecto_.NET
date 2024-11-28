@@ -20,6 +20,10 @@ namespace DAL.Models
         public long? HistoriasClinicasId { get; set; }
         public HistoriasClinicas? HistoriasClinicas { get; set; }
 
+
+        public long? FacturasId { get; set; }
+        public Facturas? Facturas { get; set; }
+
         public Paciente GetEntity()
         {
             return new Paciente
@@ -29,7 +33,8 @@ namespace DAL.Models
                 Apellidos = Apellidos,
                 Telefono = Telefono,
                 Documento = Documento,
-                HistoriaClinicaId = HistoriasClinicasId
+                HistoriaClinicaId = HistoriasClinicasId,
+                FacturaId = FacturasId
             };
         }
 
@@ -43,7 +48,9 @@ namespace DAL.Models
             pacienteToSave.Telefono = paciente.Telefono;
             pacienteToSave.Documento = paciente.Documento;
             pacienteToSave.HistoriasClinicasId = paciente.HistoriaClinicaId;
-           
+            pacienteToSave.FacturasId = paciente.FacturaId;
+
+
             return pacienteToSave;
         }
     }

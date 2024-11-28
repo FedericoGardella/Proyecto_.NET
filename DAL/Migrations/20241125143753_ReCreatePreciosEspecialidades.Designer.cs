@@ -4,6 +4,7 @@ using DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DAL.Migrations
 {
     [DbContext(typeof(DBContext))]
-    partial class DBContextModelSnapshot : ModelSnapshot
+    [Migration("20241125143753_ReCreatePreciosEspecialidades")]
+    partial class ReCreatePreciosEspecialidades
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -55,9 +58,6 @@ namespace DAL.Migrations
                         .HasColumnType("bigint");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<decimal>("Costo")
-                        .HasColumnType("decimal(18,2)");
 
                     b.Property<long>("FacturasId")
                         .HasColumnType("bigint");
@@ -176,50 +176,20 @@ namespace DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
-                    b.Property<long>("PacientesId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PacientesId")
-                        .IsUnique();
-
-                    b.ToTable("Facturas");
-                });
-
-            modelBuilder.Entity("DAL.Models.FacturasMes", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
                     b.Property<long>("ContratosSegurosId")
-                        .HasColumnType("bigint");
-
-                    b.Property<decimal>("CostoContrato")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<long>("FacturasId")
                         .HasColumnType("bigint");
 
                     b.Property<DateTime>("FechaEmision")
                         .HasColumnType("datetime2");
 
-                    b.Property<decimal>("GastosMes")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<bool>("Pagada")
+                    b.Property<bool>("Pago")
                         .HasColumnType("bit");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ContratosSegurosId");
 
-                    b.HasIndex("FacturasId");
-
-                    b.ToTable("FacturasMes");
+                    b.ToTable("Facturas");
                 });
 
             modelBuilder.Entity("DAL.Models.GruposCitas", b =>
@@ -341,7 +311,7 @@ namespace DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
-                    b.Property<long>("ArticulosId")
+                    b.Property<long>("ArticuloId")
                         .HasColumnType("bigint");
 
                     b.Property<long>("EspecialidadesId")
@@ -352,7 +322,7 @@ namespace DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ArticulosId")
+                    b.HasIndex("ArticuloId")
                         .IsUnique();
 
                     b.HasIndex("EspecialidadesId");
@@ -675,9 +645,6 @@ namespace DAL.Migrations
                 {
                     b.HasBaseType("DAL.Models.Personas");
 
-                    b.Property<long?>("FacturasId")
-                        .HasColumnType("bigint");
-
                     b.Property<long?>("HistoriasClinicasId")
                         .HasColumnType("bigint");
 
@@ -764,32 +731,13 @@ namespace DAL.Migrations
 
             modelBuilder.Entity("DAL.Models.Facturas", b =>
                 {
-                    b.HasOne("DAL.Models.Pacientes", "Pacientes")
-                        .WithOne("Facturas")
-                        .HasForeignKey("DAL.Models.Facturas", "PacientesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Pacientes");
-                });
-
-            modelBuilder.Entity("DAL.Models.FacturasMes", b =>
-                {
                     b.HasOne("DAL.Models.ContratosSeguros", "ContratosSeguros")
                         .WithMany()
                         .HasForeignKey("ContratosSegurosId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("DAL.Models.Facturas", "Facturas")
-                        .WithMany("FacturasMes")
-                        .HasForeignKey("FacturasId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("ContratosSeguros");
-
-                    b.Navigation("Facturas");
                 });
 
             modelBuilder.Entity("DAL.Models.GruposCitas", b =>
@@ -826,7 +774,7 @@ namespace DAL.Migrations
                 {
                     b.HasOne("DAL.Models.Articulos", "Articulos")
                         .WithOne("PreciosEspecialidades")
-                        .HasForeignKey("DAL.Models.PreciosEspecialidades", "ArticulosId")
+                        .HasForeignKey("DAL.Models.PreciosEspecialidades", "ArticuloId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
@@ -977,8 +925,6 @@ namespace DAL.Migrations
             modelBuilder.Entity("DAL.Models.Facturas", b =>
                 {
                     b.Navigation("Citas");
-
-                    b.Navigation("FacturasMes");
                 });
 
             modelBuilder.Entity("DAL.Models.GruposCitas", b =>
@@ -1013,9 +959,6 @@ namespace DAL.Migrations
                     b.Navigation("Citas");
 
                     b.Navigation("ContratosSeguros");
-
-                    b.Navigation("Facturas")
-                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

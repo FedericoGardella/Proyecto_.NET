@@ -15,14 +15,14 @@ namespace Administrativo.Controllers
     {
         private readonly IBL_Articulos bl;
         private readonly IBL_TiposSeguros blTiposSeguros;
-        private readonly IBL_Especialidades blEspecialidades;
+        private readonly IBL_PreciosEspecialidades blPreciosEspecialidades;
         private readonly ILogger<ArticulosController> logger;
 
-        public ArticulosController(IBL_Articulos _bl, IBL_TiposSeguros _blTiposSeguros, IBL_Especialidades _blEspecialidades, ILogger<ArticulosController> _logger)
+        public ArticulosController(IBL_Articulos _bl, IBL_TiposSeguros _blTiposSeguros, IBL_PreciosEspecialidades _blPreciosEspecialidades, ILogger<ArticulosController> _logger)
         {
             bl = _bl;
             blTiposSeguros = _blTiposSeguros;
-            blEspecialidades = _blEspecialidades;
+            blPreciosEspecialidades = _blPreciosEspecialidades;
             logger = _logger;
         }
 
@@ -75,38 +75,44 @@ namespace Administrativo.Controllers
                     return BadRequest(new StatusDTO(false, "El artículo no puede ser nulo."));
                 }
 
-                // Validar la existencia del TipoSeguro
-                var tipoSeguro = blTiposSeguros.Get(articuloDTO.TipoSeguroId);
-                if (tipoSeguro == null)
+                DAL.Models.TiposSeguros? tipoSeguros = null;
+                // Validar la existencia del TipoSeguro si se especifica
+                if (articuloDTO.TipoSeguroId.HasValue)
                 {
-                    return NotFound(new StatusDTO(false, "Tipo de seguro no encontrado."));
-                }
-                else
-                {
-                    logger.LogInformation("TipoSeguro encontrado:");
-                    logger.LogInformation($"Nombre: {tipoSeguro.Nombre}");
+                    var tipoSeguro = blTiposSeguros.Get(articuloDTO.TipoSeguroId.Value);
+                    if (tipoSeguro == null)
+                    {
+                        return NotFound(new StatusDTO(false, "Tipo de seguro no encontrado."));
+                    }
+                    else
+                    {
+                        logger.LogInformation("TipoSeguro encontrado:");
+                        logger.LogInformation($"Nombre: {tipoSeguro.Nombre}");
+                    }
                 }
 
-                // Validar la existencia de la Especialidad
-                var especialidad = blEspecialidades.Get(articuloDTO.EspecialidadId);
-                if (especialidad == null)
+                // Validar la existencia del PrecioEspecialidad si se especifica
+                if (articuloDTO.PrecioEspecialidadId.HasValue)
                 {
-                    return NotFound(new StatusDTO(false, "Especialidad no encontrada."));
-                }
-                else
-                {
-                    logger.LogInformation("Especialidad encontrada:");
-                    logger.LogInformation($"Nombre: {especialidad.Nombre}");
+                    var precioEspecialidad = blPreciosEspecialidades.Get(articuloDTO.PrecioEspecialidadId.Value);
+                    if (precioEspecialidad == null)
+                    {
+                        return NotFound(new StatusDTO(false, "Precio de especialidad no encontrado."));
+                    }
+                    else
+                    {
+                        logger.LogInformation("PrecioEspecialidad encontrado:");
+                        logger.LogInformation($"Id: {precioEspecialidad.Id}");
+                    }
                 }
 
                 // Crear el Articulo basado en el DTO
                 var articulo = new Articulo
                 {
-                    Nombre = articuloDTO.Nombre,
                     Fecha = articuloDTO.Fecha,
                     Costo = articuloDTO.Costo,
-                    TipoSeguroId = articuloDTO.TipoSeguroId,
-                    EspecialidadId = articuloDTO.EspecialidadId
+                    TipoSeguroId = articuloDTO.TipoSeguroId.HasValue ? articuloDTO.TipoSeguroId.Value : 0,
+                    PrecioEspecialidadId = articuloDTO.PrecioEspecialidadId.HasValue ? articuloDTO.PrecioEspecialidadId.Value : 0
                 };
 
                 // Guardar el Articulo
@@ -122,8 +128,6 @@ namespace Administrativo.Controllers
         }
 
 
-
-
         [HttpPut("{id}")]
         [Authorize(Roles = "ADMIN")]
         [ProducesResponseType(typeof(Articulos), StatusCodes.Status200OK)]
@@ -133,11 +137,6 @@ namespace Administrativo.Controllers
         {
             try
             {
-                if (articuloDTO == null)
-                {
-                    return BadRequest(new StatusDTO(false, "El artículo no puede ser nulo."));
-                }
-
                 // Validar la existencia del artículo a actualizar
                 var existingArticulo = bl.Get(id);
                 if (existingArticulo == null)
@@ -145,42 +144,36 @@ namespace Administrativo.Controllers
                     return NotFound(new StatusDTO(false, "Artículo no encontrado."));
                 }
 
-                // Validar la existencia del TipoSeguro si se va a actualizar
-                if (articuloDTO.TipoSeguroId != existingArticulo.TipoSeguroId)
+                // Actualizar los valores recibidos en el DTO (solo los que no sean nulos o tengan valores válidos)
+                if (articuloDTO.Fecha != default(DateTime))
                 {
-                    var tipoSeguro = blTiposSeguros.Get(articuloDTO.TipoSeguroId);
+                    existingArticulo.Fecha = articuloDTO.Fecha;
+                }
+
+                if (articuloDTO.Costo > 0)
+                {
+                    existingArticulo.Costo = articuloDTO.Costo;
+                }
+
+                if (articuloDTO.TipoSeguroId > 0 && articuloDTO.TipoSeguroId != existingArticulo.TipoSeguroId)
+                {
+                    var tipoSeguro = blTiposSeguros.Get(articuloDTO.TipoSeguroId.Value);
                     if (tipoSeguro == null)
                     {
                         return NotFound(new StatusDTO(false, "Tipo de seguro no encontrado."));
                     }
-                    else
-                    {
-                        logger.LogInformation("TipoSeguro encontrado:");
-                        logger.LogInformation($"Nombre: {tipoSeguro.Nombre}");
-                    }
+                    existingArticulo.TipoSeguroId = articuloDTO.TipoSeguroId.HasValue ? articuloDTO.TipoSeguroId.Value : 0;
                 }
 
-                // Validar la existencia de la Especialidad si se va a actualizar
-                if (articuloDTO.EspecialidadId != existingArticulo.EspecialidadId)
+                if (articuloDTO.PrecioEspecialidadId > 0 && articuloDTO.PrecioEspecialidadId != existingArticulo.PrecioEspecialidadId)
                 {
-                    var especialidad = blEspecialidades.Get(articuloDTO.EspecialidadId);
-                    if (especialidad == null)
+                    var precioEspecialidad = blPreciosEspecialidades.Get(articuloDTO.PrecioEspecialidadId.Value);
+                    if (precioEspecialidad == null)
                     {
-                        return NotFound(new StatusDTO(false, "Especialidad no encontrada."));
+                        return NotFound(new StatusDTO(false, "Precio de especialidad no encontrado."));
                     }
-                    else
-                    {
-                        logger.LogInformation("Especialidad encontrada:");
-                        logger.LogInformation($"Nombre: {especialidad.Nombre}");
-                    }
+                    existingArticulo.PrecioEspecialidadId = articuloDTO.PrecioEspecialidadId.HasValue ? articuloDTO.PrecioEspecialidadId.Value : 0;
                 }
-
-                // Actualizar el artículo con los nuevos valores del DTO
-                existingArticulo.Nombre = articuloDTO.Nombre;
-                existingArticulo.Fecha = articuloDTO.Fecha;
-                existingArticulo.Costo = articuloDTO.Costo;
-                existingArticulo.TipoSeguroId = articuloDTO.TipoSeguroId;
-                existingArticulo.EspecialidadId = articuloDTO.EspecialidadId;
 
                 // Guardar los cambios
                 var updatedArticulo = bl.Update(existingArticulo);
@@ -193,7 +186,6 @@ namespace Administrativo.Controllers
                 return BadRequest(new StatusDTO(false, "Error al actualizar el artículo."));
             }
         }
-
 
 
         [Authorize(Roles = "ADMIN")]
@@ -212,5 +204,36 @@ namespace Administrativo.Controllers
                 return StatusCode(StatusCodes.Status400BadRequest, new StatusDTO(false, "Error al eliminar articulo"));
             }
         }
+
+
+        [HttpPut("updateCosto/{tipoSeguroId}")]
+        [Authorize(Roles = "ADMIN")]
+        [ProducesResponseType(typeof(Articulo), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(StatusDTO), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(StatusDTO), StatusCodes.Status404NotFound)]
+        public IActionResult UpdateCosto(long tipoSeguroId, [FromBody] decimal nuevoCosto)
+        {
+            try
+            {
+                logger.LogInformation("Solicitud recibida para actualizar el costo del TipoSeguro con ID: {TipoSeguroId}", tipoSeguroId);
+                logger.LogInformation("Nuevo costo recibido: {NuevoCosto}", nuevoCosto);
+
+                var nuevoArticulo = bl.UpdateCosto(tipoSeguroId, nuevoCosto);
+
+                logger.LogInformation("Costo actualizado exitosamente. Nuevo artículo creado con ID: {ArticuloId}, Fecha: {Fecha}, Costo: {Costo}",
+                    nuevoArticulo.Id, nuevoArticulo.Fecha, nuevoArticulo.Costo);
+
+                return Ok(nuevoArticulo);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error al actualizar el costo para TipoSeguro con ID: {TipoSeguroId}", tipoSeguroId);
+                return BadRequest(new StatusDTO(false, ex.Message));
+            }
+        }
+
+
+
+
     }
 }

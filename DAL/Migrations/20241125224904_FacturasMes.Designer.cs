@@ -4,6 +4,7 @@ using DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DAL.Migrations
 {
     [DbContext(typeof(DBContext))]
-    partial class DBContextModelSnapshot : ModelSnapshot
+    [Migration("20241125224904_FacturasMes")]
+    partial class FacturasMes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -674,9 +677,6 @@ namespace DAL.Migrations
             modelBuilder.Entity("DAL.Models.Pacientes", b =>
                 {
                     b.HasBaseType("DAL.Models.Personas");
-
-                    b.Property<long?>("FacturasId")
-                        .HasColumnType("bigint");
 
                     b.Property<long?>("HistoriasClinicasId")
                         .HasColumnType("bigint");

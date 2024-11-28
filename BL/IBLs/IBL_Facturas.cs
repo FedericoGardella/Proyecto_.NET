@@ -1,4 +1,5 @@
-﻿using Shared.Entities;
+﻿using Shared.DTOs;
+using Shared.Entities;
 
 namespace BL.IBLs
 {
@@ -9,5 +10,7 @@ namespace BL.IBLs
         Factura Add(Factura x);
         Factura Update(Factura x);
         void Delete(long Id);
+        List<CitaDTO> GetCitas(long facturaId);
+        List<FacturaMesDTO> GetFacturasMes(long facturaId);
     }
 }

@@ -8,9 +8,19 @@ namespace DAL.Models
         public PreciosEspecialidades() { }
         public long Id { get; set; }
 
-        [ForeignKey("Articulos")]
+
         public long ArticulosId { get; set; }
         public Articulos Articulos { get; set; }
+
+
+        [ForeignKey("TiposSeguros")]
+        public long TiposSegurosId { get; set; }
+        public TiposSeguros TiposSeguros { get; set; }
+
+
+        [ForeignKey("Especialidades")]
+        public long EspecialidadesId { get; set; }
+        public Especialidades Especialidades { get; set; }
 
 
         public PrecioEspecialidad GetEntity()
@@ -19,7 +29,7 @@ namespace DAL.Models
             {
                 Id = Id,
                 ArticuloId = ArticulosId,
-                Articulo = Articulos?.GetEntity()
+                //Articulo = Articulos?.GetEntity()
             };
         }
 

@@ -22,7 +22,12 @@ namespace DAL.DALs
         // Obtener una especialidad por ID
         public Especialidad Get(long Id)
         {
-            return _especialidades.FirstOrDefault(e => e.Id == Id);
+            var especialidad = _especialidades.FirstOrDefault(e => e.Id == Id);
+            if (especialidad == null)
+            {
+                throw new Exception($"Especialidad con ID {Id} no encontrada.");
+            }
+            return especialidad;
         }
 
         // Obtener todas las especialidades
