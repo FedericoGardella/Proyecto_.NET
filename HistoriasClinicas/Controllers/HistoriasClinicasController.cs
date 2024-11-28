@@ -254,7 +254,7 @@ namespace HistoriasClinicas.Controllers
         }
 
         [HttpGet("Pacientes/{id}/UltimaHistoriaClinica")]
-        [Authorize(Roles = "ADMIN, MEDICO")]
+        [Authorize(Roles = "ADMIN, MEDICO, PACIENTE")]
         public IActionResult GetUltimaHistoriaClinica(long id)
         {
             try

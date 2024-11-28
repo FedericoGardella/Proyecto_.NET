@@ -15,7 +15,7 @@ namespace DAL.DALs
             db = _db;
         }
 
-        public Paciente Get(long Id)
+        public Paciente Get(long Id, string token)
         {
             return db.Pacientes.Find(Id)?.GetEntity();
         }
@@ -47,7 +47,7 @@ namespace DAL.DALs
             db.SaveChanges();
 
             // Retornamos la entidad recién agregada, utilizando el método `Get` para obtener su versión más actualizada.
-            return Get(toSave.Id);
+            return Get(toSave.Id, null);
         }
 
         public Paciente Update(Paciente x)
@@ -56,7 +56,7 @@ namespace DAL.DALs
             toSave = Pacientes.FromEntity(x, toSave);
             db.Update(toSave);
             db.SaveChanges();
-            return Get(toSave.Id);
+            return Get(toSave.Id,null);
         }
 
         public void Delete(long Id)
@@ -73,7 +73,6 @@ namespace DAL.DALs
             var paciente = db.Pacientes.AsNoTracking().FirstOrDefault(p => p.Documento == documento);
             return paciente?.GetEntity();
         }
-
 
     }
 }

@@ -22,6 +22,7 @@ namespace PortalPaciente.Controllers
             _logger = logger;
         }
 
+        [Authorize(Roles = "PACIENTE")]
         [HttpGet("Pacientes/{id}/UltimaHistoriaClinica")]
         public IActionResult GetUltimaHistoriaClinica(long id)
         {

@@ -13,9 +13,9 @@ namespace BL.BLs
             _dal = dal ?? throw new ArgumentNullException(nameof(dal));
         }
 
-        public Paciente Get(long Id)
+        public Paciente Get(long Id, string token)
         {
-            return _dal.Get(Id);
+            return _dal.Get(Id, token);
         }
 
         public List<Paciente> GetAll()

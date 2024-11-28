@@ -136,6 +136,9 @@ namespace DAL.DALs
         {
             var ultimaHistoria = db.HistoriasClinicas
                 .Include(h => h.ResultadosEstudios)
+                .Include(h => h.Diagnosticos)
+                .Include(h => h.Recetas)
+                    .ThenInclude(r => r.Medicamentos)
                 .Where(h => h.PacientesId == pacienteId)
                 .OrderByDescending(h => h.FechaCreacion)
                 .FirstOrDefault();

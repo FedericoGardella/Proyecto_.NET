@@ -53,9 +53,17 @@ namespace HistoriasClinicas.Controllers
         [ProducesResponseType(typeof(StatusDTO), StatusCodes.Status404NotFound)]
         public IActionResult GetPaciente(long id)
         {
+            // Obtén el token del encabezado de autorización
+            var token = HttpContext.Request.Headers["Authorization"].ToString();
+
+            if (string.IsNullOrEmpty(token))
+            {
+                return Unauthorized(new StatusDTO(false, "No se proporcionó un token de autenticación."));
+            }
+
             try
             {
-                var paciente = blPacientes.Get(id);
+                var paciente = blPacientes.Get(id, token);
                 if (paciente == null)
                 {
                     return NotFound(new StatusDTO(false, "Paciente no encontrado."));

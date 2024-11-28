@@ -5,7 +5,7 @@ namespace DAL.IDALs
 {
     public interface IDAL_Pacientes
     {
-        Paciente Get(long Id);
+        Paciente Get(long Id, string token);
         List<Paciente> GetAll();
         Paciente Add(Paciente x);
         Paciente Update(Paciente x);
