@@ -43,9 +43,22 @@ namespace DAL.Models
                     HistoriasClinicas = pacientes.HistoriasClinicas?.Select(h => h.GetEntity()).ToList()
                 };
             }
+            else if (this is Medicos medicos)
+            {
+                persona = new Medico
+                {
+                    Id = medicos.Id,
+                    Nombres = medicos.Nombres,
+                    Apellidos = medicos.Apellidos,
+                    Documento = medicos.Documento,
+                    Matricula = medicos.Matricula,
+                    Especialidades = medicos.Especialidades?.Select(e => e.GetEntity()).ToList()
+                };
+            }
 
             return persona;
         }
+
 
         public static Personas FromEntity(Persona persona, Personas personas = null)
         {
@@ -64,6 +77,14 @@ namespace DAL.Models
                     pacientes.Telefono = paciente.Telefono;
                     pacientes.HistoriasClinicas = paciente.HistoriasClinicas?.Select(h => HistoriasClinicas.FromEntity(h, null)).ToList();
                     pacientes.ContratosSegurosId = paciente.ContratoSeguroId;
+                }
+            }
+            else if (persona is Medico medico)
+            {
+                if (personaToSave is Medicos medicos)
+                {
+                    medicos.Matricula = medico.Matricula;
+                    medicos.Especialidades = medico.Especialidades?.Select(e => Especialidades.FromEntity(e, null)).ToList();
                 }
             }
 

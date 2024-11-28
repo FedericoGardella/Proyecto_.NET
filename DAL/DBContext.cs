@@ -114,6 +114,11 @@ namespace DAL
                 .WithMany(m => m.Recetas)
                 .UsingEntity(j => j.ToTable("RecetasMedicamentos"));
 
+            modelBuilder.Entity<Medicos>()
+                .HasMany(r => r.Especialidades)
+                .WithMany(m => m.Medicos)
+                .UsingEntity(j => j.ToTable("MedicosEspecialidades"));
+
         }
 
 

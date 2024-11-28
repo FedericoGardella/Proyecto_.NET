@@ -41,6 +41,12 @@ builder.Services.AddScoped<IDAL_Pacientes, DAL_Pacientes_EF>();
 builder.Services.AddScoped<IBL_Personas, BL_Personas>();
 builder.Services.AddScoped<IDAL_Personas, DAL_Personas_EF>();
 
+builder.Services.AddScoped<IBL_Especialidades, BL_Especialidades>();
+builder.Services.AddScoped<IDAL_Especialidades, DAL_Especialidades_Service>();
+
+builder.Services.AddScoped<IBL_Medicos, BL_Medicos>();
+builder.Services.AddScoped<IDAL_Medicos, DAL_Medicos_EF>();
+
 // Configuración de CORS
 builder.Services.AddCors(options =>
 {

@@ -9,22 +9,10 @@ namespace DAL.Models
 
         public Medicos() { }
 
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Key]
-        public long Id { get; set; }
-
         [Required]
         public string Matricula { get; set; }
 
-        [Required]
-        [MaxLength(100)]
-        public string Nombres { get; set; }
-
-        [Required]
-        [MaxLength(100)]
-        public string Apellidos { get; set; }
-
-        public List<Especialidades> Especialidades { get; set; }
+        public List<Especialidades> Especialidades { get; set; } = new List<Especialidades>();
         public List<GruposCitas> GruposCitas { get; set; }
 
 
@@ -35,6 +23,7 @@ namespace DAL.Models
                 Id = Id,
                 Nombres = Nombres,
                 Apellidos = Apellidos,
+                Documento = Documento,
                 Matricula = Matricula
             };
         }
@@ -46,6 +35,7 @@ namespace DAL.Models
             medicoToSave.Id = medico.Id;
             medicoToSave.Nombres = medico.Nombres;
             medicoToSave.Apellidos = medico.Apellidos;
+            medicoToSave.Documento = medico.Documento;
             medicoToSave.Matricula = medico.Matricula;
 
             return medicoToSave;

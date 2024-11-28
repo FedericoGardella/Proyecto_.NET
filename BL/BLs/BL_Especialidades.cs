@@ -18,6 +18,16 @@ namespace BL.BLs
             return dal.Get(Id);
         }
 
+        public List<Especialidad> GetByIds(List<long> ids)
+        {
+            if (ids == null || ids.Count == 0)
+            {
+                return new List<Especialidad>();
+            }
+
+            return dal.GetByIds(ids);
+        }
+
         public List<Especialidad> GetAll()
         {
             return dal.GetAll();

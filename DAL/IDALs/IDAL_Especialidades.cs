@@ -5,6 +5,7 @@ namespace DAL.IDALs
     public interface IDAL_Especialidades
     {
         Especialidad Get(long Id);
+        List<Especialidad> GetByIds(List<long> ids);
         List<Especialidad> GetAll();
         Especialidad Add(Especialidad x);
         Especialidad Update(Especialidad x);

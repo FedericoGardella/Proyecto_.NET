@@ -5,6 +5,7 @@ namespace BL.IBLs
     public interface IBL_Especialidades
     {
         Especialidad Get(long Id);
+        List<Especialidad> GetByIds(List<long> ids);
         List<Especialidad> GetAll();
         Especialidad Add(Especialidad x);
         Especialidad Update(Especialidad x);

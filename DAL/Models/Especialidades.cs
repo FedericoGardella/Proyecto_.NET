@@ -19,7 +19,7 @@ namespace DAL.Models
         public TimeSpan tiempoCita { get; set; }
 
 
-        public List<Medicos> Medicos { get; set; }
+        public List<Medicos> Medicos { get; set; } = new List<Medicos>();
 
         public Especialidad GetEntity()
         {

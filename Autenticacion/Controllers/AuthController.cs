@@ -26,6 +26,8 @@ namespace Autenticacion.Controllers
         private readonly ILogger<AuthController> customLogger;
         private readonly IBL_Personas blPersonas;
         private readonly IBL_Pacientes blPacientes;
+        private readonly IBL_Medicos blMedicos;
+        private readonly IBL_Especialidades blEspecialidades;
         private readonly DBContext db;
 
         public AuthController(
@@ -33,6 +35,8 @@ namespace Autenticacion.Controllers
                 RoleManager<IdentityRole> _roleManager,
                 IBL_Personas _blPersonas,
                 IBL_Pacientes _blPacientes,
+                IBL_Medicos _blMedicos,
+                IBL_Especialidades _blEspecialidades,
                 ILogger<AuthController> _customLogger,
                 DBContext _db)
         {
@@ -40,6 +44,8 @@ namespace Autenticacion.Controllers
             roleManager = _roleManager;
             blPersonas = _blPersonas;
             blPacientes = _blPacientes;
+            blMedicos = _blMedicos;
+            blEspecialidades = _blEspecialidades;
             customLogger = _customLogger;
             db = _db;
         }
@@ -290,6 +296,102 @@ namespace Autenticacion.Controllers
             });
         }
 
+[HttpPost]
+[Route("RegisterMedico")]
+[ProducesResponseType(typeof(StatusDTO), 200)]
+public async Task<IActionResult> RegisterMedico([FromBody] RegisterMedicoModel model)
+{
+    var strategy = db.Database.CreateExecutionStrategy();
+
+    return await strategy.ExecuteAsync(async () =>
+    {
+        using var transaction = await db.Database.BeginTransactionAsync();
+        try
+        {
+
+            var userExists = await userManager.FindByNameAsync(model.Email);
+            if (userExists != null)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, new StatusDTO(false, "El usuario ya existe!"));
+            }
+
+            List<Especialidad> especialidades = null;
+            if (model.EspecialidadesIds != null && model.EspecialidadesIds.Count > 0)
+            {
+                especialidades = blEspecialidades.GetByIds(model.EspecialidadesIds);
+                customLogger.LogDebug("Especialidades obtenidas: {@especialidades}", especialidades);
+
+                if (especialidades.Count != model.EspecialidadesIds.Count)
+                {
+                    customLogger.LogWarning("Una o más especialidades no existen.");
+                    return BadRequest(new StatusDTO(false, "Una o más especialidades no existen."));
+                }
+            }
+
+            // Crear médico
+            customLogger.LogInformation("Creando el objeto médico.");
+            Medico medico = new Medico
+            {
+                Documento = model.Documento,
+                Nombres = model.Nombres,
+                Apellidos = model.Apellidos,
+                Matricula = model.Matricula,
+                Especialidades = especialidades ?? new List<Especialidad>()
+            };
+
+            customLogger.LogDebug("Médico creado: {@medico}", medico);
+
+            // Guardar médico
+            customLogger.LogInformation("Guardando el médico.");
+            medico = blMedicos.Add(medico);
+
+            customLogger.LogDebug("Médico guardado: {@medico}", medico);
+
+            // Crear usuario
+            customLogger.LogInformation("Creando el usuario en el sistema de identidad.");
+            Users user = new Users
+            {
+                Email = model.Email,
+                SecurityStamp = Guid.NewGuid().ToString(),
+                UserName = model.Email,
+                Activo = model.Activo,
+                PersonasId = medico.Id
+            };
+
+            var result = await userManager.CreateAsync(user, model.Password);
+            if (!result.Succeeded)
+            {
+                string errors = string.Join(". ", result.Errors.Select(e => e.Description));
+                customLogger.LogError("Error al crear el usuario: {errors}", errors);
+                await transaction.RollbackAsync();
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    new Models.StatusResponse
+                    {
+                        StatusOk = false,
+                        StatusMessage = "Error al crear usuario: " + errors
+                    });
+            }
+
+            customLogger.LogInformation("Asignando el rol MEDICO al usuario.");
+            await userManager.AddToRoleAsync(user, "MEDICO");
+
+            await transaction.CommitAsync();
+            customLogger.LogInformation("Transacción completada con éxito.");
+
+            return Ok(new Models.StatusResponse
+            {
+                StatusOk = true,
+                StatusMessage = "Usuario médico creado correctamente!"
+            });
+        }
+        catch (Exception ex)
+        {
+            await transaction.RollbackAsync();
+            customLogger.LogError(ex, "Error en el endpoint RegisterMedico.");
+            return BadRequest(new StatusDTO(false, $"Error al registrar médico: {ex.Message}"));
+        }
+    });
+}
 
 
 

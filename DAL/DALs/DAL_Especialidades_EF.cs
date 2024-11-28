@@ -19,6 +19,19 @@ namespace DAL.DALs
             return db.Especialidades.Find(Id)?.GetEntity();
         }
 
+        public List<Especialidad> GetByIds(List<long> ids)
+        {
+            if (ids == null || ids.Count == 0)
+            {
+                return new List<Especialidad>();
+            }
+
+            return db.Set<Especialidades>()
+                     .Where(m => ids.Contains(m.Id))
+                     .Select(m => m.GetEntity()) // Convierte cada entidad en su modelo correspondiente
+                     .ToList();
+        }
+
         public List<Especialidad> GetAll()
         {
             return db.Especialidades.Select(x => x.GetEntity()).ToList();
