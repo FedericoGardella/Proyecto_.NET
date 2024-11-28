@@ -5,19 +5,29 @@ namespace DAL.DALs
 {
     public class DAL_Especialidades_Service : IDAL_Especialidades
     {
-        public Especialidad Add(Especialidad x)
+        private readonly List<Especialidad> _especialidades;
+
+        public DAL_Especialidades_Service()
         {
-            throw new NotImplementedException();
+            // Inicializar una lista fija de especialidades
+            _especialidades = new List<Especialidad>
+            {
+                new Especialidad { Id = 1, Nombre = "Cardiología", tiempoCita = TimeSpan.FromMinutes(30) },
+                new Especialidad { Id = 2, Nombre = "Dermatología", tiempoCita = TimeSpan.FromMinutes(20) },
+                new Especialidad { Id = 3, Nombre = "Pediatría", tiempoCita = TimeSpan.FromMinutes(40) },
+                new Especialidad { Id = 4, Nombre = "Oftalmología", tiempoCita = TimeSpan.FromMinutes(25) }
+            };
         }
 
-        public void Delete(long Id)
-        {
-            throw new NotImplementedException();
-        }
-
+        // Obtener una especialidad por ID
         public Especialidad Get(long Id)
         {
-            throw new NotImplementedException();
+            var especialidad = _especialidades.FirstOrDefault(e => e.Id == Id);
+            if (especialidad == null)
+            {
+                throw new Exception($"Especialidad con ID {Id} no encontrada.");
+            }
+            return especialidad;
         }
 
         public List<Especialidad> GetByIds(List<long> ids)
@@ -43,15 +53,39 @@ namespace DAL.DALs
                    .ToList();
         }
 
-
         public List<Especialidad> GetAll()
         {
-            throw new NotImplementedException();
+            return _especialidades;
         }
 
+        // Agregar una nueva especialidad
+        public Especialidad Add(Especialidad x)
+        {
+            x.Id = _especialidades.Any() ? _especialidades.Max(e => e.Id) + 1 : 1; // Generar un nuevo ID
+            _especialidades.Add(x);
+            return x;
+        }
+
+        // Actualizar una especialidad existente
         public Especialidad Update(Especialidad x)
         {
-            throw new NotImplementedException();
+            var especialidad = _especialidades.FirstOrDefault(e => e.Id == x.Id);
+            if (especialidad != null)
+            {
+                especialidad.Nombre = x.Nombre;
+                especialidad.tiempoCita = x.tiempoCita;
+            }
+            return especialidad;
+        }
+
+        // Eliminar una especialidad por ID
+        public void Delete(long Id)
+        {
+            var especialidad = _especialidades.FirstOrDefault(e => e.Id == Id);
+            if (especialidad != null)
+            {
+                _especialidades.Remove(especialidad);
+            }
         }
     }
 

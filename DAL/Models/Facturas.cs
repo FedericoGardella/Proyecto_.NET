@@ -7,25 +7,25 @@ namespace DAL.Models
     {
         public Facturas() { }
         public long Id { get; set; }
-        public DateTime FechaEmision { get; set; }
-        public bool Pago { get; set; }
 
-        [ForeignKey("ContratosSeguros")]
-        public long ContratosSegurosId { get; set; }
-        public ContratosSeguros ContratosSeguros { get; set; }
+
+        public long PacientesId { get; set; }
+        public Pacientes Pacientes { get; set; }
+
 
         public List<Citas> Citas { get; set; }
+        public List<FacturasMes> FacturasMes { get; set; }
 
+        // Le agrego costostotales?
 
         public Factura GetEntity()
         {
-            Factura factura = new Factura();
-
-            factura.Id = Id;
-            factura.FechaEmision = FechaEmision;
-            factura.Pago = Pago;
-
-            return factura;
+            return new Factura
+            {
+                Id = Id,
+                PacienteId = PacientesId,
+                Paciente = Pacientes?.GetEntity()
+            };
         }
 
         public static Facturas FromEntity(Factura factura, Facturas facturas)
@@ -37,8 +37,7 @@ namespace DAL.Models
                 facturaToSave = facturas;
 
             facturaToSave.Id = factura.Id;
-            facturaToSave.FechaEmision = factura.FechaEmision;
-            facturaToSave.Pago = factura.Pago;
+            facturaToSave.PacientesId = factura.PacienteId;
 
             return facturaToSave;
         }

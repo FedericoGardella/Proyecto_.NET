@@ -1,5 +1,6 @@
 ﻿using BL.IBLs;
 using DAL.IDALs;
+using Shared.DTOs;
 using Shared.Entities;
 
 namespace BL.BLs
@@ -37,5 +38,8 @@ namespace BL.BLs
         {
             dal.Delete(Id);
         }
+
+        //public List<ContratoSeguroDTO> GetContratosSeguros(long TipoSeguroId)
+        //{            return dal.GetContratosSeguros(TipoSeguroId);}
     }
 }

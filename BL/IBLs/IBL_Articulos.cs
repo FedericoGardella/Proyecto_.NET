@@ -9,5 +9,6 @@ namespace BL.IBLs
         Articulo Add(Articulo x);
         Articulo Update(Articulo x);
         void Delete(long Id);
+        Articulo UpdateCosto(long tipoSeguroId, decimal nuevoCosto);
     }
 }

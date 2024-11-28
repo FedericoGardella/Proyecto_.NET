@@ -39,8 +39,9 @@ namespace DAL.Models
                     Apellidos = pacientes.Apellidos,
                     Documento = pacientes.Documento,
                     Telefono = pacientes.Telefono,
-                    ContratoSeguroId = pacientes.ContratosSegurosId,
-                    HistoriasClinicas = pacientes.HistoriasClinicas?.Select(h => h.GetEntity()).ToList()
+                    HistoriasClinicas = pacientes.HistoriasClinicas?.Select(h => h.GetEntity()).ToList(),
+                    ContratosSeguros = pacientes.ContratosSeguros?.Select(c => c.GetEntity()).ToList(),
+                    FacturaId = pacientes.FacturasId // AGRUEGUE ESTO ACA PERO NO ESTO SEGURO SI VA
                 };
             }
             else if (this is Medicos medicos)
@@ -76,7 +77,8 @@ namespace DAL.Models
                 {
                     pacientes.Telefono = paciente.Telefono;
                     pacientes.HistoriasClinicas = paciente.HistoriasClinicas?.Select(h => HistoriasClinicas.FromEntity(h, null)).ToList();
-                    pacientes.ContratosSegurosId = paciente.ContratoSeguroId;
+                    pacientes.ContratosSeguros = paciente.ContratosSeguros?.Select(c => ContratosSeguros.FromEntity(c, null)).ToList();
+                    pacientes.FacturasId = paciente.FacturaId;
                 }
             }
             else if (persona is Medico medico)

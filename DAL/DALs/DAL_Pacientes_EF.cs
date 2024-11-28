@@ -1,6 +1,7 @@
 ﻿using DAL.IDALs;
 using DAL.Models;
 using Microsoft.EntityFrameworkCore;
+using Shared.DTOs;
 using Shared.Entities;
 
 namespace DAL.DALs
@@ -15,10 +16,20 @@ namespace DAL.DALs
             db = _db;
         }
 
-        public Paciente Get(long Id)
+        public Paciente Get(long id)
         {
-            return db.Pacientes.Find(Id)?.GetEntity();
+            var paciente = db.Personas
+                .OfType<Pacientes>()
+                .SingleOrDefault(p => p.Id == id);
+
+            if (paciente == null)
+            {
+                throw new Exception($"Paciente con ID {id} no encontrado en la base de datos.");
+            }
+
+            return paciente.GetEntity();
         }
+
 
         public List<Paciente> GetAll()
         {
@@ -72,6 +83,23 @@ namespace DAL.DALs
         {
             var paciente = db.Pacientes.AsNoTracking().FirstOrDefault(p => p.Documento == documento);
             return paciente?.GetEntity();
+        }
+
+        public List<ContratoSeguroDTO> GetContratosSeguros(long PacienteId)
+        {
+            var contratosSeguros = db.Pacientes
+                .Where(p =>  p.Id == PacienteId)
+                .SelectMany(p  => p.ContratosSeguros)
+                .ToList();
+
+            return contratosSeguros.Select(c  => new ContratoSeguroDTO
+            {
+                Id = c.Id,
+                Estado = c.Estado,
+                FechaInicio = c.FechaInicio,
+                PacienteId = c.PacientesId,
+                TipoSeguroId = c.TiposSegurosId
+            }).ToList();
         }
 
 

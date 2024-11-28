@@ -1,5 +1,7 @@
-﻿using DAL.IDALs;
+﻿using System.Collections.Generic;
+using DAL.IDALs;
 using DAL.Models;
+using Shared.DTOs;
 using Shared.Entities;
 
 namespace DAL.DALs
@@ -30,8 +32,8 @@ namespace DAL.DALs
                     Telefono = "099123456",
                     Citas = new List<Cita>(), // Dejar vacío para el mock
                     HistoriasClinicas = new List<HistoriaClinica>(), // Dejar vacío para el mock
-                    ContratoSeguroId = 1,
-                    ContratoSeguro = null // Mock sin detalle
+                    ContratosSeguros = new List<ContratoSeguro>()
+                    // TAMBIEN TIENE FACTURAID QUE PUEDE SER NULO, NO SE SI IRIA ACA
                 },
                 new Paciente
                 {
@@ -42,8 +44,7 @@ namespace DAL.DALs
                     Telefono = "098765432",
                     Citas = new List<Cita>(),
                     HistoriasClinicas = new List<HistoriaClinica>(),
-                    ContratoSeguroId = null,
-                    ContratoSeguro = null
+                    ContratosSeguros = new List<ContratoSeguro>()
                 }
             };
 
@@ -77,8 +78,7 @@ namespace DAL.DALs
                     Telefono = "099123456",
                     Citas = new List<Cita>(), // Dejar vacío para el mock
                     HistoriasClinicas = new List<HistoriaClinica>(), // Dejar vacío para el mock
-                    ContratoSeguroId = 1,
-                    ContratoSeguro = null // Mock sin detalle
+                    ContratosSeguros = new List<ContratoSeguro>()
                 },
                 new Paciente
                 {
@@ -89,8 +89,7 @@ namespace DAL.DALs
                     Telefono = "098765432",
                     Citas = new List<Cita>(),
                     HistoriasClinicas = new List<HistoriaClinica>(),
-                    ContratoSeguroId = null,
-                    ContratoSeguro = null
+                    ContratosSeguros = new List<ContratoSeguro>()
                 }
             };
 
@@ -105,10 +104,15 @@ namespace DAL.DALs
             return paciente;
         }
 
-
         public Paciente Update(Paciente x)
         {
             throw new NotImplementedException();
         }
+
+        public List<ContratoSeguroDTO> GetContratosSeguros(long PacienteId) 
+        { 
+            throw new NotImplementedException(); 
+        }
+
     }
 }

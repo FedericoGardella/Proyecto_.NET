@@ -1,5 +1,7 @@
 ﻿using DAL.IDALs;
 using DAL.Models;
+using Microsoft.EntityFrameworkCore;
+using Shared.DTOs;
 using Shared.Entities;
 
 namespace DAL.DALs
@@ -50,5 +52,6 @@ namespace DAL.DALs
             db.TiposSeguros.Remove(toDelete);
             db.SaveChanges();
         }
+
     }
 }

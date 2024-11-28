@@ -1,4 +1,5 @@
-﻿using Shared.Entities;
+﻿using DAL.Models;
+using Shared.Entities;
 
 namespace BL.IBLs
 {

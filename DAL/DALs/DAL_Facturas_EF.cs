@@ -1,5 +1,6 @@
 ﻿using DAL.IDALs;
 using DAL.Models;
+using Shared.DTOs;
 using Shared.Entities;
 
 namespace DAL.DALs
@@ -51,5 +52,43 @@ namespace DAL.DALs
             db.Facturas.Remove(toDelete);
             db.SaveChanges();
         }
+
+        public List<CitaDTO> GetCitas(long facturaId)
+        {
+            var citas = db.Facturas
+                .Where(f => f.Id == facturaId)
+                .SelectMany(f => f.Citas)
+                .ToList();
+
+            return citas.Select(c => new CitaDTO
+            {
+                Id = c.Id,
+                Hora = c.Hora,
+                Costo = c.Costo,
+                PacienteId = c.PacienteId,
+                GrupoCitaId = c.GruposCitasId,
+                PrecioEspecialidadId = c.PreciosEspecialidadesId
+            }).ToList();
+        }
+
+        public List<FacturaMesDTO> GetFacturasMes(long facturaId)
+        {
+            var facturasMes = db.Facturas
+                .Where(f => f.Id == facturaId)
+                .SelectMany(f => f.FacturasMes)
+                .ToList();
+
+            return facturasMes.Select(fm => new FacturaMesDTO
+            {
+                Id = fm.Id,
+                FechaEmision = fm.FechaEmision,
+                GastosMes = fm.GastosMes,
+                Pagada = fm.Pagada,
+                CostoContrato = fm.CostoContrato,
+                ContratoSeguroId = fm.ContratosSegurosId,
+                FacturaId = fm.FacturasId
+            }).ToList();
+        }
     }
 }
+

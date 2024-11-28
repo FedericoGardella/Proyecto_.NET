@@ -1,6 +1,7 @@
 ﻿using BL.IBLs;
 using DAL.IDALs;
 using Shared.Entities;
+using Shared.DTOs;
 
 namespace BL.BLs
 {
@@ -41,6 +42,11 @@ namespace BL.BLs
         public Paciente GetPacienteByDocumento(string documento)
         {
             return _dal.GetPacienteByDocumento(documento);
+        }
+
+        public List<ContratoSeguroDTO> GetContratosSeguros(long PacienteId)
+        {
+            return _dal.GetContratosSeguros(PacienteId);
         }
     }
 }

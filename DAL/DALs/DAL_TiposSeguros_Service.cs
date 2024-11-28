@@ -1,4 +1,5 @@
 ﻿using DAL.IDALs;
+using Shared.DTOs;
 using Shared.Entities;
 
 namespace DAL.DALs
@@ -28,6 +29,11 @@ namespace DAL.DALs
         public List<TipoSeguro> GetAll()
         {
             throw new NotImplementedException();
+        }
+
+        public List<ContratoSeguroDTO> GetContratosSeguros(long TipoSeguroId) 
+        { 
+            throw new NotImplementedException(); 
         }
     }
 }

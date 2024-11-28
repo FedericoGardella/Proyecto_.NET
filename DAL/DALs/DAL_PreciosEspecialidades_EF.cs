@@ -1,5 +1,6 @@
 ﻿using DAL.IDALs;
 using DAL.Models;
+using Microsoft.Extensions.Logging;
 using Shared.Entities;
 
 namespace DAL.DALs
@@ -28,6 +29,13 @@ namespace DAL.DALs
         {
             PreciosEspecialidades toSave = new PreciosEspecialidades();
             toSave = PreciosEspecialidades.FromEntity(x, toSave);
+
+            if (!db.Articulos.Any(a => a.Id == toSave.ArticulosId))
+            {
+                throw new Exception($"El artículo con ID {toSave.ArticulosId} no existe en la base de datos.");
+            }
+
+
             db.PreciosEspecialidades.Add(toSave);
             db.SaveChanges();
             return Get(toSave.Id);

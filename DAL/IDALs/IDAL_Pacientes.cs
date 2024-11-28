@@ -1,4 +1,5 @@
 ﻿using DAL.Models;
+using Shared.DTOs;
 using Shared.Entities;
 
 namespace DAL.IDALs
@@ -11,6 +12,7 @@ namespace DAL.IDALs
         Paciente Update(Paciente x);
         public void Delete(long Id);
         Paciente GetPacienteByDocumento(string documento);
+        List<ContratoSeguroDTO> GetContratosSeguros(long PacienteId);
 
     }
 }
