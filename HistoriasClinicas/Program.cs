@@ -103,7 +103,7 @@ builder.Services.AddScoped<IBL_GruposCitas, BL_GruposCitas>();
 builder.Services.AddScoped<IDAL_GruposCitas, DAL_GruposCitas_Service>();
 
 builder.Services.AddScoped<IBL_Pacientes, BL_Pacientes>();
-builder.Services.AddScoped<IDAL_Pacientes, DAL_Pacientes_Service>();
+builder.Services.AddHttpClient<IDAL_Pacientes, DAL_Pacientes_Service>();
 
 
 var app = builder.Build();

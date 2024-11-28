@@ -81,23 +81,6 @@ services:
     networks:
       - backend
 
-  gestion-usuarios-service:
-    build:
-      context: ./
-      dockerfile: ./GestionUsuarios/Dockerfile
-    image: gestionusuarios:latest
-    ports:
-      - "8086:80"
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - JWT_SECRET=mySuperSecretKey12345!mySuperSecretKey12345!
-      - JWT_ISSUER=http://localhost:8082
-      - JWT_AUDIENCE=http://localhost:8082
-    depends_on:
-      - sqlserver
-    networks:
-      - backend
-
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2019-latest
     container_name: sqlserver

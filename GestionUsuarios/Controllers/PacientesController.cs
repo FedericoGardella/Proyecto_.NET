@@ -47,7 +47,7 @@ namespace GestionUsuarios.Controllers
         {
             try
             {
-                return Ok(bl.Get(Id));
+                return Ok(bl.Get(Id, null));
             }
             catch (Exception ex)
             {
