@@ -20,11 +20,11 @@ namespace DAL.DALs
         {
             var paciente = db.Personas
                 .OfType<Pacientes>()
-                .SingleOrDefault(p => p.Id == id);
+                .SingleOrDefault(p => p.Id == Id);
 
             if (paciente == null)
             {
-                throw new Exception($"Paciente con ID {id} no encontrado en la base de datos.");
+                throw new Exception($"Paciente con ID {Id} no encontrado en la base de datos.");
             }
 
             return paciente.GetEntity();
@@ -84,8 +84,6 @@ namespace DAL.DALs
             var paciente = db.Pacientes.AsNoTracking().FirstOrDefault(p => p.Documento == documento);
             return paciente?.GetEntity();
         }
-
-<<<<<<< HEAD
         public List<ContratoSeguroDTO> GetContratosSeguros(long PacienteId)
         {
             var contratosSeguros = db.Pacientes
@@ -102,9 +100,5 @@ namespace DAL.DALs
                 TipoSeguroId = c.TiposSegurosId
             }).ToList();
         }
-
-
-=======
->>>>>>> Fede2
     }
 }

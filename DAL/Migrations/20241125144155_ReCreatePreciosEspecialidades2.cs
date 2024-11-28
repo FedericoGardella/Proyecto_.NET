@@ -23,21 +23,11 @@ namespace DAL.Migrations
                 name: "IX_PreciosEspecialidades_ArticuloId",
                 table: "PreciosEspecialidades",
                 newName: "IX_PreciosEspecialidades_ArticulosId");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_PreciosEspecialidades_Articulos_ArticulosId",
-                table: "PreciosEspecialidades",
-                column: "ArticulosId",
-                principalTable: "Articulos",
-                principalColumn: "Id");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_PreciosEspecialidades_Articulos_ArticulosId",
-                table: "PreciosEspecialidades");
 
             migrationBuilder.RenameColumn(
                 name: "ArticulosId",

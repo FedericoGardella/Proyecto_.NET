@@ -10,51 +10,47 @@ namespace DAL.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_PreciosEspecialidades_Articulos_ArticulosId",
-                table: "PreciosEspecialidades");
-
+            // Renombrar columna de ArticulosId a ArticuloId
             migrationBuilder.RenameColumn(
                 name: "ArticulosId",
                 table: "PreciosEspecialidades",
                 newName: "ArticuloId");
 
+            // Renombrar el índice correspondiente
             migrationBuilder.RenameIndex(
                 name: "IX_PreciosEspecialidades_ArticulosId",
                 table: "PreciosEspecialidades",
                 newName: "IX_PreciosEspecialidades_ArticuloId");
 
+            // Agregar clave foránea para la nueva columna
             migrationBuilder.AddForeignKey(
                 name: "FK_PreciosEspecialidades_Articulos_ArticuloId",
                 table: "PreciosEspecialidades",
                 column: "ArticuloId",
                 principalTable: "Articulos",
-                principalColumn: "Id");
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade); // Aseguramos comportamiento adecuado al eliminar
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            // Eliminar clave foránea de ArticuloId
             migrationBuilder.DropForeignKey(
                 name: "FK_PreciosEspecialidades_Articulos_ArticuloId",
                 table: "PreciosEspecialidades");
 
+            // Renombrar la columna de vuelta a ArticulosId
             migrationBuilder.RenameColumn(
                 name: "ArticuloId",
                 table: "PreciosEspecialidades",
                 newName: "ArticulosId");
 
+            // Renombrar el índice de vuelta al original
             migrationBuilder.RenameIndex(
                 name: "IX_PreciosEspecialidades_ArticuloId",
                 table: "PreciosEspecialidades",
                 newName: "IX_PreciosEspecialidades_ArticulosId");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_PreciosEspecialidades_Articulos_ArticulosId",
-                table: "PreciosEspecialidades",
-                column: "ArticulosId",
-                principalTable: "Articulos",
-                principalColumn: "Id");
         }
     }
 }

@@ -77,7 +77,7 @@ namespace Administrativo.Controllers
                 }
 
                 // Validar la existencia del paciente
-                var paciente = blPacientes.Get(facturaDTO.PacienteId);
+                var paciente = blPacientes.Get(facturaDTO.PacienteId, null);
                 if (paciente == null)
                 {
                     return NotFound(new StatusDTO(false, "Paciente no encontrado."));

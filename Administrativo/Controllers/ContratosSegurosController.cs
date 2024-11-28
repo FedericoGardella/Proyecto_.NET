@@ -82,7 +82,7 @@ namespace Administrativo.Controllers
                 //Console.WriteLine($"Recibido PacientesId: {contratoSeguroDTO.PacienteId}, TipoSeguroId: {contratoSeguroDTO.TipoSeguroId}");
 
                 // Buscar el paciente asociado
-                var paciente = blPacientes.Get(contratoSeguroDTO.PacienteId);
+                var paciente = blPacientes.Get(contratoSeguroDTO.PacienteId, null);
                 if (paciente == null)
                 {
                     throw new Exception($"Paciente con ID {contratoSeguroDTO.PacienteId} no encontrado en la base de datos.");
@@ -157,7 +157,7 @@ namespace Administrativo.Controllers
                 }
 
                 // Buscar entidades relacionadas
-                var paciente = blPacientes.Get(contratoSeguroDTO.PacienteId);
+                var paciente = blPacientes.Get(contratoSeguroDTO.PacienteId, null);
                 if (paciente == null)
                 {
                     return BadRequest(new StatusDTO(false, "Paciente no encontrado."));
