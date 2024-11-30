@@ -79,10 +79,18 @@ namespace Administrativo.Controllers
                     return BadRequest(new StatusDTO(false, "El contrato de seguro no puede ser nulo."));
                 }
 
+                // Obtén el token del encabezado de autorización
+                var token = HttpContext.Request.Headers["Authorization"].ToString();
+
+                if (string.IsNullOrEmpty(token))
+                {
+                    return Unauthorized(new StatusDTO(false, "No se proporcionó un token de autenticación."));
+                }
+
                 //Console.WriteLine($"Recibido PacientesId: {contratoSeguroDTO.PacienteId}, TipoSeguroId: {contratoSeguroDTO.TipoSeguroId}");
 
                 // Buscar el paciente asociado
-                var paciente = blPacientes.Get(contratoSeguroDTO.PacienteId, null);
+                var paciente = blPacientes.Get(contratoSeguroDTO.PacienteId, token);
                 if (paciente == null)
                 {
                     throw new Exception($"Paciente con ID {contratoSeguroDTO.PacienteId} no encontrado en la base de datos.");

@@ -28,7 +28,7 @@ builder.Services.AddScoped<IDAL_Facturas, DAL_Facturas_EF>();
 builder.Services.AddScoped<IBL_ContratosSeguros, BL_ContratosSeguros>();
 builder.Services.AddScoped<IDAL_ContratosSeguros, DAL_ContratosSeguros_EF>();
 builder.Services.AddScoped<IBL_Pacientes, BL_Pacientes>();
-builder.Services.AddScoped<IDAL_Pacientes, DAL_Pacientes_EF>();
+builder.Services.AddHttpClient<IDAL_Pacientes, DAL_Pacientes_Service>();
 builder.Services.AddScoped<IBL_Articulos, BL_Articulos>();
 builder.Services.AddScoped<IDAL_Articulos, DAL_Articulos_EF>();
 builder.Services.AddScoped<IBL_PreciosEspecialidades, BL_PreciosEspecialidades>();
