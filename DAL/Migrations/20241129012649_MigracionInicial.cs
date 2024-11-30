@@ -6,24 +6,25 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace DAL.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigration : Migration
+    public partial class MigracionInicial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Articulo",
+                name: "Articulos",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Fecha = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Costo = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: false)
+                    Costo = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: false),
+                    TiposSegurosId = table.Column<long>(type: "bigint", nullable: true),
+                    PreciosEspecialidadesId = table.Column<long>(type: "bigint", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Articulo", x => x.Id);
+                    table.PrimaryKey("PK_Articulos", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -55,17 +56,30 @@ namespace DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "HistoriasClinicas",
+                name: "Facturas",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    FechaCreacion = table.Column<DateTime>(type: "datetime2", nullable: false),
                     PacientesId = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_HistoriasClinicas", x => x.Id);
+                    table.PrimaryKey("PK_Facturas", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Medicamentos",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Dosis = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Medicamentos", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -75,11 +89,17 @@ namespace DAL.Migrations
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ArticulosId = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_TiposSeguros", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_TiposSeguros_Articulos_ArticulosId",
+                        column: x => x.ArticulosId,
+                        principalTable: "Articulos",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -104,156 +124,6 @@ namespace DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Diagnosticos",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Fecha = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    HistoriasClinicasId = table.Column<long>(type: "bigint", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Diagnosticos", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Diagnosticos_HistoriasClinicas_HistoriasClinicasId",
-                        column: x => x.HistoriasClinicasId,
-                        principalTable: "HistoriasClinicas",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Recetas",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Fecha = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Tipo = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    HistoriasClinicasId = table.Column<long>(type: "bigint", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Recetas", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Recetas_HistoriasClinicas_HistoriasClinicasId",
-                        column: x => x.HistoriasClinicasId,
-                        principalTable: "HistoriasClinicas",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ResultadosEstudios",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Fecha = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    HistoriasClinicasId = table.Column<long>(type: "bigint", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ResultadosEstudios", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_ResultadosEstudios_HistoriasClinicas_HistoriasClinicasId",
-                        column: x => x.HistoriasClinicasId,
-                        principalTable: "HistoriasClinicas",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ContratosSeguros",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    FechaInicio = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Estado = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TiposSegurosId = table.Column<long>(type: "bigint", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ContratosSeguros", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_ContratosSeguros_TiposSeguros_TiposSegurosId",
-                        column: x => x.TiposSegurosId,
-                        principalTable: "TiposSeguros",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PreciosEspecialidades",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    TiposSegurosId = table.Column<long>(type: "bigint", nullable: false),
-                    EspecialidadesId = table.Column<long>(type: "bigint", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PreciosEspecialidades", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_PreciosEspecialidades_Especialidades_EspecialidadesId",
-                        column: x => x.EspecialidadesId,
-                        principalTable: "Especialidades",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_PreciosEspecialidades_TiposSeguros_TiposSegurosId",
-                        column: x => x.TiposSegurosId,
-                        principalTable: "TiposSeguros",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Medicamentos",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Dosis = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    RecetasId = table.Column<long>(type: "bigint", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Medicamentos", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Medicamentos_Recetas_RecetasId",
-                        column: x => x.RecetasId,
-                        principalTable: "Recetas",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Facturas",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    FechaEmision = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Pago = table.Column<bool>(type: "bit", nullable: false),
-                    ContratosSegurosId = table.Column<long>(type: "bigint", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Facturas", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Facturas_ContratosSeguros_ContratosSegurosId",
-                        column: x => x.ContratosSegurosId,
-                        principalTable: "ContratosSeguros",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Personas",
                 columns: table => new
                 {
@@ -265,48 +135,43 @@ namespace DAL.Migrations
                     Discriminator = table.Column<string>(type: "nvarchar(13)", maxLength: 13, nullable: false),
                     Matricula = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Telefono = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
-                    ContratosSegurosId = table.Column<long>(type: "bigint", nullable: true),
-                    HistoriasClinicasId = table.Column<long>(type: "bigint", nullable: true)
+                    FacturasId = table.Column<long>(type: "bigint", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Personas", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Personas_ContratosSeguros_ContratosSegurosId",
-                        column: x => x.ContratosSegurosId,
-                        principalTable: "ContratosSeguros",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Personas_HistoriasClinicas_HistoriasClinicasId",
-                        column: x => x.HistoriasClinicasId,
-                        principalTable: "HistoriasClinicas",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        name: "FK_Personas_Facturas_FacturasId",
+                        column: x => x.FacturasId,
+                        principalTable: "Facturas",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
-                name: "Articulos",
+                name: "PreciosEspecialidades",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Fecha = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ArticulosId = table.Column<long>(type: "bigint", nullable: false),
                     TiposSegurosId = table.Column<long>(type: "bigint", nullable: false),
-                    PreciosEspecialidadesId = table.Column<long>(type: "bigint", nullable: false),
-                    Costo = table.Column<decimal>(type: "decimal(10,2)", nullable: false)
+                    EspecialidadesId = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Articulos", x => x.Id);
+                    table.PrimaryKey("PK_PreciosEspecialidades", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Articulos_PreciosEspecialidades_PreciosEspecialidadesId",
-                        column: x => x.PreciosEspecialidadesId,
-                        principalTable: "PreciosEspecialidades",
+                        name: "FK_PreciosEspecialidades_Articulos_ArticulosId",
+                        column: x => x.ArticulosId,
+                        principalTable: "Articulos",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Articulos_TiposSeguros_TiposSegurosId",
+                        name: "FK_PreciosEspecialidades_Especialidades_EspecialidadesId",
+                        column: x => x.EspecialidadesId,
+                        principalTable: "Especialidades",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_PreciosEspecialidades_TiposSeguros_TiposSegurosId",
                         column: x => x.TiposSegurosId,
                         principalTable: "TiposSeguros",
                         principalColumn: "Id");
@@ -346,25 +211,29 @@ namespace DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "EspecialidadesMedicos",
+                name: "ContratosSeguros",
                 columns: table => new
                 {
-                    EspecialidadesId = table.Column<long>(type: "bigint", nullable: false),
-                    MedicosId = table.Column<long>(type: "bigint", nullable: false)
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FechaInicio = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Estado = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PacientesId = table.Column<long>(type: "bigint", nullable: false),
+                    TiposSegurosId = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_EspecialidadesMedicos", x => new { x.EspecialidadesId, x.MedicosId });
+                    table.PrimaryKey("PK_ContratosSeguros", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_EspecialidadesMedicos_Especialidades_EspecialidadesId",
-                        column: x => x.EspecialidadesId,
-                        principalTable: "Especialidades",
+                        name: "FK_ContratosSeguros_Personas_PacientesId",
+                        column: x => x.PacientesId,
+                        principalTable: "Personas",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_EspecialidadesMedicos_Personas_MedicosId",
-                        column: x => x.MedicosId,
-                        principalTable: "Personas",
+                        name: "FK_ContratosSeguros_TiposSeguros_TiposSegurosId",
+                        column: x => x.TiposSegurosId,
+                        principalTable: "TiposSeguros",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -391,6 +260,53 @@ namespace DAL.Migrations
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_GruposCitas_Personas_MedicosId",
+                        column: x => x.MedicosId,
+                        principalTable: "Personas",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "HistoriasClinicas",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FechaCreacion = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Comentarios = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    NombreMedico = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CitasId = table.Column<long>(type: "bigint", nullable: false),
+                    PacientesId = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_HistoriasClinicas", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_HistoriasClinicas_Personas_PacientesId",
+                        column: x => x.PacientesId,
+                        principalTable: "Personas",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "MedicosEspecialidades",
+                columns: table => new
+                {
+                    EspecialidadesId = table.Column<long>(type: "bigint", nullable: false),
+                    MedicosId = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MedicosEspecialidades", x => new { x.EspecialidadesId, x.MedicosId });
+                    table.ForeignKey(
+                        name: "FK_MedicosEspecialidades_Especialidades_EspecialidadesId",
+                        column: x => x.EspecialidadesId,
+                        principalTable: "Especialidades",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_MedicosEspecialidades_Personas_MedicosId",
                         column: x => x.MedicosId,
                         principalTable: "Personas",
                         principalColumn: "Id",
@@ -483,15 +399,45 @@ namespace DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "FacturasMes",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    GastosMes = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    FechaEmision = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Pagada = table.Column<bool>(type: "bit", nullable: false),
+                    ContratosSegurosId = table.Column<long>(type: "bigint", nullable: false),
+                    CostoContrato = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    FacturasId = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FacturasMes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_FacturasMes_ContratosSeguros_ContratosSegurosId",
+                        column: x => x.ContratosSegurosId,
+                        principalTable: "ContratosSeguros",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_FacturasMes_Facturas_FacturasId",
+                        column: x => x.FacturasId,
+                        principalTable: "Facturas",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Citas",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Hora = table.Column<TimeSpan>(type: "time", nullable: false),
+                    Costo = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     PacienteId = table.Column<long>(type: "bigint", nullable: false),
                     GruposCitasId = table.Column<long>(type: "bigint", nullable: false),
-                    FacturasId = table.Column<long>(type: "bigint", nullable: false),
+                    FacturasId = table.Column<long>(type: "bigint", nullable: true),
                     PreciosEspecialidadesId = table.Column<long>(type: "bigint", nullable: false),
                     PacientesId = table.Column<long>(type: "bigint", nullable: true)
                 },
@@ -525,15 +471,93 @@ namespace DAL.Migrations
                         principalColumn: "Id");
                 });
 
-            migrationBuilder.CreateIndex(
-                name: "IX_Articulos_PreciosEspecialidadesId",
-                table: "Articulos",
-                column: "PreciosEspecialidadesId");
+            migrationBuilder.CreateTable(
+                name: "Diagnosticos",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Fecha = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    HistoriasClinicasId = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Diagnosticos", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Diagnosticos_HistoriasClinicas_HistoriasClinicasId",
+                        column: x => x.HistoriasClinicasId,
+                        principalTable: "HistoriasClinicas",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
 
-            migrationBuilder.CreateIndex(
-                name: "IX_Articulos_TiposSegurosId",
-                table: "Articulos",
-                column: "TiposSegurosId");
+            migrationBuilder.CreateTable(
+                name: "Recetas",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Fecha = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Tipo = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    HistoriasClinicasId = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Recetas", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Recetas_HistoriasClinicas_HistoriasClinicasId",
+                        column: x => x.HistoriasClinicasId,
+                        principalTable: "HistoriasClinicas",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ResultadosEstudios",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Fecha = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    HistoriasClinicasId = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ResultadosEstudios", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ResultadosEstudios_HistoriasClinicas_HistoriasClinicasId",
+                        column: x => x.HistoriasClinicasId,
+                        principalTable: "HistoriasClinicas",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RecetasMedicamentos",
+                columns: table => new
+                {
+                    MedicamentosId = table.Column<long>(type: "bigint", nullable: false),
+                    RecetasId = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RecetasMedicamentos", x => new { x.MedicamentosId, x.RecetasId });
+                    table.ForeignKey(
+                        name: "FK_RecetasMedicamentos_Medicamentos_MedicamentosId",
+                        column: x => x.MedicamentosId,
+                        principalTable: "Medicamentos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_RecetasMedicamentos_Recetas_RecetasId",
+                        column: x => x.RecetasId,
+                        principalTable: "Recetas",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -605,6 +629,11 @@ namespace DAL.Migrations
                 column: "PreciosEspecialidadesId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ContratosSeguros_PacientesId",
+                table: "ContratosSeguros",
+                column: "PacientesId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ContratosSeguros_TiposSegurosId",
                 table: "ContratosSeguros",
                 column: "TiposSegurosId");
@@ -615,14 +644,14 @@ namespace DAL.Migrations
                 column: "HistoriasClinicasId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_EspecialidadesMedicos_MedicosId",
-                table: "EspecialidadesMedicos",
-                column: "MedicosId");
+                name: "IX_FacturasMes_ContratosSegurosId",
+                table: "FacturasMes",
+                column: "ContratosSegurosId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Facturas_ContratosSegurosId",
-                table: "Facturas",
-                column: "ContratosSegurosId");
+                name: "IX_FacturasMes_FacturasId",
+                table: "FacturasMes",
+                column: "FacturasId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_GruposCitas_EspecialidadesId",
@@ -635,23 +664,27 @@ namespace DAL.Migrations
                 column: "MedicosId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Medicamentos_RecetasId",
-                table: "Medicamentos",
-                column: "RecetasId");
+                name: "IX_HistoriasClinicas_PacientesId",
+                table: "HistoriasClinicas",
+                column: "PacientesId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Personas_ContratosSegurosId",
-                table: "Personas",
-                column: "ContratosSegurosId",
-                unique: true,
-                filter: "[ContratosSegurosId] IS NOT NULL");
+                name: "IX_MedicosEspecialidades_MedicosId",
+                table: "MedicosEspecialidades",
+                column: "MedicosId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Personas_HistoriasClinicasId",
+                name: "IX_Personas_FacturasId",
                 table: "Personas",
-                column: "HistoriasClinicasId",
+                column: "FacturasId",
                 unique: true,
-                filter: "[HistoriasClinicasId] IS NOT NULL");
+                filter: "[FacturasId] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PreciosEspecialidades_ArticulosId",
+                table: "PreciosEspecialidades",
+                column: "ArticulosId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_PreciosEspecialidades_EspecialidadesId",
@@ -669,20 +702,25 @@ namespace DAL.Migrations
                 column: "HistoriasClinicasId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_RecetasMedicamentos_RecetasId",
+                table: "RecetasMedicamentos",
+                column: "RecetasId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ResultadosEstudios_HistoriasClinicasId",
                 table: "ResultadosEstudios",
                 column: "HistoriasClinicasId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TiposSeguros_ArticulosId",
+                table: "TiposSeguros",
+                column: "ArticulosId",
+                unique: true);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "Articulo");
-
-            migrationBuilder.DropTable(
-                name: "Articulos");
-
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
@@ -705,10 +743,13 @@ namespace DAL.Migrations
                 name: "Diagnosticos");
 
             migrationBuilder.DropTable(
-                name: "EspecialidadesMedicos");
+                name: "FacturasMes");
 
             migrationBuilder.DropTable(
-                name: "Medicamentos");
+                name: "MedicosEspecialidades");
+
+            migrationBuilder.DropTable(
+                name: "RecetasMedicamentos");
 
             migrationBuilder.DropTable(
                 name: "ResultadosEstudios");
@@ -720,31 +761,37 @@ namespace DAL.Migrations
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "Facturas");
-
-            migrationBuilder.DropTable(
                 name: "GruposCitas");
 
             migrationBuilder.DropTable(
                 name: "PreciosEspecialidades");
 
             migrationBuilder.DropTable(
-                name: "Recetas");
+                name: "ContratosSeguros");
 
             migrationBuilder.DropTable(
-                name: "Personas");
+                name: "Medicamentos");
+
+            migrationBuilder.DropTable(
+                name: "Recetas");
 
             migrationBuilder.DropTable(
                 name: "Especialidades");
 
             migrationBuilder.DropTable(
-                name: "ContratosSeguros");
+                name: "TiposSeguros");
 
             migrationBuilder.DropTable(
                 name: "HistoriasClinicas");
 
             migrationBuilder.DropTable(
-                name: "TiposSeguros");
+                name: "Articulos");
+
+            migrationBuilder.DropTable(
+                name: "Personas");
+
+            migrationBuilder.DropTable(
+                name: "Facturas");
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using BL.IBLs;
 using DAL.IDALs;
 using DAL.Models;
+using Shared.DTOs;
 using Shared.Entities;
 
 namespace BL.BLs
@@ -36,6 +37,11 @@ namespace BL.BLs
         public GrupoCita Add(GrupoCita x)
         {
             return dal.Add(x);
+        }
+
+        public GrupoCita AddGrupoCitaConCitas(GrupoCitaPostDTO dto)
+        {
+            return dal.AddGrupoCitaConCitas(dto);
         }
 
         public GrupoCita Update(GrupoCita x)

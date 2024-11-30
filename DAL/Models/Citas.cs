@@ -11,8 +11,8 @@ namespace DAL.Models
         public decimal Costo { get; set; }
 
         [ForeignKey("Pacientes")]
-        public long PacienteId { get; set; }
-        public Pacientes Pacientes { get; set; }
+        public long? PacienteId { get; set; }
+        public Pacientes? Pacientes { get; set; }
 
         [ForeignKey("GruposCitas")]
         public long GruposCitasId { get; set; }
@@ -23,8 +23,8 @@ namespace DAL.Models
         public Facturas? Facturas { get; set; }
 
         [ForeignKey("PreciosEspecialidades")]
-        public long PreciosEspecialidadesId { get; set; }
-        public PreciosEspecialidades PreciosEspecialidades { get; set; }
+        public long? PreciosEspecialidadesId { get; set; }
+        public PreciosEspecialidades? PreciosEspecialidades { get; set; }
 
         public Cita GetEntity()
         {
@@ -35,17 +35,16 @@ namespace DAL.Models
                 Costo = Costo,
                 PacienteId = PacienteId,
                 GrupoCitaId = GruposCitasId,
-                PrecioEspecialidadId = PreciosEspecialidadesId
+                PrecioEspecialidadId = PreciosEspecialidadesId,
+                Paciente = Pacientes?.GetEntity(), // Si Pacientes no es null, mapear a su entidad Shared
+                GrupoCita = GruposCitas?.GetEntity(), // Si GruposCitas no es null, mapear a su entidad Shared
+                PrecioEspecialidad = PreciosEspecialidades?.GetEntity() // Si PreciosEspecialidades no es null
             };
         }
 
         public static Citas FromEntity(Cita cita, Citas citas)
         {
-            Citas citaToSave;
-            if (citas == null)
-                citaToSave = new Citas();
-            else
-                citaToSave = citas;
+            Citas citaToSave = citas ?? new Citas();
 
             citaToSave.Id = cita.Id;
             citaToSave.Hora = cita.Hora;
@@ -53,6 +52,24 @@ namespace DAL.Models
             citaToSave.PacienteId = cita.PacienteId;
             citaToSave.GruposCitasId = cita.GrupoCitaId;
             citaToSave.PreciosEspecialidadesId = cita.PrecioEspecialidadId;
+
+            // Relación con Pacientes (si existe)
+            if (cita.Paciente != null)
+            {
+                citaToSave.Pacientes = Pacientes.FromEntity(cita.Paciente, citaToSave.Pacientes);
+            }
+
+            // Relación con GruposCitas (si existe)
+            if (cita.GrupoCita != null)
+            {
+                citaToSave.GruposCitas = GruposCitas.FromEntity(cita.GrupoCita, citaToSave.GruposCitas);
+            }
+
+            // Relación con PreciosEspecialidades (si existe)
+            if (cita.PrecioEspecialidad != null)
+            {
+                citaToSave.PreciosEspecialidades = PreciosEspecialidades.FromEntity(cita.PrecioEspecialidad, citaToSave.PreciosEspecialidades);
+            }
 
             return citaToSave;
         }

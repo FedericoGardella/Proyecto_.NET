@@ -59,7 +59,7 @@ namespace DAL.Migrations
                     b.Property<decimal>("Costo")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<long>("FacturasId")
+                    b.Property<long?>("FacturasId")
                         .HasColumnType("bigint");
 
                     b.Property<long>("GruposCitasId")
@@ -68,13 +68,13 @@ namespace DAL.Migrations
                     b.Property<TimeSpan>("Hora")
                         .HasColumnType("time");
 
-                    b.Property<long>("PacienteId")
+                    b.Property<long?>("PacienteId")
                         .HasColumnType("bigint");
 
                     b.Property<long?>("PacientesId")
                         .HasColumnType("bigint");
 
-                    b.Property<long>("PreciosEspecialidadesId")
+                    b.Property<long?>("PreciosEspecialidadesId")
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
@@ -180,9 +180,6 @@ namespace DAL.Migrations
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("PacientesId")
-                        .IsUnique();
 
                     b.ToTable("Facturas");
                 });
@@ -710,9 +707,9 @@ namespace DAL.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
-                    b.HasIndex("HistoriasClinicasId")
+                    b.HasIndex("FacturasId")
                         .IsUnique()
-                        .HasFilter("[HistoriasClinicasId] IS NOT NULL");
+                        .HasFilter("[FacturasId] IS NOT NULL");
 
                     b.HasDiscriminator().HasValue("Pacientes");
                 });
@@ -722,8 +719,7 @@ namespace DAL.Migrations
                     b.HasOne("DAL.Models.Facturas", "Facturas")
                         .WithMany("Citas")
                         .HasForeignKey("FacturasId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("DAL.Models.GruposCitas", "GruposCitas")
                         .WithMany("Citas")
@@ -734,8 +730,7 @@ namespace DAL.Migrations
                     b.HasOne("DAL.Models.Pacientes", "Pacientes")
                         .WithMany()
                         .HasForeignKey("PacienteId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("DAL.Models.Pacientes", null)
                         .WithMany("Citas")
@@ -744,8 +739,7 @@ namespace DAL.Migrations
                     b.HasOne("DAL.Models.PreciosEspecialidades", "PreciosEspecialidades")
                         .WithMany()
                         .HasForeignKey("PreciosEspecialidadesId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.Navigation("Facturas");
 
@@ -784,17 +778,6 @@ namespace DAL.Migrations
                         .IsRequired();
 
                     b.Navigation("HistoriasClinicas");
-                });
-
-            modelBuilder.Entity("DAL.Models.Facturas", b =>
-                {
-                    b.HasOne("DAL.Models.Pacientes", "Pacientes")
-                        .WithOne("Facturas")
-                        .HasForeignKey("DAL.Models.Facturas", "PacientesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Pacientes");
                 });
 
             modelBuilder.Entity("DAL.Models.FacturasMes", b =>
@@ -998,6 +981,15 @@ namespace DAL.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("DAL.Models.Pacientes", b =>
+                {
+                    b.HasOne("DAL.Models.Facturas", "Facturas")
+                        .WithOne("Pacientes")
+                        .HasForeignKey("DAL.Models.Pacientes", "FacturasId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.Navigation("Facturas");
+                });
 
             modelBuilder.Entity("DAL.Models.Articulos", b =>
                 {
@@ -1011,6 +1003,9 @@ namespace DAL.Migrations
                     b.Navigation("Citas");
 
                     b.Navigation("FacturasMes");
+
+                    b.Navigation("Pacientes")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("DAL.Models.GruposCitas", b =>
@@ -1027,35 +1022,20 @@ namespace DAL.Migrations
                     b.Navigation("ResultadosEstudios");
                 });
 
-            modelBuilder.Entity("DAL.Models.TiposSeguros", b =>
+            modelBuilder.Entity("DAL.Models.Medicos", b =>
                 {
-                    b.Navigation("Articulos");
+                    b.Navigation("GruposCitas");
                 });
 
-                    modelBuilder.Entity("DAL.Models.Recetas", b =>
-                        {
-                            b.Navigation("Medicamentos");
-                        });
+            modelBuilder.Entity("DAL.Models.Pacientes", b =>
+                {
+                    b.Navigation("Citas");
 
-                    modelBuilder.Entity("DAL.Models.Medicos", b =>
-                        {
-                            b.Navigation("GruposCitas");
-                        });
+                    b.Navigation("ContratosSeguros");
 
-                    modelBuilder.Entity("DAL.Models.Pacientes", b =>
-                        {
-                            b.Navigation("Citas");
-
-                            b.Navigation("HistoriasClinicas");
-
-                            b.Navigation("ContratosSeguros");
-
-                            b.Navigation("Facturas")
-                                .IsRequired();
-
-                        });
-            
+                    b.Navigation("HistoriasClinicas");
+                });
 #pragma warning restore 612, 618
-            }
+        }
     }
 }
