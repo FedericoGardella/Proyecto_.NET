@@ -18,31 +18,34 @@ namespace DAL.Models
         public long EspecialidadesId { get; set; }
         public Especialidades Especialidades { get; set; }
 
-        public List<Citas> Citas { get; set; }
+        public List<Citas> Citas { get; set; } = new List<Citas>();
 
 
         public GrupoCita GetEntity()
         {
-            GrupoCita grupoCita = new GrupoCita();
-
-            grupoCita.Id = Id;
-            grupoCita.Lugar = Lugar;
-            grupoCita.Fecha = Fecha;
+            GrupoCita grupoCita = new GrupoCita
+            {
+                Id = Id,
+                Lugar = Lugar,
+                Fecha = Fecha,
+                MedicoId = MedicosId,
+                EspecialidadId = EspecialidadesId,
+                Citas = null
+            };
 
             return grupoCita;
         }
 
         public static GruposCitas FromEntity(GrupoCita grupoCita, GruposCitas gruposCitas)
         {
-            GruposCitas grupoCitaToSave;
-            if (gruposCitas == null)
-                grupoCitaToSave = new GruposCitas();
-            else
-                grupoCitaToSave = gruposCitas;
+            GruposCitas grupoCitaToSave = gruposCitas ?? new GruposCitas();
 
             grupoCitaToSave.Id = grupoCita.Id;
             grupoCitaToSave.Lugar = grupoCita.Lugar;
             grupoCitaToSave.Fecha = grupoCita.Fecha;
+            grupoCitaToSave.MedicosId = grupoCita.MedicoId;
+            grupoCitaToSave.EspecialidadesId = grupoCita.EspecialidadId;
+
 
             return grupoCitaToSave;
         }

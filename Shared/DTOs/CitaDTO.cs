@@ -12,8 +12,8 @@ namespace Shared.DTOs
         public long? Id { get; set; }
         public TimeSpan Hora { get; set; }
         public decimal Costo { get; set; }
-        public long PacienteId { get; set; }
+        public long? PacienteId { get; set; }
         public long GrupoCitaId { get; set; }
-        public long PrecioEspecialidadId { get; set; }
+        public long? PrecioEspecialidadId { get; set; }
     }
 }

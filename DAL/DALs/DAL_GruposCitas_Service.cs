@@ -1,5 +1,6 @@
 ﻿using DAL.IDALs;
 using DAL.Models;
+using Shared.DTOs;
 using Shared.Entities;
 
 namespace DAL.DALs
@@ -39,7 +40,7 @@ namespace DAL.DALs
                 {
                     Id = 1,
                     Lugar = "Clínica Central",
-                    Fecha = new DateTime(2024, 11, 28),
+                    Fecha = new DateTime(2024, 11, 29),
                     MedicosId = 3,
                     EspecialidadesId = 201,
                     Citas = new List<Citas>
@@ -88,6 +89,11 @@ namespace DAL.DALs
             };
 
             return grupoCita;
+        }
+
+        public GrupoCita AddGrupoCitaConCitas(GrupoCitaPostDTO dto)
+        {
+            throw new NotImplementedException();
         }
     }
 }

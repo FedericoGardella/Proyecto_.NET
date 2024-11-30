@@ -7,6 +7,8 @@ using StatusResponse = GestionCitas.Models.StatusResponse;
 
 namespace GestionCitas.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class CitasController : ControllerBase
     {
         private readonly IBL_Citas bl;
@@ -18,7 +20,7 @@ namespace GestionCitas.Controllers
             logger = _logger;
         }
 
-        // GET: api/<CitasController>
+        // GET: api/citas
         [Authorize(Roles = "ADMIN, MEDICO")]
         [ProducesResponseType(typeof(List<Cita>), 200)]
         [HttpGet]
@@ -35,15 +37,15 @@ namespace GestionCitas.Controllers
             }
         }
 
-        // GET api/<CitasController>/5
+        // GET api/citas/{id}
         [Authorize(Roles = "ADMIN, MEDICO")]
         [ProducesResponseType(typeof(Cita), 200)]
-        [HttpGet("{Id}")]
-        public IActionResult Get(long Id)
+        [HttpGet("{id}")]
+        public IActionResult Get(long id)
         {
             try
             {
-                return Ok(bl.Get(Id));
+                return Ok(bl.Get(id));
             }
             catch (Exception ex)
             {
@@ -52,7 +54,7 @@ namespace GestionCitas.Controllers
             }
         }
 
-        // POST api/<CitasController>
+        // POST api/citas
         [Authorize(Roles = "ADMIN, MEDICO")]
         [ProducesResponseType(typeof(Cita), 200)]
         [HttpPost]
@@ -69,11 +71,11 @@ namespace GestionCitas.Controllers
             }
         }
 
-        // PUT api/<CitasController>/5
+        // PUT api/citas/{id}
         [Authorize(Roles = "ADMIN, MEDICO")]
         [ProducesResponseType(typeof(Cita), 200)]
-        [HttpPut("{Id}")]
-        public IActionResult Put(long Id, [FromBody] Cita x)
+        [HttpPut("{id}")]
+        public IActionResult Put(long id, [FromBody] Cita x)
         {
             try
             {
@@ -86,15 +88,15 @@ namespace GestionCitas.Controllers
             }
         }
 
-        // DELETE api/<CitasController>/5
+        // DELETE api/citas/{id}
         [Authorize(Roles = "ADMIN, MEDICO")]
         [ProducesResponseType(typeof(StatusResponse), 200)]
-        [HttpDelete("{Id}")]
-        public IActionResult Delete(long Id)
+        [HttpDelete("{id}")]
+        public IActionResult Delete(long id)
         {
             try
             {
-                bl.Delete(Id);
+                bl.Delete(id);
                 return Ok(new StatusResponse() { StatusOk = true, StatusMessage = "" });
             }
             catch (Exception ex)

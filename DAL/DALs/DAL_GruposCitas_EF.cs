@@ -1,5 +1,7 @@
 ﻿using DAL.IDALs;
 using DAL.Models;
+using Microsoft.EntityFrameworkCore;
+using Shared.DTOs;
 using Shared.Entities;
 
 namespace DAL.DALs
@@ -31,12 +33,76 @@ namespace DAL.DALs
 
         public GrupoCita Add(GrupoCita x)
         {
-            GruposCitas toSave = new GruposCitas();
-            toSave = GruposCitas.FromEntity(x, toSave);
-            db.GruposCitas.Add(toSave);
+            var grupoCitasToSave = GruposCitas.FromEntity(x, null);
+
+            // Asociar cada cita al grupo
+            if (x.Citas != null && x.Citas.Count > 0)
+            {
+                grupoCitasToSave.Citas = x.Citas.Select(c => Citas.FromEntity(c, null)).ToList();
+            }
+
+            var savedGrupoCitas = db.GruposCitas.Add(grupoCitasToSave);
             db.SaveChanges();
-            return Get(toSave.Id);
+
+            return savedGrupoCitas.Entity.GetEntity();
         }
+
+        public GrupoCita AddGrupoCitaConCitas(GrupoCitaPostDTO dto)
+        {
+            // Crear la estrategia de ejecución
+            var strategy = db.Database.CreateExecutionStrategy();
+
+            // Ejecutar las operaciones dentro de la estrategia
+            return strategy.Execute(() =>
+            {
+                using (var transaction = db.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        // Crear la entidad GrupoCita
+                        var grupoCita = new GruposCitas
+                        {
+                            Lugar = dto.Lugar,
+                            Fecha = dto.Fecha,
+                            MedicosId = dto.MedicoId,
+                            EspecialidadesId = dto.EspecialidadId,
+                            Citas = null
+                        };
+
+                        // Agregar el grupo de citas a la base de datos
+                        db.GruposCitas.Add(grupoCita);
+                        db.SaveChanges(); // Necesario para generar el Id del grupo
+
+                        // Generar y guardar las citas
+                        for (int i = 0; i < dto.CantidadCitas; i++)
+                        {
+                            var hora = dto.HoraInicio.Add(TimeSpan.FromMinutes(i * dto.IntervaloMinutos));
+
+                            var cita = new Citas
+                            {
+                                Hora = hora,
+                                Costo = 0, // Costo nulo
+                                PacienteId = null, // Paciente nulo
+                                PreciosEspecialidadesId = null, // PrecioEspecialidad nulo
+                                GruposCitasId = grupoCita.Id // Asociar al grupo recién creado
+                            };
+                            db.Citas.Add(cita);
+                        }
+
+                        db.SaveChanges(); // Guardar todas las citas
+                        transaction.Commit(); // Confirmar la transacción
+
+                        return grupoCita.GetEntity();
+                    }
+                    catch
+                    {
+                        transaction.Rollback(); // Revertir los cambios si algo falla
+                        throw; // Re-lanzar la excepción
+                    }
+                }
+            });
+        }
+
 
         public GrupoCita Update(GrupoCita x)
         {

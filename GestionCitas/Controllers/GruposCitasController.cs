@@ -1,4 +1,5 @@
 ﻿using BL.IBLs;
+using DAL.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shared.DTOs;
@@ -7,6 +8,8 @@ using StatusResponse = GestionCitas.Models.StatusResponse;
 
 namespace GestionCitas.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class GruposCitasController : ControllerBase
     {
         private readonly IBL_GruposCitas bl;
@@ -18,7 +21,7 @@ namespace GestionCitas.Controllers
             logger = _logger;
         }
 
-        // GET: api/<GruposCitasController>
+        // GET: api/grupos-citas
         [Authorize(Roles = "ADMIN, X")]
         [ProducesResponseType(typeof(List<GrupoCita>), 200)]
         [HttpGet]
@@ -35,15 +38,15 @@ namespace GestionCitas.Controllers
             }
         }
 
-        // GET api/<GruposCitasController>/5
+        // GET api/grupos-citas/{id}
         [Authorize(Roles = "ADMIN, X")]
         [ProducesResponseType(typeof(GrupoCita), 200)]
-        [HttpGet("{Id}")]
-        public IActionResult Get(long Id)
+        [HttpGet("{id}")]
+        public IActionResult Get(long id)
         {
             try
             {
-                return Ok(bl.Get(Id));
+                return Ok(bl.Get(id));
             }
             catch (Exception ex)
             {
@@ -52,15 +55,21 @@ namespace GestionCitas.Controllers
             }
         }
 
-        // POST api/<GruposCitasController>
         [Authorize(Roles = "ADMIN")]
         [ProducesResponseType(typeof(GrupoCita), 200)]
         [HttpPost]
-        public IActionResult Post([FromBody] GrupoCita x)
+        public IActionResult Post([FromBody] GrupoCitaPostDTO dto)
         {
             try
             {
-                return Ok(bl.Add(x));
+                if (dto.CantidadCitas <= 0 || dto.IntervaloMinutos <= 0)
+                {
+                    return BadRequest(new StatusDTO(false, "La cantidad de citas y el intervalo deben ser mayores a 0."));
+                }
+
+                // Delegar la creación al BL
+                var grupoCita = bl.AddGrupoCitaConCitas(dto);
+                return Ok(grupoCita);
             }
             catch (Exception ex)
             {
@@ -69,11 +78,13 @@ namespace GestionCitas.Controllers
             }
         }
 
-        // PUT api/<GruposCitasController>/5
+
+
+        // PUT api/grupos-citas/{id}
         [Authorize(Roles = "ADMIN")]
         [ProducesResponseType(typeof(GrupoCita), 200)]
-        [HttpPut("{Id}")]
-        public IActionResult Put(long Id, [FromBody] GrupoCita x)
+        [HttpPut("{id}")]
+        public IActionResult Put(long id, [FromBody] GrupoCita x)
         {
             try
             {
@@ -86,15 +97,15 @@ namespace GestionCitas.Controllers
             }
         }
 
-        // DELETE api/<GruposCitasController>/5
+        // DELETE api/grupos-citas/{id}
         [Authorize(Roles = "ADMIN")]
         [ProducesResponseType(typeof(StatusResponse), 200)]
-        [HttpDelete("{Id}")]
-        public IActionResult Delete(long Id)
+        [HttpDelete("{id}")]
+        public IActionResult Delete(long id)
         {
             try
             {
-                bl.Delete(Id);
+                bl.Delete(id);
                 return Ok(new StatusResponse() { StatusOk = true, StatusMessage = "" });
             }
             catch (Exception ex)
