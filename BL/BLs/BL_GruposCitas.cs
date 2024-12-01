@@ -44,6 +44,18 @@ namespace BL.BLs
             return dal.AddGrupoCitaConCitas(dto);
         }
 
+        public GrupoCita GetDetalle(long id)
+        {
+            var grupoCita = dal.GetDetalle(id);
+
+            if (grupoCita == null)
+            {
+                return null;
+            }
+
+            return grupoCita.GetEntity();
+        }
+
         public GrupoCita Update(GrupoCita x)
         {
             return dal.Update(x);
@@ -63,6 +75,11 @@ namespace BL.BLs
                 Lugar = gc.Lugar,
                 Fecha = gc.Fecha
             }).ToList();
+        }
+
+        public void UpdatePaciente(long citaId, long pacienteId)
+        {
+            throw new NotImplementedException();
         }
     }
 }

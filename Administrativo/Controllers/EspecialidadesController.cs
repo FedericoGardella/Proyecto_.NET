@@ -23,7 +23,7 @@ namespace Administrativo.Controllers
         }
 
         // GET: api/<EspecialidadesController>
-        [Authorize(Roles = "ADMIN, X")]
+        [Authorize(Roles = "ADMIN, MEDICO, PACIENTE")]
         [ProducesResponseType(typeof(List<Especialidad>), 200)]
         [HttpGet]
         public IActionResult Get()

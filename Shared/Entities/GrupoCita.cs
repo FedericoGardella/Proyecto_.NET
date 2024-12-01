@@ -7,6 +7,8 @@
         public DateTime Fecha { get; set; }
         public long MedicoId { get; set; }
         public long EspecialidadId { get; set; }
+        public Especialidad Especialidad { get; set; }
+        public Medico Medico { get; set; }
         public List<Cita> Citas { get; set; } = new List<Cita>();
     }
 }

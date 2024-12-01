@@ -88,6 +88,29 @@ namespace GestionCitas.Controllers
             }
         }
 
+        [Authorize(Roles = "ADMIN, PACIENTE")]
+        [ProducesResponseType(typeof(StatusResponse), 200)]
+        [HttpPatch("{id}/paciente/{pacienteId}")]
+        public IActionResult UpdatePaciente(long id, long pacienteId)
+        {
+            try
+            {
+                if (pacienteId <= 0)
+                {
+                    return BadRequest(new StatusDTO(false, "PacienteId debe ser un valor positivo."));
+                }
+
+                bl.UpdatePaciente(id, pacienteId);
+
+                return Ok(new StatusResponse() { StatusOk = true, StatusMessage = "Cita actualizada exitosamente." });
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, $"Error al actualizar el paciente para la cita con ID {id}");
+                return StatusCode(StatusCodes.Status400BadRequest, new StatusDTO(false, "Error al actualizar la cita."));
+            }
+        }
+
         // DELETE api/citas/{id}
         [Authorize(Roles = "ADMIN, MEDICO")]
         [ProducesResponseType(typeof(StatusResponse), 200)]

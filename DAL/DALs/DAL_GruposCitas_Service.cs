@@ -100,5 +100,10 @@ namespace DAL.DALs
         {
             throw new NotImplementedException();
         }
+
+        public GruposCitas GetDetalle(long id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

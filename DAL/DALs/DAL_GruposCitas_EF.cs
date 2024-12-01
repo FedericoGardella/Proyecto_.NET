@@ -120,6 +120,15 @@ namespace DAL.DALs
                 .ToList();
         }
 
+        public GruposCitas GetDetalle(long id)
+        {
+            return db.GruposCitas
+                .Include(gc => gc.Medicos)
+                .Include(gc => gc.Especialidades)
+                .Include(gc => gc.Citas)
+                .FirstOrDefault(gc => gc.Id == id);
+        }
+
         public void Delete(long Id)
         {
             GruposCitas? toDelete = db.GruposCitas.Find(Id);

@@ -133,5 +133,42 @@ namespace GestionCitas.Controllers
             }
         }
 
+        [HttpGet("detalle/{id}")]
+        [Authorize(Roles = "ADMIN, PACIENTE")]
+        [ProducesResponseType(typeof(GrupoCitaDetalleDTO), 200)]
+        public IActionResult GetDetalle(long id)
+        {
+            try
+            {
+                var grupoCita = bl.GetDetalle(id);
+                if (grupoCita == null)
+                {
+                    return NotFound(new StatusDTO(false, "Grupo de citas no encontrado"));
+                }
+
+                // Mapear al DTO
+                var grupoCitaDetalle = new GrupoCitaDetalleDTO
+                {
+                    Id = grupoCita.Id,
+                    Lugar = grupoCita.Lugar,
+                    Fecha = grupoCita.Fecha,
+                    MedicoNombre = $"{grupoCita.Medico.Apellidos}, {grupoCita.Medico.Nombres}",
+                    EspecialidadNombre = grupoCita.Especialidad.Nombre,
+                    Citas = grupoCita.Citas.Select(cita => new CitaDTO
+                    {
+                        Id = cita.Id,
+                        Hora = cita.Hora
+                    }).ToList()
+                };
+
+                return Ok(grupoCitaDetalle);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error al obtener el detalle del grupo de citas");
+                return StatusCode(StatusCodes.Status400BadRequest, new StatusDTO(false, "Error al obtener el detalle del grupo de citas"));
+            }
+        }
+
     }
 }

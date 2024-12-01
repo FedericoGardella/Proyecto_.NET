@@ -7,6 +7,8 @@ using Shared.Entities;
 
 namespace Autenticacion.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class MedicosController : ControllerBase
     {
         private readonly IBL_Medicos bl;
@@ -19,7 +21,7 @@ namespace Autenticacion.Controllers
         }
 
         // GET: api/<MedicosController>
-        [Authorize(Roles = "ADMIN, X")]
+        [Authorize(Roles = "ADMIN, MEDICO, PACIENTE")]
         [ProducesResponseType(typeof(List<Medico>), 200)]
         [HttpGet]
         public IActionResult Get()

@@ -13,6 +13,7 @@ namespace DAL.IDALs
         GrupoCita AddGrupoCitaConCitas(GrupoCitaPostDTO dto);
         GrupoCita Update(GrupoCita x);
         List<GruposCitas> GetByEspecialidadAndMes(long especialidadId, int mes);
+        GruposCitas GetDetalle(long id);
         void Delete(long Id);
     }
 }

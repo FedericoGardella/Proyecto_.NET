@@ -11,6 +11,7 @@ namespace BL.IBLs
         GrupoCita Add(GrupoCita x);
         GrupoCita AddGrupoCitaConCitas(GrupoCitaPostDTO dto);
         List<GrupoCitaDTO> GetByEspecialidadAndMes(long especialidadId, int mes);
+        GrupoCita GetDetalle(long id);
         GrupoCita Update(GrupoCita x);
         void Delete(long Id);
     }
