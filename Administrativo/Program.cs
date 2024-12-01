@@ -34,7 +34,7 @@ builder.Services.AddScoped<IDAL_Articulos, DAL_Articulos_EF>();
 builder.Services.AddScoped<IBL_PreciosEspecialidades, BL_PreciosEspecialidades>();
 builder.Services.AddScoped<IDAL_PreciosEspecialidades, DAL_PreciosEspecialidades_EF>();
 builder.Services.AddScoped<IBL_Especialidades, BL_Especialidades>();
-builder.Services.AddScoped<IDAL_Especialidades, DAL_Especialidades_Service>(); // Cambiar cuando no sea mock
+builder.Services.AddScoped<IDAL_Especialidades, DAL_Especialidades_EF>();
 builder.Services.AddScoped<IBL_PreciosEspecialidades, BL_PreciosEspecialidades>();
 builder.Services.AddScoped<IDAL_PreciosEspecialidades, DAL_PreciosEspecialidades_EF>();
 builder.Services.AddScoped<IBL_FacturasMes,  BL_FacturasMes>();

@@ -91,7 +91,7 @@ namespace Administrativo.Controllers
                 {
                     Nombre = tiposSegurosDTO.Nombre,
                     Descripcion = tiposSegurosDTO.Descripcion,
-                    ArticuloId = articuloCreado.Id // Asociar al nuevo artículo creado
+                    ArticuloId = articuloCreado.Id
                 };
                 var tipoSeguroCreado = bl.Add(tipoSeguro);
 
@@ -114,20 +114,33 @@ namespace Administrativo.Controllers
 
 
 
-        // PUT: api/TiposSeguros/5
         [HttpPut("{id}")]
         [Authorize(Roles = "ADMIN")]
         [ProducesResponseType(typeof(TipoSeguro), 200)]
-        public IActionResult Put(long id, [FromBody] TipoSeguro tipoSeguro)
+        public IActionResult Put(long id, [FromBody] TipoSeguroUpdateDTO tipoSeguroUpdate)
         {
             try
             {
                 var existingTipoSeguro = bl.Get(id);
                 if (existingTipoSeguro == null)
+                {
                     return NotFound(new StatusDTO(false, "Tipo de seguro no encontrado"));
+                }
 
-                tipoSeguro.Id = id; // Aseguramos que el ID sea el mismo que el que queremos actualizar
-                var updatedTipoSeguro = bl.Update(tipoSeguro);
+                // Actualizamos solo los campos permitidos
+                if (!string.IsNullOrEmpty(tipoSeguroUpdate.Nombre))
+                {
+                    existingTipoSeguro.Nombre = tipoSeguroUpdate.Nombre;
+                }
+
+                if (!string.IsNullOrEmpty(tipoSeguroUpdate.Descripcion))
+                {
+                    existingTipoSeguro.Descripcion = tipoSeguroUpdate.Descripcion;
+                }
+
+                // ArticuloId NO se modifica aquí
+
+                var updatedTipoSeguro = bl.Update(existingTipoSeguro);
                 return Ok(updatedTipoSeguro);
             }
             catch (Exception ex)
@@ -136,6 +149,8 @@ namespace Administrativo.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new StatusDTO(false, "Error al actualizar el tipo de seguro"));
             }
         }
+
+
 
         // DELETE: api/TiposSeguros/5
         [HttpDelete("{id}")]
