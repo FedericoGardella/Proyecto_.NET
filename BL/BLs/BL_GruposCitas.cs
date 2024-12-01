@@ -53,5 +53,16 @@ namespace BL.BLs
         {
             dal.Delete(Id);
         }
+
+        public List<GrupoCitaDTO> GetByEspecialidadAndMes(long especialidadId, int mes)
+        {
+            var gruposCitas = dal.GetByEspecialidadAndMes(especialidadId, mes);
+            return gruposCitas.Select(gc => new GrupoCitaDTO
+            {
+                Id = gc.Id,
+                Lugar = gc.Lugar,
+                Fecha = gc.Fecha
+            }).ToList();
+        }
     }
 }

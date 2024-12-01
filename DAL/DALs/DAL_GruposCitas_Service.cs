@@ -95,5 +95,10 @@ namespace DAL.DALs
         {
             throw new NotImplementedException();
         }
+
+        public List<GruposCitas> GetByEspecialidadAndMes(long especialidadId, int mes)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

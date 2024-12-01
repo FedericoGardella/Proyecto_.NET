@@ -30,7 +30,7 @@ namespace DAL.Models
                 Fecha = Fecha,
                 MedicoId = MedicosId,
                 EspecialidadId = EspecialidadesId,
-                Citas = null
+                Citas = null 
             };
 
             return grupoCita;

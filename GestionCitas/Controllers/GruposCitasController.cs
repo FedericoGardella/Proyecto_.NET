@@ -114,5 +114,24 @@ namespace GestionCitas.Controllers
                 return StatusCode(StatusCodes.Status400BadRequest, new StatusDTO(false, "Error al eliminar grupoCita"));
             }
         }
+
+        // GET api/grupos-citas/especialidad/{especialidadId}/mes/{mes}
+        [Authorize(Roles = "ADMIN, PACIENTE")]
+        [ProducesResponseType(typeof(List<GrupoCitaDTO>), 200)]
+        [HttpGet("especialidad/{especialidadId}/mes/{mes}")]
+        public IActionResult GetByEspecialidadAndMes(long especialidadId, int mes)
+        {
+            try
+            {
+                var gruposCitas = bl.GetByEspecialidadAndMes(especialidadId, mes);
+                return Ok(gruposCitas);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error al obtener grupos de citas por especialidad y mes");
+                return StatusCode(StatusCodes.Status400BadRequest, new StatusDTO(false, "Error al obtener grupos de citas"));
+            }
+        }
+
     }
 }
