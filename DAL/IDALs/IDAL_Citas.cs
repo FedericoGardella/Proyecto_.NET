@@ -9,6 +9,7 @@ namespace DAL.IDALs
         Cita Add(Cita x);
         Cita Update(Cita x);
         void UpdatePaciente(Cita cita);
+        List<Cita> GetCitasFuturasPorPacienteYEspecialidad(long pacienteId, long especialidadId, DateTime fechaActual);
         void Delete(long Id);
     }
 }

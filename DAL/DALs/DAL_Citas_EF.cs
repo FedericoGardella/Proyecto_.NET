@@ -58,6 +58,18 @@ namespace DAL.DALs
             db.SaveChanges();
         }
 
+        public List<Cita> GetCitasFuturasPorPacienteYEspecialidad(long pacienteId, long especialidadId, DateTime fechaActual)
+        {
+            return db.Citas
+                     .Include(c => c.GruposCitas) // Incluir la relación con el grupo de citas
+                     .ThenInclude(g => g.Especialidades) // Incluir la relación con especialidades
+                     .Where(c => c.PacienteId == pacienteId &&
+                                 c.GruposCitas.EspecialidadesId == especialidadId &&
+                                 c.GruposCitas.Fecha > fechaActual)
+                     .Select(c => c.GetEntity()) // Convertir a la entidad compartida
+                     .ToList(); // Materializar la consulta como una lista
+        }
+
         public void Delete(long Id)
         {
             Citas? toDelete = db.Citas.Find(Id);

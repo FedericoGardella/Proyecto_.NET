@@ -157,7 +157,8 @@ namespace GestionCitas.Controllers
                     Citas = grupoCita.Citas.Select(cita => new CitaDTO
                     {
                         Id = cita.Id,
-                        Hora = cita.Hora
+                        Hora = cita.Hora,
+                        PacienteId = cita.PacienteId
                     }).ToList()
                 };
 

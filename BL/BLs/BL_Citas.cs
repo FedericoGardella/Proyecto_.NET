@@ -51,6 +51,14 @@ namespace BL.BLs
             dal.UpdatePaciente(cita);
         }
 
+        public List<Cita> GetCitasFuturasPorPacienteYEspecialidad(long pacienteId, long especialidadId, DateTime fechaActual)
+        {
+
+            var citasFuturas = dal.GetCitasFuturasPorPacienteYEspecialidad(pacienteId, especialidadId, fechaActual);
+
+
+            return citasFuturas;
+        }
 
         public void Delete(long Id)
         {

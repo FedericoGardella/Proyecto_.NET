@@ -126,6 +126,7 @@ namespace DAL.DALs
                 .Include(gc => gc.Medicos)
                 .Include(gc => gc.Especialidades)
                 .Include(gc => gc.Citas)
+                .ThenInclude(c => c.Pacientes)
                 .FirstOrDefault(gc => gc.Id == id);
         }
 
