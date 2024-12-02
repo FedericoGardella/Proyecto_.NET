@@ -23,18 +23,36 @@ namespace DAL.Models
 
         public GrupoCita GetEntity()
         {
-            GrupoCita grupoCita = new GrupoCita
+            return new GrupoCita
             {
                 Id = Id,
                 Lugar = Lugar,
                 Fecha = Fecha,
                 MedicoId = MedicosId,
                 EspecialidadId = EspecialidadesId,
-                Citas = null
+                Medico = Medicos == null ? null : new Medico
+                {
+                    Id = Medicos.Id,
+                    Nombres = Medicos.Nombres,
+                    Apellidos = Medicos.Apellidos,
+                    Documento = Medicos.Documento,
+                    Matricula = Medicos.Matricula
+                },
+                Especialidad = Especialidades == null ? null : new Especialidad
+                {
+                    Id = Especialidades.Id,
+                    Nombre = Especialidades.Nombre
+                },
+                Citas = Citas?.Select(cita => new Cita
+                {
+                    Id = cita.Id,
+                    Hora = cita.Hora,
+                    PacienteId = cita.PacienteId,
+                    GrupoCitaId = cita.GruposCitasId
+                }).ToList()
             };
-
-            return grupoCita;
         }
+
 
         public static GruposCitas FromEntity(GrupoCita grupoCita, GruposCitas gruposCitas)
         {

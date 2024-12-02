@@ -1,4 +1,5 @@
-﻿using Shared.DTOs;
+﻿using DAL.Models;
+using Shared.DTOs;
 using Shared.Entities;
 
 namespace DAL.IDALs
@@ -11,6 +12,8 @@ namespace DAL.IDALs
         GrupoCita Add(GrupoCita x);
         GrupoCita AddGrupoCitaConCitas(GrupoCitaPostDTO dto);
         GrupoCita Update(GrupoCita x);
+        List<GruposCitas> GetByEspecialidadAndMes(long especialidadId, int mes);
+        GruposCitas GetDetalle(long id);
         void Delete(long Id);
     }
 }

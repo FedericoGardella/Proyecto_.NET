@@ -113,6 +113,22 @@ namespace DAL.DALs
             return Get(toSave.Id);
         }
 
+        public List<GruposCitas> GetByEspecialidadAndMes(long especialidadId, int mes)
+        {
+            return db.GruposCitas
+                .Where(gc => gc.EspecialidadesId == especialidadId && gc.Fecha.Month == mes)
+                .ToList();
+        }
+
+        public GruposCitas GetDetalle(long id)
+        {
+            return db.GruposCitas
+                .Include(gc => gc.Medicos)
+                .Include(gc => gc.Especialidades)
+                .Include(gc => gc.Citas)
+                .FirstOrDefault(gc => gc.Id == id);
+        }
+
         public void Delete(long Id)
         {
             GruposCitas? toDelete = db.GruposCitas.Find(Id);

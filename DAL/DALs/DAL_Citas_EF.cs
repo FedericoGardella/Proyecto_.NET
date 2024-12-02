@@ -1,5 +1,6 @@
 ﻿using DAL.IDALs;
 using DAL.Models;
+using Microsoft.EntityFrameworkCore;
 using Shared.Entities;
 
 namespace DAL.DALs
@@ -41,6 +42,20 @@ namespace DAL.DALs
             db.Update(toSave);
             db.SaveChanges();
             return Get(toSave.Id);
+        }
+
+        public void UpdatePaciente(Cita cita)
+        {
+            var existingCita = db.Citas.Find(cita.Id);
+
+            if (existingCita == null)
+            {
+                throw new Exception($"No se encontró la cita con ID {cita.Id}");
+            }
+
+            existingCita.PacienteId = cita.PacienteId;
+
+            db.SaveChanges();
         }
 
         public void Delete(long Id)

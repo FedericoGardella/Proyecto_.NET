@@ -8,6 +8,7 @@ namespace DAL.IDALs
         List<Cita> GetAll();
         Cita Add(Cita x);
         Cita Update(Cita x);
+        void UpdatePaciente(Cita cita);
         void Delete(long Id);
     }
 }
