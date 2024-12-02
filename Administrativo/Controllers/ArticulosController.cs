@@ -204,36 +204,5 @@ namespace Administrativo.Controllers
                 return StatusCode(StatusCodes.Status400BadRequest, new StatusDTO(false, "Error al eliminar articulo"));
             }
         }
-
-
-        [HttpPut("updateCosto/{tipoSeguroId}")]
-        [Authorize(Roles = "ADMIN")]
-        [ProducesResponseType(typeof(Articulo), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(StatusDTO), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(StatusDTO), StatusCodes.Status404NotFound)]
-        public IActionResult UpdateCosto(long tipoSeguroId, [FromBody] decimal nuevoCosto)
-        {
-            try
-            {
-                logger.LogInformation("Solicitud recibida para actualizar el costo del TipoSeguro con ID: {TipoSeguroId}", tipoSeguroId);
-                logger.LogInformation("Nuevo costo recibido: {NuevoCosto}", nuevoCosto);
-
-                var nuevoArticulo = bl.UpdateCosto(tipoSeguroId, nuevoCosto);
-
-                logger.LogInformation("Costo actualizado exitosamente. Nuevo artículo creado con ID: {ArticuloId}, Fecha: {Fecha}, Costo: {Costo}",
-                    nuevoArticulo.Id, nuevoArticulo.Fecha, nuevoArticulo.Costo);
-
-                return Ok(nuevoArticulo);
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, "Error al actualizar el costo para TipoSeguro con ID: {TipoSeguroId}", tipoSeguroId);
-                return BadRequest(new StatusDTO(false, ex.Message));
-            }
-        }
-
-
-
-
     }
 }

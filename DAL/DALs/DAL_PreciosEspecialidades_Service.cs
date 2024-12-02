@@ -29,5 +29,15 @@ namespace DAL.DALs
         {
             throw new NotImplementedException();
         }
+
+        public PrecioEspecialidad GetByEspecialidadAndTipoSeguro(long especialidadId, long tipoSeguroId) 
+        { 
+            throw new NotImplementedException(); 
+        }
+
+        public bool Repetido(long especialidadId, long tipoSeguroId) 
+        {  
+            throw new NotImplementedException(); 
+        }
     }
 }

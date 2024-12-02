@@ -13,8 +13,8 @@ namespace DAL.Models
         public Pacientes Pacientes { get; set; }
 
 
-        public List<Citas> Citas { get; set; }
-        public List<FacturasMes> FacturasMes { get; set; }
+        public List<Citas> Citas { get; set; } // SE VA
+        public List<FacturasMes> FacturasMes { get; set; } // SE VA
 
         // Le agrego costostotales?
 

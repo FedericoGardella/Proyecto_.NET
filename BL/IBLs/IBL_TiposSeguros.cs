@@ -10,6 +10,7 @@ namespace BL.IBLs
         TipoSeguro Add(TipoSeguro x);
         TipoSeguro Update(TipoSeguro x);
         void Delete(long Id);
+        Articulo UpdateCosto(long tipoSeguroId, decimal nuevoCosto);
         //List<ContratoSeguroDTO> GetContratosSeguros(long TipoSeguroId);
     }
 }

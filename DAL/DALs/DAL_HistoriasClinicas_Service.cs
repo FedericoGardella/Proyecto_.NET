@@ -92,5 +92,11 @@ namespace DAL.DALs
                 throw new Exception("Error al obtener la última historia clínica desde el servicio externo.", ex);
             }
         }
+
+        public bool Existe(long especialidadId, long tipoSeguroId)
+        {
+            throw new NotImplementedException();
+        }
+
     }
 }

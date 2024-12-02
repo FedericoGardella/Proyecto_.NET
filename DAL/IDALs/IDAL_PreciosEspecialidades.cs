@@ -9,5 +9,7 @@ namespace DAL.IDALs
         PrecioEspecialidad Add(PrecioEspecialidad x);
         PrecioEspecialidad Update(PrecioEspecialidad x);
         void Delete(long Id);
+        PrecioEspecialidad GetByEspecialidadAndTipoSeguro(long especialidadId, long tipoSeguroId);
+        bool Repetido(long especialidadId, long tipoSeguroId);
     }
 }

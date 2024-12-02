@@ -10,7 +10,7 @@ namespace DAL.Models
         }
         public long Id { get; set; }
         public DateTime FechaInicio { get; set; }
-        public string Estado { get; set; } // Ej: Activo, Cancelado, etc.
+        public string Estado { get; set; } // Ej: Activo, Cancelado, etc. -> Bool Activo
 
         [ForeignKey("Pacientes")]
         public long PacientesId { get; set; } // Clave foránea hacia Pacientes

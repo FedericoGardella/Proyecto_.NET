@@ -41,31 +41,5 @@ namespace BL.BLs
             dal.Delete(Id);
         }
 
-        public Articulo UpdateCosto(long tipoSeguroId, decimal nuevoCosto)
-        {
-            // Validar el TipoSeguro
-            var tipoSeguro = dalTiposSeguros.Get(tipoSeguroId);
-            if (tipoSeguro == null)
-            {
-                throw new Exception("TipoSeguro no encontrado.");
-            }
-
-            // Crear un nuevo artículo con el nuevo costo
-            var nuevoArticulo = new Articulo
-            {
-                Fecha = DateTime.UtcNow,
-                Costo = nuevoCosto,
-                TipoSeguroId = tipoSeguroId
-            };
-
-            var createdArticulo = dal.Add(nuevoArticulo);
-
-            // Actualizar el TipoSeguro con el nuevo ArticuloId
-            tipoSeguro.ArticuloId = createdArticulo.Id;
-            dalTiposSeguros.Update(tipoSeguro);
-
-            return createdArticulo;
-        }
-
     }
 }

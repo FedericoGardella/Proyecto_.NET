@@ -16,6 +16,8 @@ namespace DAL.Models
         public List<ContratosSeguros> ContratosSeguros { get; set; }
 
         public List<HistoriasClinicas> HistoriasClinicas { get; set; } // Relación uno a muchos
+
+        // Lista de Facturas
         
 
 

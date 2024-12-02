@@ -30,6 +30,8 @@ namespace DAL.Models
                 Id = Id,
                 ArticuloId = ArticulosId,
                 //Articulo = Articulos?.GetEntity()
+                EspecialidadId = EspecialidadesId,
+                TipoSeguroId = TiposSegurosId
             };
         }
 
@@ -39,6 +41,8 @@ namespace DAL.Models
 
             precioEspecialidadToSave.Id = precioEspecialidad.Id;
             precioEspecialidadToSave.ArticulosId = precioEspecialidad.ArticuloId;
+            precioEspecialidadToSave.EspecialidadesId = precioEspecialidad.EspecialidadId;
+            precioEspecialidadToSave.TiposSegurosId = precioEspecialidad.TipoSeguroId;
 
             return precioEspecialidadToSave;
         }

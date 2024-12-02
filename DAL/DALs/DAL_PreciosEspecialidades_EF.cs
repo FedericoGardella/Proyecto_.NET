@@ -1,5 +1,6 @@
 ﻿using DAL.IDALs;
 using DAL.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Shared.Entities;
 
@@ -58,5 +59,22 @@ namespace DAL.DALs
             db.PreciosEspecialidades.Remove(toDelete);
             db.SaveChanges();
         }
+
+        public PrecioEspecialidad GetByEspecialidadAndTipoSeguro(long especialidadId, long tipoSeguroId)
+        {
+            // Busca el registro en la base de datos
+            var precioEspecialidad = db.PreciosEspecialidades
+                .FirstOrDefault(pe => pe.EspecialidadesId == especialidadId && pe.TiposSegurosId == tipoSeguroId);
+
+            return precioEspecialidad?.GetEntity();
+        }
+
+        public bool Repetido(long especialidadId, long tipoSeguroId)
+        {
+            return db.PreciosEspecialidades
+                .Any(pe => pe.EspecialidadesId == especialidadId && pe.TiposSegurosId == tipoSeguroId);
+        }
+
+
     }
 }

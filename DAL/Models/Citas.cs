@@ -8,7 +8,7 @@ namespace DAL.Models
         public Citas() { }
         public long Id { get; set; }
         public TimeSpan Hora { get; set; }
-        public decimal Costo { get; set; }
+        public decimal Costo { get; set; } // SE VA
 
         [ForeignKey("Pacientes")]
         public long? PacienteId { get; set; }

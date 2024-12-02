@@ -63,6 +63,8 @@ namespace Administrativo.Controllers
             }
         }
 
+
+
         [HttpPost]
         [Authorize(Roles = "ADMIN")]
         [ProducesResponseType(typeof(PreciosEspecialidades), StatusCodes.Status200OK)]
@@ -80,6 +82,7 @@ namespace Administrativo.Controllers
                 }
                 logger.LogInformation("DTO recibido: {@PrecioEspecialidadDTO}", preciosEspecialidadesDTO);
 
+
                 // Validar la existencia de la Especialidad
                 var especialidad = blEspecialidades.Get(preciosEspecialidadesDTO.EspecialidadId);
                 if (especialidad == null)
@@ -89,6 +92,7 @@ namespace Administrativo.Controllers
                 }
                 logger.LogInformation("Especialidad encontrada con ID: {EspecialidadId}", preciosEspecialidadesDTO.EspecialidadId);
 
+
                 // Validar la existencia del TipoSeguro
                 var tipoSeguro = blTiposSeguros.Get(preciosEspecialidadesDTO.TipoSeguroId);
                 if (tipoSeguro == null)
@@ -97,6 +101,19 @@ namespace Administrativo.Controllers
                     return NotFound(new StatusDTO(false, "Tipo de seguro no encontrado."));
                 }
                 logger.LogInformation("TipoSeguro encontrado con ID: {TipoSeguroId}", preciosEspecialidadesDTO.TipoSeguroId);
+
+
+                // Validar que no exista un registro con la misma combinación de EspecialidadId y TipoSeguroId
+                var existePrecioEspecialidad = bl.Repetido(preciosEspecialidadesDTO.EspecialidadId, preciosEspecialidadesDTO.TipoSeguroId);
+                if (existePrecioEspecialidad)
+                {
+                    logger.LogWarning("Ya existe un PrecioEspecialidad con EspecialidadId: {EspecialidadId} y TipoSeguroId: {TipoSeguroId}",
+                        preciosEspecialidadesDTO.EspecialidadId, preciosEspecialidadesDTO.TipoSeguroId);
+                    return BadRequest(new StatusDTO(false, "Ya existe un precio de especialidad con esa combinación de especialidad y tipo de seguro."));
+                }
+
+                logger.LogInformation("No existe un PrecioEspecialidad con la combinación de EspecialidadId y TipoSeguroId. Procediendo a crear...");
+
 
                 // Crear un nuevo artículo asociado a PreciosEspecialidades
                 var nuevoArticulo = new Articulo
@@ -140,7 +157,6 @@ namespace Administrativo.Controllers
 
 
 
-
         // PUT api/<PreciosEspecialidadesController>/5
         [Authorize(Roles = "ADMIN")]
         [ProducesResponseType(typeof(PrecioEspecialidad), 200)]
@@ -157,6 +173,8 @@ namespace Administrativo.Controllers
                 return StatusCode(StatusCodes.Status400BadRequest, new StatusDTO(false, "Error al actualizar precioEspecialidad"));
             }
         }
+
+
 
         // DELETE api/<PreciosEspecialidadesController>/5
         [Authorize(Roles = "ADMIN")]
@@ -175,5 +193,59 @@ namespace Administrativo.Controllers
                 return StatusCode(StatusCodes.Status400BadRequest, new StatusDTO(false, "Error al eliminar precioEspecialidad"));
             }
         }
+
+
+
+        [HttpPut("updateCosto/{precioEspecialidadId}")]
+        [Authorize(Roles = "ADMIN")]
+        [ProducesResponseType(typeof(Articulo), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(StatusDTO), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(StatusDTO), StatusCodes.Status404NotFound)]
+        public IActionResult UpdateCosto(long precioEspecialidadId, [FromBody] decimal nuevoCosto)
+        {
+            try
+            {
+                logger.LogInformation("Solicitud recibida para actualizar el costo de PrecioEspecialidad con ID: {PrecioEspecialidadId}", precioEspecialidadId);
+                logger.LogInformation("Nuevo costo recibido: {NuevoCosto}", nuevoCosto);
+
+                var nuevoArticulo = bl.UpdateCosto(precioEspecialidadId, nuevoCosto);
+
+                logger.LogInformation("Costo actualizado exitosamente. Nuevo artículo creado con ID: {ArticuloId}, Fecha: {Fecha}, Costo: {Costo}",
+                    nuevoArticulo.Id, nuevoArticulo.Fecha, nuevoArticulo.Costo);
+
+                return Ok(nuevoArticulo);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error al actualizar el costo para PrecioEspecialidad con ID: {PrecioEspecialidadId}", precioEspecialidadId);
+                return BadRequest(new StatusDTO(false, ex.Message));
+            }
+        }
+
+
+        [HttpGet("GetCosto")]
+        [Authorize(Roles = "ADMIN, MEDICO")]
+        [ProducesResponseType(typeof(decimal), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(StatusDTO), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(StatusDTO), StatusCodes.Status404NotFound)]
+        public IActionResult GetCosto([FromQuery] long especialidadId, [FromQuery] long tipoSeguroId)
+        {
+            try
+            {
+                // Llama al BL para obtener el costo
+                var costo = bl.GetCosto(especialidadId, tipoSeguroId);
+
+                return Ok(costo);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error al obtener el costo para EspecialidadId: {EspecialidadId}, TipoSeguroId: {TipoSeguroId}",
+                    especialidadId, tipoSeguroId);
+
+                return BadRequest(new StatusDTO(false, ex.Message));
+            }
+        }
+
+
     }
 }
