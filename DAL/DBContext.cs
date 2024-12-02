@@ -49,13 +49,6 @@ namespace DAL
                 .HasForeignKey(c => c.GruposCitasId)
                 .OnDelete(DeleteBehavior.NoAction); // Evita cascada para prevenir múltiples caminos
 
-            // Configura la relación entre Citas y Facturas
-            modelBuilder.Entity<Citas>()
-                .HasOne(c => c.Facturas)
-                .WithMany(f => f.Citas)
-                .HasForeignKey(c => c.FacturasId)
-                .OnDelete(DeleteBehavior.NoAction); // Evita cascada para prevenir múltiples caminos
-
             // Configura la relación entre Citas y PreciosEspecialidades
             modelBuilder.Entity<Citas>()
                 .HasOne(c => c.PreciosEspecialidades)
@@ -102,7 +95,7 @@ namespace DAL
                 .HasOne(cs => cs.Pacientes)
                 .WithMany(p => p.ContratosSeguros)
                 .HasForeignKey(cs => cs.PacientesId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Cascade);  
 
             // Relación entre ContratosSeguros y TiposSeguros
             modelBuilder.Entity<ContratosSeguros>()
@@ -132,24 +125,27 @@ namespace DAL
                 .HasForeignKey(pe => pe.EspecialidadesId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            // Relación uno a uno entre Pacientes y Facturas
-            modelBuilder.Entity<Pacientes>()
-                .HasOne(p => p.Facturas)
-                .WithOne(f => f.Pacientes)
-                .HasForeignKey<Pacientes>(p => p.FacturasId) // La clave foránea está en Pacientes
-                .OnDelete(DeleteBehavior.NoAction);
-
+            // Relación Facturas -> Pacientes
             modelBuilder.Entity<Facturas>()
-                .HasMany(f => f.FacturasMes)
-                .WithOne(fm => fm.Facturas)
-                .HasForeignKey(fm => fm.FacturasId)
+                .HasOne(f => f.Pacientes)
+                .WithMany(p => p.Facturas)
+                .HasForeignKey(f => f.PacientesId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<FacturasMes>()
-                .HasOne(fm => fm.ContratosSeguros)
+            // Relación Facturas -> Citas
+            modelBuilder.Entity<Facturas>()
+                .HasOne(f => f.Citas)
                 .WithMany()
-                .HasForeignKey(fm => fm.ContratosSegurosId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .HasForeignKey(f => f.CitasId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            // Relación Facturas -> ContratosSeguros
+            modelBuilder.Entity<Facturas>()
+                .HasOne(f => f.ContratosSeguros)
+                .WithMany()
+                .HasForeignKey(f => f.ContratosSegurosId)
+                .OnDelete(DeleteBehavior.SetNull);
+
 
         }
 
@@ -171,7 +167,6 @@ namespace DAL
         public DbSet<Citas> Citas { get; set; }
         public DbSet<GruposCitas> GruposCitas { get; set; }
         public DbSet<Personas> Personas { get; set; }
-        public DbSet<FacturasMes> FacturasMes { get; set; }
 
         // Método para aplicar migraciones manualmente si es necesario
         public static void UpdateDatabase(IServiceProvider serviceProvider)

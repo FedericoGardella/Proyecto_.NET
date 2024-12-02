@@ -97,8 +97,6 @@ namespace Administrativo.Controllers
                 var nuevaFactura = new Factura
                 {
                     PacienteId = facturaDTO.PacienteId,
-                    Citas = new List<Cita>(), // Inicializa la lista vacía de citas
-                    FacturasMes = new List<FacturaMes>() // Inicializa la lista vacía de facturas mensuales
                 };
 
 
@@ -107,8 +105,8 @@ namespace Administrativo.Controllers
                 var facturaCreada = bl.Add(nuevaFactura);
 
                 // Actualizar el Paciente con el FacturaId
-                paciente.FacturaId = facturaCreada.Id;
-                blPacientes.Update(paciente);
+                //paciente.FacturaId = facturaCreada.Id;
+                //blPacientes.Update(paciente);
 
 
                 logger.LogInformation("Nueva factura creada con ID: {FacturaId}", facturaCreada.Id);

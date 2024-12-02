@@ -11,6 +11,5 @@ namespace BL.IBLs
         Factura Update(Factura x);
         void Delete(long Id);
         List<CitaDTO> GetCitas(long facturaId);
-        List<FacturaMesDTO> GetFacturasMes(long facturaId);
     }
 }

@@ -32,7 +32,6 @@ namespace DAL.Models
                     Id = TiposSeguros.Id,
                     Nombre = TiposSeguros.Nombre,
                     Descripcion = TiposSeguros.Descripcion
-                    // Nota: No incluyas aquí el Articulo relacionado para evitar la recursión
                 } : null,
                 PrecioEspecialidadId = PreciosEspecialidadesId.HasValue ? PreciosEspecialidadesId.Value : 0,
                 PrecioEspecialidad = PreciosEspecialidades?.GetEntity()

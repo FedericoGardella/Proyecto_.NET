@@ -37,8 +37,6 @@ builder.Services.AddScoped<IBL_Especialidades, BL_Especialidades>();
 builder.Services.AddScoped<IDAL_Especialidades, DAL_Especialidades_EF>();
 builder.Services.AddScoped<IBL_PreciosEspecialidades, BL_PreciosEspecialidades>();
 builder.Services.AddScoped<IDAL_PreciosEspecialidades, DAL_PreciosEspecialidades_EF>();
-builder.Services.AddScoped<IBL_FacturasMes,  BL_FacturasMes>();
-builder.Services.AddScoped<IDAL_FacturasMes,  DAL_FacturasMes_Service>();
 
 
 // Configuración para escuchar en todas las interfaces

@@ -44,9 +44,5 @@ namespace BL.BLs
             return dal.GetCitas(facturaId);
         }
 
-        public List<FacturaMesDTO> GetFacturasMes(long facturaId)
-        {
-            return dal.GetFacturasMes(facturaId);
-        }
     }
 }

@@ -7,22 +7,18 @@ namespace DAL.Models
     public class Pacientes : Personas
     {
         [Required]
-        [MaxLength(20), MinLength(4)]
+        [MaxLength(20), MinLength(7)]
         public string Telefono { get; set; }
 
         public List<Citas> Citas { get; set; }
 
-        // Relación de uno a muchos con ContratosSeguros
-        public List<ContratosSeguros> ContratosSeguros { get; set; }
+        
+        public List<ContratosSeguros> ContratosSeguros { get; set; } // Relación de uno a muchos con ContratosSeguros
 
         public List<HistoriasClinicas> HistoriasClinicas { get; set; } // Relación uno a muchos
 
-        // Lista de Facturas
+        public List<Facturas> Facturas { get; set; }
         
-
-
-        public long? FacturasId { get; set; }
-        public Facturas? Facturas { get; set; }
 
         public Paciente GetEntity()
         {
@@ -34,7 +30,9 @@ namespace DAL.Models
                 Telefono = Telefono,
                 Documento = Documento,
                 HistoriasClinicas = HistoriasClinicas?.Select(h => h.GetEntity()).ToList(),
-                FacturaId = FacturasId
+                ContratosSeguros = ContratosSeguros?.Select(c => c.GetEntity()).ToList(),
+                Facturas = Facturas?.Select(f => f.GetEntity()).ToList(),
+                
             };
         }
 
@@ -49,7 +47,6 @@ namespace DAL.Models
             pacienteToSave.Apellidos = paciente.Apellidos;
             pacienteToSave.Telefono = paciente.Telefono;
             pacienteToSave.Documento = paciente.Documento;
-            pacienteToSave.FacturasId = paciente.FacturaId;
 
             return pacienteToSave;
         }
