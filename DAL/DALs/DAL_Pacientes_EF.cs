@@ -100,5 +100,14 @@ namespace DAL.DALs
                 TipoSeguroId = c.TiposSegurosId
             }).ToList();
         }
+        public string GetEmail(long pacienteId)
+        {
+            // Busca el usuario relacionado con el paciente
+            var usuario = db.Users
+                .FirstOrDefault(u => u.Personas.Id == pacienteId);
+
+            // Devuelve el email del usuario si existe, de lo contrario null
+            return usuario?.Username;
+        }
     }
 }
