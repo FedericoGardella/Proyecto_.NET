@@ -76,6 +76,18 @@ namespace Administrativo.Controllers
                     return BadRequest(new StatusDTO(false, "La factura no puede ser nula."));
                 }
 
+                // Validar que la factura tenga al menos un ContratosSegurosId o un CitasId
+                //if (facturaDTO.ContratosSegurosId == null && facturaDTO.CitasId == null)
+                //{
+                //    return BadRequest(new StatusDTO(false, "La factura debe estar asociada a un contrato de seguro o una cita."));
+                //}
+
+                // Validar que no tenga ambos IDs al mismo tiempo
+                //if (facturaDTO.ContratosSegurosId != null && facturaDTO.CitasId != null)
+                //{
+                //    return BadRequest(new StatusDTO(false, "La factura no puede estar asociada a un contrato de seguro y una cita al mismo tiempo."));
+                //}
+
                 // Obtén el token del encabezado de autorización
                 var token = HttpContext.Request.Headers["Authorization"].ToString();
 
@@ -93,24 +105,46 @@ namespace Administrativo.Controllers
 
                 logger.LogInformation("Paciente encontrado con ID: {PacienteId}", facturaDTO.PacienteId);
 
+                // Validar y calcular el costo de la factura según el contrato de seguro o la cita
+                //decimal costo = 0;
+                //if (facturaDTO.ContratosSegurosId != null)
+                //{
+                //    var contratoSeguro = blContratosSeguros.Get((long)facturaDTO.ContratosSegurosId);
+                //    if (contratoSeguro == null)
+                //    {
+                //        return NotFound(new StatusDTO(false, "Contrato de seguro no encontrado."));
+                //    }
+
+                //    logger.LogInformation("Contrato de seguro encontrado con ID: {ContratosSegurosId}", facturaDTO.ContratosSegurosId);
+                //    costo = contratoSeguro.TiposSeguros.Articulos.Costo; // Asumiendo que el costo proviene de un artículo relacionado
+                //}
+                //else if (facturaDTO.CitasId != null)
+                //{
+                //    var cita = blCitas.Get((long)facturaDTO.CitasId);
+                //    if (cita == null)
+                //    {
+                //        return NotFound(new StatusDTO(false, "Cita no encontrada."));
+                //    }
+
+                //    logger.LogInformation("Cita encontrada con ID: {CitasId}", facturaDTO.CitasId);
+                //    costo = cita.PreciosEspecialidades.Articulos.Costo; // Asumiendo que el costo proviene de un artículo relacionado
+                //}
+
+                //logger.LogInformation("Costo calculado para la factura: {Costo}", costo);
+
                 // Crear la nueva factura
                 var nuevaFactura = new Factura
                 {
                     PacienteId = facturaDTO.PacienteId,
-                    Citas = new List<Cita>(), // Inicializa la lista vacía de citas
-                    FacturasMes = new List<FacturaMes>() // Inicializa la lista vacía de facturas mensuales
+                    ContratoSeguroId = facturaDTO.ContratoSeguroId,
+                    CitaId = facturaDTO.CitaId,
+                    Fecha = DateTime.UtcNow,
+                    Costo = facturaDTO.Costo,
+                    Pago = false // Por defecto, no está pagada
                 };
-
-
 
                 // Guardar la factura
                 var facturaCreada = bl.Add(nuevaFactura);
-
-                // Actualizar el Paciente con el FacturaId
-                paciente.FacturaId = facturaCreada.Id;
-                blPacientes.Update(paciente);
-
-
                 logger.LogInformation("Nueva factura creada con ID: {FacturaId}", facturaCreada.Id);
 
                 return Ok(facturaCreada);
@@ -121,6 +155,7 @@ namespace Administrativo.Controllers
                 return BadRequest(new StatusDTO(false, "Error al crear la factura."));
             }
         }
+
 
 
         // PUT: api/Facturas/5

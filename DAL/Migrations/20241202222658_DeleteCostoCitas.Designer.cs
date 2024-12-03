@@ -4,6 +4,7 @@ using DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DAL.Migrations
 {
     [DbContext(typeof(DBContext))]
-    partial class DBContextModelSnapshot : ModelSnapshot
+    [Migration("20241202222658_DeleteCostoCitas")]
+    partial class DeleteCostoCitas
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -56,6 +59,9 @@ namespace DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
+                    b.Property<long?>("FacturasId")
+                        .HasColumnType("bigint");
+
                     b.Property<long>("GruposCitasId")
                         .HasColumnType("bigint");
 
@@ -72,6 +78,8 @@ namespace DAL.Migrations
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("FacturasId");
 
                     b.HasIndex("GruposCitasId");
 
@@ -92,8 +100,9 @@ namespace DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
-                    b.Property<bool>("Activo")
-                        .HasColumnType("bit");
+                    b.Property<string>("Estado")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("FechaInicio")
                         .HasColumnType("datetime2");
@@ -167,35 +176,10 @@ namespace DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
-                    b.Property<long?>("CitasId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("ContratosSegurosId")
-                        .HasColumnType("bigint");
-
-                    b.Property<decimal>("Costo")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime>("Fecha")
-                        .HasColumnType("datetime2");
-
                     b.Property<long>("PacientesId")
                         .HasColumnType("bigint");
 
-                    b.Property<bool>("Pago")
-                        .HasColumnType("bit");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("CitasId")
-                        .IsUnique()
-                        .HasFilter("[CitasId] IS NOT NULL");
-
-                    b.HasIndex("ContratosSegurosId")
-                        .IsUnique()
-                        .HasFilter("[ContratosSegurosId] IS NOT NULL");
-
-                    b.HasIndex("PacientesId");
 
                     b.ToTable("Facturas");
                 });
@@ -680,16 +664,28 @@ namespace DAL.Migrations
                 {
                     b.HasBaseType("DAL.Models.Personas");
 
+                    b.Property<long?>("FacturasId")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("Telefono")
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
+
+                    b.HasIndex("FacturasId")
+                        .IsUnique()
+                        .HasFilter("[FacturasId] IS NOT NULL");
 
                     b.HasDiscriminator().HasValue("Pacientes");
                 });
 
             modelBuilder.Entity("DAL.Models.Citas", b =>
                 {
+                    b.HasOne("DAL.Models.Facturas", "Facturas")
+                        .WithMany("Citas")
+                        .HasForeignKey("FacturasId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
                     b.HasOne("DAL.Models.GruposCitas", "GruposCitas")
                         .WithMany("Citas")
                         .HasForeignKey("GruposCitasId")
@@ -709,6 +705,8 @@ namespace DAL.Migrations
                         .WithMany()
                         .HasForeignKey("PreciosEspecialidadesId")
                         .OnDelete(DeleteBehavior.NoAction);
+
+                    b.Navigation("Facturas");
 
                     b.Navigation("GruposCitas");
 
@@ -745,31 +743,6 @@ namespace DAL.Migrations
                         .IsRequired();
 
                     b.Navigation("HistoriasClinicas");
-                });
-
-            modelBuilder.Entity("DAL.Models.Facturas", b =>
-                {
-                    b.HasOne("DAL.Models.Citas", "Citas")
-                        .WithOne()
-                        .HasForeignKey("DAL.Models.Facturas", "CitasId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.HasOne("DAL.Models.ContratosSeguros", "ContratosSeguros")
-                        .WithOne()
-                        .HasForeignKey("DAL.Models.Facturas", "ContratosSegurosId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.HasOne("DAL.Models.Pacientes", "Pacientes")
-                        .WithMany("Facturas")
-                        .HasForeignKey("PacientesId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Citas");
-
-                    b.Navigation("ContratosSeguros");
-
-                    b.Navigation("Pacientes");
                 });
 
             modelBuilder.Entity("DAL.Models.GruposCitas", b =>
@@ -954,11 +927,29 @@ namespace DAL.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("DAL.Models.Pacientes", b =>
+                {
+                    b.HasOne("DAL.Models.Facturas", "Facturas")
+                        .WithOne("Pacientes")
+                        .HasForeignKey("DAL.Models.Pacientes", "FacturasId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.Navigation("Facturas");
+                });
+
             modelBuilder.Entity("DAL.Models.Articulos", b =>
                 {
                     b.Navigation("PreciosEspecialidades");
 
                     b.Navigation("TiposSeguros");
+                });
+
+            modelBuilder.Entity("DAL.Models.Facturas", b =>
+                {
+                    b.Navigation("Citas");
+
+                    b.Navigation("Pacientes")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("DAL.Models.GruposCitas", b =>
@@ -985,8 +976,6 @@ namespace DAL.Migrations
                     b.Navigation("Citas");
 
                     b.Navigation("ContratosSeguros");
-
-                    b.Navigation("Facturas");
 
                     b.Navigation("HistoriasClinicas");
                 });

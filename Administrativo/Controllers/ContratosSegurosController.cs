@@ -16,13 +16,15 @@ namespace Administrativo.Controllers
         private readonly IBL_ContratosSeguros _bl;
         private readonly IBL_Pacientes blPacientes;
         private readonly IBL_TiposSeguros blTiposSeguros;
+        private readonly IBL_Facturas blFacturas;
         private readonly ILogger<ContratosSegurosController> logger;
 
-        public ContratosSegurosController(IBL_ContratosSeguros bl, IBL_Pacientes _blPacientes, IBL_TiposSeguros _blTiposSeguros, ILogger<ContratosSegurosController> _logger)
+        public ContratosSegurosController(IBL_ContratosSeguros bl, IBL_Pacientes _blPacientes, IBL_TiposSeguros _blTiposSeguros, IBL_Facturas _blFacturas, ILogger<ContratosSegurosController> _logger)
         {
             _bl = bl;
             blPacientes = _blPacientes;
             blTiposSeguros = _blTiposSeguros;
+            blFacturas = _blFacturas;
             logger = _logger;
         }
 
@@ -64,19 +66,18 @@ namespace Administrativo.Controllers
             }
         }
 
-        // POST: api/ContratosSeguros
         [HttpPost]
         [Authorize(Roles = "ADMIN")]
         [ProducesResponseType(typeof(ContratosSeguros), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(StatusDTO), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(StatusDTO), StatusCodes.Status404NotFound)]
-        public IActionResult Post([FromBody] ContratoSeguroDTO contratoSeguroDTO)
+        public IActionResult PostContratoSeguro([FromBody] ContratoSeguroDTO contratoDTO)
         {
             try
             {
-                if (contratoSeguroDTO == null)
+                if (contratoDTO == null)
                 {
-                    return BadRequest(new StatusDTO(false, "El contrato de seguro no puede ser nulo."));
+                    return BadRequest(new StatusDTO(false, "El contrato no puede ser nulo."));
                 }
 
                 // Obtén el token del encabezado de autorización
@@ -90,10 +91,10 @@ namespace Administrativo.Controllers
                 //Console.WriteLine($"Recibido PacientesId: {contratoSeguroDTO.PacienteId}, TipoSeguroId: {contratoSeguroDTO.TipoSeguroId}");
 
                 // Buscar el paciente asociado
-                var paciente = blPacientes.Get(contratoSeguroDTO.PacienteId, token);
+                var paciente = blPacientes.Get(contratoDTO.PacienteId, token);
                 if (paciente == null)
                 {
-                    throw new Exception($"Paciente con ID {contratoSeguroDTO.PacienteId} no encontrado en la base de datos.");
+                    throw new Exception($"Paciente con ID {contratoDTO.PacienteId} no encontrado en la base de datos.");
                 }
                 else
                 {
@@ -102,45 +103,59 @@ namespace Administrativo.Controllers
                     logger.LogInformation($"Nombre: {paciente.Nombres}");
                 }
 
-                // Buscar el tipo de seguro asociado
-                var tipoSeguro = blTiposSeguros.Get(contratoSeguroDTO.TipoSeguroId);
+                // Validar la existencia del TipoSeguro
+                var tipoSeguro = blTiposSeguros.Get(contratoDTO.TipoSeguroId);
                 if (tipoSeguro == null)
                 {
                     return NotFound(new StatusDTO(false, "Tipo de seguro no encontrado."));
                 }
-                else
+                logger.LogInformation("TipoSeguro encontrado con ID: {TipoSeguroId}", contratoDTO.TipoSeguroId);
+
+                // Verificar si el paciente ya tiene un contrato activo
+                var contratoActivo = _bl.GetContratoActivoPorPaciente(contratoDTO.PacienteId);
+                if (contratoActivo != null)
                 {
-                    logger.LogInformation("TipoSeguro encontrado:");
-                    logger.LogInformation($"ID: {tipoSeguro.Id}");
-                    logger.LogInformation($"Nombre: {tipoSeguro.Nombre}");
+                    return BadRequest(new StatusDTO(false, "El paciente ya tiene un contrato activo."));
                 }
 
-                // Crear el ContratoSeguro basado en el DTO
-                var contratoSeguro = new ContratoSeguro
+                // Obtener el costo del artículo asociado al TipoSeguro
+                var costoArticulo = blTiposSeguros.GetCostoArticulo(contratoDTO.TipoSeguroId);
+                logger.LogInformation("Costo del artículo asociado: {Costo}", costoArticulo);
+
+                // Crear el contrato de seguro
+                var nuevoContrato = new ContratoSeguro
                 {
-                    FechaInicio = contratoSeguroDTO.FechaInicio,
-                    Estado = contratoSeguroDTO.Estado,
-                    PacienteId = contratoSeguroDTO.PacienteId,
-                    TipoSeguroId = contratoSeguroDTO.TipoSeguroId
+                    PacienteId = contratoDTO.PacienteId,
+                    TipoSeguroId = contratoDTO.TipoSeguroId,
+                    FechaInicio = DateTime.UtcNow,
+                    Activo = true
                 };
 
-                // Agregar el nuevo ContratoSeguro a la lista de ConratosSeguros del Paciente
-                if (paciente.ContratosSeguros == null)
+                var contratoCreado = _bl.Add(nuevoContrato);
+                logger.LogInformation("Contrato de seguro creado con ID: {ContratoId}", contratoCreado.Id);
+
+                // Crear la factura relacionada al contrato
+                var nuevaFactura = new Factura
                 {
-                    paciente.ContratosSeguros = new List<ContratoSeguro>();
-                }
-                paciente.ContratosSeguros.Add(contratoSeguro);
+                    Fecha = DateTime.UtcNow,
+                    Pago = false, // Por defecto, la factura no está pagada
+                    Costo = costoArticulo,
+                    PacienteId = contratoDTO.PacienteId,
+                    ContratoSeguroId = contratoCreado.Id // Relacionar la factura con el contrato
+                };
 
-                var createdContratoSeguro = _bl.Add(contratoSeguro);
+                var facturaCreada = blFacturas.Add(nuevaFactura);
+                logger.LogInformation("Factura creada con ID: {FacturaId}", facturaCreada.Id);
 
-                return Ok(createdContratoSeguro);
+                return Ok(new { ContratoSeguro = contratoCreado, Factura = facturaCreada });
             }
             catch (Exception ex)
             {
                 logger.LogError(ex, "Error al crear el contrato de seguro.");
-                return BadRequest(new StatusDTO(false, "Error al guardar contrato de seguro."));
+                return BadRequest(new StatusDTO(false, "Error al crear el contrato de seguro."));
             }
         }
+
 
 
         // PUT: api/ContratosSeguros/5
@@ -181,7 +196,7 @@ namespace Administrativo.Controllers
                 var contratoSeguro = new ContratoSeguro
                 {
                     Id = id,
-                    Estado = contratoSeguroDTO.Estado,
+                    Activo = contratoSeguroDTO.Activo,
                     PacienteId = contratoSeguroDTO.PacienteId,
                     TipoSeguroId = contratoSeguroDTO.TipoSeguroId
                 };
@@ -222,6 +237,36 @@ namespace Administrativo.Controllers
             {
                 logger.LogError(ex, "Error al eliminar el contrato de seguro");
                 return StatusCode(StatusCodes.Status500InternalServerError, new StatusDTO(false, "Error al eliminar el contrato de seguro"));
+            }
+        }
+
+
+
+        [HttpPut("desactivar/{pacienteId:long}")]
+        [Authorize(Roles = "ADMIN")]
+        [ProducesResponseType(typeof(ContratoSeguro), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(StatusDTO), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(StatusDTO), StatusCodes.Status404NotFound)]
+        public IActionResult Desactivar(long pacienteId)
+        {
+            try
+            {
+                var contratoSeguro = _bl.GetContratoActivoPaciente(pacienteId);
+                if (contratoSeguro == null)
+                {
+                    return BadRequest(new StatusDTO(false, "El paciente no tiene un contrato activo."));
+                }
+
+                // Desactivar el contrato
+                contratoSeguro.Activo = false;
+                var updatedContratoSeguro = _bl.Update(contratoSeguro);
+
+                return Ok(updatedContratoSeguro);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error al desactivar contrato de seguro del paciente con ID: {Id}", pacienteId);
+                return BadRequest(new StatusDTO(false, "Error al desactivar contrato de seguro."));
             }
         }
 

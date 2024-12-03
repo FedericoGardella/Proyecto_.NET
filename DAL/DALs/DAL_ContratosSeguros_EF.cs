@@ -51,5 +51,21 @@ namespace DAL.DALs
             db.ContratosSeguros.Remove(toDelete);
             db.SaveChanges();
         }
+
+        public ContratosSeguros GetContratoActivoPorPaciente(long pacienteId)
+        {
+            return db.ContratosSeguros
+                .FirstOrDefault(cs => cs.PacientesId == pacienteId && cs.Activo);
+        }
+
+        public ContratoSeguro GetContratoActivoPaciente(long pacienteId)
+        {
+            var contratoActivo = db.ContratosSeguros
+                .FirstOrDefault(cs => cs.PacientesId == pacienteId && cs.Activo);
+
+            // Convertir a Shared.Entities.ContratoSeguro
+            return contratoActivo?.GetEntity();
+        }
+
     }
 }

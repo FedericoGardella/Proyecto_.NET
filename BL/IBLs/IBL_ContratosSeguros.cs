@@ -10,5 +10,7 @@ namespace BL.IBLs
         ContratoSeguro Add(ContratoSeguro x);
         ContratoSeguro Update(ContratoSeguro x);
         void Delete(long Id);
+        ContratosSeguros GetContratoActivoPorPaciente(long pacienteId);
+        ContratoSeguro GetContratoActivoPaciente(long pacienteId);
     }
 }

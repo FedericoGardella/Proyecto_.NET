@@ -1,4 +1,5 @@
 ﻿using DAL.IDALs;
+using DAL.Models;
 using Shared.Entities;
 
 namespace DAL.DALs
@@ -26,6 +27,16 @@ namespace DAL.DALs
         }
 
         public List<ContratoSeguro> GetAll()
+        {
+            throw new NotImplementedException();
+        }
+
+        public ContratosSeguros GetContratoActivoPorPaciente(long pacienteId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ContratoSeguro GetContratoActivoPaciente(long pacienteId)
         {
             throw new NotImplementedException();
         }

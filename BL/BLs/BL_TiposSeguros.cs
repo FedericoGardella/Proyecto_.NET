@@ -67,6 +67,25 @@ namespace BL.BLs
             return createdArticulo;
         }
 
+        public decimal GetCostoArticulo(long tipoSeguroId)
+        {
+            // Buscar el TipoSeguro por ID
+            var tipoSeguro = dal.Get(tipoSeguroId);
+            if (tipoSeguro == null)
+            {
+                throw new Exception($"Tipo de Seguro con ID {tipoSeguroId} no encontrado.");
+            }
+
+            // Buscar el artículo asociado
+            var articulo = dalArticulos.Get(tipoSeguro.ArticuloId);
+            if (articulo == null)
+            {
+                throw new Exception($"Artículo con ID {tipoSeguro.ArticuloId} no encontrado.");
+            }
+
+            return articulo.Costo; // Retornar el costo del artículo asociado
+        }
+
         //public List<ContratoSeguroDTO> GetContratosSeguros(long TipoSeguroId)
         //{            return dal.GetContratosSeguros(TipoSeguroId);}
     }

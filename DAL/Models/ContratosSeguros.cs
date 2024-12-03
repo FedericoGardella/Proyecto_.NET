@@ -6,11 +6,10 @@ namespace DAL.Models
     public class ContratosSeguros
     {
         public ContratosSeguros() {
-            Estado = "Activo";
         }
         public long Id { get; set; }
         public DateTime FechaInicio { get; set; }
-        public string Estado { get; set; } // Ej: Activo, Cancelado, etc. -> Bool Activo
+        public bool Activo { get; set; }
 
         [ForeignKey("Pacientes")]
         public long PacientesId { get; set; } // Clave foránea hacia Pacientes
@@ -27,7 +26,7 @@ namespace DAL.Models
             {
                 Id = Id,
                 FechaInicio = FechaInicio,
-                Estado = Estado,
+                Activo = Activo,
                 PacienteId = PacientesId,
                 Paciente = Pacientes?.GetEntity(),
                 TipoSeguroId = TiposSegurosId,
@@ -41,7 +40,7 @@ namespace DAL.Models
 
             contratoSeguroToSave.Id = contratoSeguro.Id;
             contratoSeguroToSave.FechaInicio = contratoSeguro.FechaInicio;
-            contratoSeguroToSave.Estado = contratoSeguro.Estado;
+            contratoSeguroToSave.Activo = contratoSeguro.Activo;
             contratoSeguroToSave.PacientesId = contratoSeguro.PacienteId;
             contratoSeguroToSave.TiposSegurosId = contratoSeguro.TipoSeguroId;
 

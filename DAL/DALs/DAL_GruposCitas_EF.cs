@@ -81,7 +81,6 @@ namespace DAL.DALs
                             var cita = new Citas
                             {
                                 Hora = hora,
-                                Costo = 0, // Costo nulo
                                 PacienteId = null, // Paciente nulo
                                 PreciosEspecialidadesId = null, // PrecioEspecialidad nulo
                                 GruposCitasId = grupoCita.Id // Asociar al grupo recién creado

@@ -200,5 +200,25 @@ namespace Administrativo.Controllers
             }
         }
 
+
+        [HttpGet("{id}/CostoArticulo")]
+        [Authorize(Roles = "ADMIN")]
+        [ProducesResponseType(typeof(decimal), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(StatusDTO), StatusCodes.Status404NotFound)]
+        public IActionResult GetCostoArticulo(long id)
+        {
+            try
+            {
+                // Llamar al BL para obtener el costo del artículo asociado
+                var costo = bl.GetCostoArticulo(id);
+                return Ok(costo);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error al obtener el costo del artículo para el TipoSeguro con ID: {TipoSeguroId}", id);
+                return NotFound(new StatusDTO(false, ex.Message));
+            }
+        }
+
     }
 }

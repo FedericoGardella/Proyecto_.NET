@@ -1,5 +1,6 @@
 ﻿using BL.IBLs;
 using DAL.IDALs;
+using DAL.Models;
 using Shared.Entities;
 
 namespace BL.BLs
@@ -37,5 +38,16 @@ namespace BL.BLs
         {
             dal.Delete(Id);
         }
+
+        public ContratosSeguros GetContratoActivoPorPaciente(long pacienteId)
+        {
+            return dal.GetContratoActivoPorPaciente(pacienteId);
+        }
+
+        public ContratoSeguro GetContratoActivoPaciente(long pacienteId)
+        {
+            return dal.GetContratoActivoPaciente(pacienteId);
+        }
+
     }
 }

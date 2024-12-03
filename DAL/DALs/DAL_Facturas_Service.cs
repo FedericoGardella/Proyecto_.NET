@@ -36,9 +36,5 @@ namespace DAL.DALs
             throw new NotImplementedException();
         }
 
-        public List<FacturaMesDTO> GetFacturasMes(long facturaId)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

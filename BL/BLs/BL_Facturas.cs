@@ -39,14 +39,10 @@ namespace BL.BLs
             dal.Delete(Id);
         }
 
-        public List<CitaDTO> GetCitas(long facturaId)
-        {
-            return dal.GetCitas(facturaId);
-        }
+        //public List<CitaDTO> GetCitas(long facturaId)
+        //{
+        //    return dal.GetCitas(facturaId);
+        //}
 
-        public List<FacturaMesDTO> GetFacturasMes(long facturaId)
-        {
-            return dal.GetFacturasMes(facturaId);
-        }
     }
 }

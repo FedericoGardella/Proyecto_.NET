@@ -94,7 +94,7 @@ namespace DAL.DALs
             return contratosSeguros.Select(c  => new ContratoSeguroDTO
             {
                 Id = c.Id,
-                Estado = c.Estado,
+                Activo = c.Activo,
                 FechaInicio = c.FechaInicio,
                 PacienteId = c.PacientesId,
                 TipoSeguroId = c.TiposSegurosId

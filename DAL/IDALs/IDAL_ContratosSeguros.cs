@@ -1,4 +1,5 @@
-﻿using Shared.Entities;
+﻿using DAL.Models;
+using Shared.Entities;
 
 namespace DAL.IDALs
 {
@@ -9,5 +10,7 @@ namespace DAL.IDALs
         ContratoSeguro Add(ContratoSeguro x);
         ContratoSeguro Update(ContratoSeguro x);
         void Delete(long Id);
+        ContratosSeguros GetContratoActivoPorPaciente(long pacienteId);
+        ContratoSeguro GetContratoActivoPaciente(long pacienteId);
     }
 }
