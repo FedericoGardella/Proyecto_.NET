@@ -26,9 +26,13 @@ namespace DAL.DALs
             return db.GruposCitas.Select(x => x.GetEntity()).ToList();
         }
 
-        public GrupoCita GetGrupoCitasMedico(long medicoId, DateTime fecha)
+        public GrupoCita GetGrupoCitasMedico(long medicoId, DateTime fecha, string token)
         {
-            throw new NotImplementedException();
+            return db.GruposCitas
+                .Include(gc => gc.Citas) // Incluir las citas relacionadas
+                .ThenInclude(c => c.Pacientes) // Incluir información del paciente (opcional)
+                .FirstOrDefault(gc => gc.MedicosId == medicoId && gc.Fecha.Date == fecha.Date)
+                ?.GetEntity(); // Mapear a la entidad compartida
         }
 
         public GrupoCita Add(GrupoCita x)

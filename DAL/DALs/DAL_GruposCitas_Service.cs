@@ -2,11 +2,18 @@
 using DAL.Models;
 using Shared.DTOs;
 using Shared.Entities;
+using System.Net.Http;
 
 namespace DAL.DALs
 {
     public class DAL_GruposCitas_Service : IDAL_GruposCitas
     {
+        private readonly HttpClient _httpClient;
+
+        public DAL_GruposCitas_Service(HttpClient httpClient)
+        {
+            _httpClient = httpClient;
+        }
         public GrupoCita Update(GrupoCita grupoCita)
         {
             throw new NotImplementedException();
@@ -31,64 +38,36 @@ namespace DAL.DALs
         {
             throw new NotImplementedException();
         }
-        public GrupoCita GetGrupoCitasMedico(long medicoId, DateTime fecha)
+        public GrupoCita GetGrupoCitasMedico(long medicoId, DateTime fecha, string token)
         {
-            // Datos hardcodeados de GruposCitas y sus relaciones
-            var gruposCitasMock = new List<GruposCitas>
+            try
             {
-                new GruposCitas
+
+                _httpClient.DefaultRequestHeaders.Clear();
+                _httpClient.DefaultRequestHeaders.Add("Authorization", $"{token}");
+
+                var url = $"http://host.docker.internal:8083/api/GruposCitas/medico/{medicoId}/hoy";
+
+                var response = _httpClient.GetAsync(url).Result;
+
+                if (!response.IsSuccessStatusCode)
                 {
-                    Id = 1,
-                    Lugar = "Clínica Central",
-                    Fecha = new DateTime(2024, 11, 29),
-                    MedicosId = 3,
-                    EspecialidadesId = 201,
-                    Citas = new List<Citas>
-                    {
-                        new Citas { Id = 5432, PacienteId = 2, Hora = new DateTime(2024, 11, 28, 9, 0, 0).TimeOfDay  },
-                        new Citas { Id = 9864, PacienteId = 12522, Hora = new DateTime(2024, 11, 24, 10, 0, 0).TimeOfDay  }
-                    }
-                },
-                new GruposCitas
-                {
-                    Id = 2,
-                    Lugar = "Hospital Norte",
-                    Fecha = new DateTime(2024, 11, 23),
-                    MedicosId = 102,
-                    EspecialidadesId = 202,
-                    Citas = new List<Citas>
-                    {
-                        new Citas { Id = 3, PacienteId = 3, Hora = new DateTime(2024, 11, 23, 11, 0, 0).TimeOfDay  }
-                    }
+                    throw new Exception($"Error al llamar al servicio externo: {response.ReasonPhrase}");
                 }
-            };
 
-            // Filtrar por MedicoId y Fecha
-            var grupo = gruposCitasMock
-                .FirstOrDefault(g => g.MedicosId == medicoId && g.Fecha.Date == fecha.Date);
+                var content = response.Content.ReadAsStringAsync().Result;
 
-            if (grupo == null)
-            {
-                return null; // Si no se encuentra, retorna null
-            }
-
-            // Convertir GruposCitas a GrupoCita
-            var grupoCita = new GrupoCita
-            {
-                Id = grupo.Id,
-                Lugar = grupo.Lugar,
-                Fecha = grupo.Fecha,
-                MedicoId = grupo.MedicosId,
-                EspecialidadId = grupo.EspecialidadesId,
-                Citas = grupo.Citas.Select(c => new Cita
+                var grupoObtenido = System.Text.Json.JsonSerializer.Deserialize<GrupoCita>(content, new System.Text.Json.JsonSerializerOptions
                 {
-                    Id = c.Id,
-                    PacienteId = c.PacienteId,
-                    Hora = c.Hora
-                }).ToList()
-            };
+                    PropertyNameCaseInsensitive = true
+                });
 
-            return grupoCita;
+                return grupoObtenido;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al obtener el grupocita desde el servicio externo.", ex);
+            }
         }
 
         public GrupoCita AddGrupoCitaConCitas(GrupoCitaPostDTO dto)

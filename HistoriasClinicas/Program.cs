@@ -100,7 +100,7 @@ builder.Services.AddScoped<IBL_Medicamentos, BL_Medicamentos>();
 builder.Services.AddScoped<IDAL_Medicamentos, DAL_Medicamentos_EF>();
 
 builder.Services.AddScoped<IBL_GruposCitas, BL_GruposCitas>();
-builder.Services.AddScoped<IDAL_GruposCitas, DAL_GruposCitas_Service>();
+builder.Services.AddHttpClient<IDAL_GruposCitas, DAL_GruposCitas_Service>();
 
 builder.Services.AddScoped<IBL_Pacientes, BL_Pacientes>();
 builder.Services.AddHttpClient<IDAL_Pacientes, DAL_Pacientes_Service>();

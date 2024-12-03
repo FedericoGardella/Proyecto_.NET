@@ -171,5 +171,33 @@ namespace GestionCitas.Controllers
             }
         }
 
+        // GET: api/grupos-citas/medico/{medicoId}/hoy
+        [Authorize(Roles = "ADMIN, MEDICO")]
+        [ProducesResponseType(typeof(GrupoCita), 200)]
+        [HttpGet("medico/{medicoId}/hoy")]
+        public IActionResult GetByMedicoAndToday(long medicoId)
+        {
+            try
+            {
+                var fechaHoy = DateTime.Today;
+
+                // Obtener el grupo de citas del BL
+                var grupoCita = bl.GetGrupoCitasMedico(medicoId, fechaHoy, null);
+
+                if (grupoCita == null)
+                {
+                    return NotFound(new StatusDTO(false, "No se encontró un grupo de citas para el médico y la fecha especificada."));
+                }
+
+                return Ok(grupoCita);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, $"Error al obtener grupo de citas para el médico {medicoId} y la fecha de hoy");
+                return StatusCode(StatusCodes.Status400BadRequest, new StatusDTO(false, "Error al obtener grupo de citas."));
+            }
+        }
+
+
     }
 }
