@@ -91,6 +91,14 @@ builder.Services.AddScoped<IDAL_Citas, DAL_Citas_EF>();
 builder.Services.AddScoped<IBL_GruposCitas, BL_GruposCitas>();
 builder.Services.AddScoped<IDAL_GruposCitas, DAL_GruposCitas_EF>();
 
+// Registrar el servicio en segundo plano para recordatorios
+builder.Services.AddHostedService<ReminderService>();
+
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+
+
+
 var app = builder.Build();
 
 // Configuración del pipeline de solicitudes HTTP

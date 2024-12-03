@@ -1,6 +1,7 @@
 ﻿using DAL.IDALs;
 using DAL.Models;
 using Microsoft.EntityFrameworkCore;
+using Shared.DTOs;
 using Shared.Entities;
 
 namespace DAL.DALs
@@ -68,6 +69,19 @@ namespace DAL.DALs
                                  c.GruposCitas.Fecha > fechaActual)
                      .Select(c => c.GetEntity()) // Convertir a la entidad compartida
                      .ToList(); // Materializar la consulta como una lista
+        }
+
+        public List<CitaDTO> GetCitasDTOByDate(DateTime date)
+        {
+            return db.Citas
+                .Where(c => c.GruposCitas.Fecha.Date == date.Date && c.PacienteId != null)
+                .Select(c => new CitaDTO
+                {
+                    Id = c.Id,
+                    Hora = c.Hora,
+                    PacienteId = c.PacienteId,
+                })
+                .ToList();
         }
 
         public void Delete(long Id)

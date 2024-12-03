@@ -1,4 +1,5 @@
-﻿using Shared.Entities;
+﻿using Shared.DTOs;
+using Shared.Entities;
 
 namespace DAL.IDALs
 {
@@ -10,6 +11,7 @@ namespace DAL.IDALs
         Cita Update(Cita x);
         void UpdatePaciente(Cita cita);
         List<Cita> GetCitasFuturasPorPacienteYEspecialidad(long pacienteId, long especialidadId, DateTime fechaActual);
+        List<CitaDTO> GetCitasDTOByDate(DateTime date);
         void Delete(long Id);
     }
 }
