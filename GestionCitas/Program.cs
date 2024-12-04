@@ -91,6 +91,18 @@ builder.Services.AddScoped<IDAL_Citas, DAL_Citas_EF>();
 builder.Services.AddScoped<IBL_GruposCitas, BL_GruposCitas>();
 builder.Services.AddScoped<IDAL_GruposCitas, DAL_GruposCitas_EF>();
 
+builder.Services.AddScoped<IBL_PreciosEspecialidades, BL_PreciosEspecialidades>();
+builder.Services.AddScoped<IDAL_PreciosEspecialidades, DAL_PreciosEspecialidades_EF>();
+
+builder.Services.AddScoped<IDAL_Articulos, DAL_Articulos_EF>();
+
+builder.Services.AddScoped<IBL_Facturas, BL_Facturas>();
+builder.Services.AddScoped<IDAL_Facturas, DAL_Facturas_EF>();
+
+builder.Services.AddScoped<IBL_Pacientes, BL_Pacientes>();
+builder.Services.AddHttpClient<IDAL_Pacientes, DAL_Pacientes_Service>();
+
+
 var app = builder.Build();
 
 // Configuración del pipeline de solicitudes HTTP

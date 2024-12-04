@@ -35,7 +35,7 @@ namespace DAL.Models
                     // Nota: No incluyas aquí el Articulo relacionado para evitar la recursión
                 } : null,
                 PrecioEspecialidadId = PreciosEspecialidadesId.HasValue ? PreciosEspecialidadesId.Value : 0,
-                PrecioEspecialidad = PreciosEspecialidades?.GetEntity()
+                //PrecioEspecialidad = PreciosEspecialidades?.GetEntity()
             };
         }
 

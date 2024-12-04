@@ -1,4 +1,5 @@
-﻿using DAL.IDALs;
+﻿using System.Net.Http;
+using DAL.IDALs;
 using Shared.Entities;
 
 namespace DAL.DALs
@@ -17,6 +18,7 @@ namespace DAL.DALs
                 new Especialidad { Id = 3, Nombre = "Pediatría", tiempoCita = TimeSpan.FromMinutes(40) },
                 new Especialidad { Id = 4, Nombre = "Oftalmología", tiempoCita = TimeSpan.FromMinutes(25) }
             };
+
         }
 
         // Obtener una especialidad por ID
@@ -87,6 +89,39 @@ namespace DAL.DALs
                 _especialidades.Remove(especialidad);
             }
         }
+
+
+        //public Especialidad GetEspecialidad(long Id, string token)
+        //{
+        //    try
+        //    {
+        //        _httpClient.DefaultRequestHeaders.Clear();
+        //        _httpClient.DefaultRequestHeaders.Add("Authorization", $"{token}");
+
+        //        var url = $"___________________________{Id}";
+
+        //        var response = _httpClient.GetAsync(url).Result;
+
+        //        if (!response.IsSuccessStatusCode)
+        //        {
+        //            throw new Exception($"Error al llamar al servicio externo: {response.ReasonPhrase}");
+        //        }
+
+        //        var content = response.Content.ReadAsStringAsync().Result;
+
+        //        var especialidadObtenida = System.Text.Json.JsonSerializer.Deserialize<Especialidad>(content, new System.Text.Json.JsonSerializerOptions
+        //        {
+        //            PropertyNameCaseInsensitive = true
+        //        });
+
+        //        return especialidadObtenida;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw new Exception("Error al obtener la última historia clínica desde el servicio externo.", ex);
+        //    }
+
+        //}
     }
 
 }

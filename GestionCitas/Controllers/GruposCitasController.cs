@@ -1,4 +1,5 @@
-﻿using BL.IBLs;
+﻿using BL.BLs;
+using BL.IBLs;
 using DAL.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,11 +14,13 @@ namespace GestionCitas.Controllers
     public class GruposCitasController : ControllerBase
     {
         private readonly IBL_GruposCitas bl;
+        private readonly IBL_Especialidades blEspecialidades;
         private readonly ILogger<GruposCitasController> logger;
 
-        public GruposCitasController(IBL_GruposCitas _bl, ILogger<GruposCitasController> _logger)
+        public GruposCitasController(IBL_GruposCitas _bl, IBL_Especialidades _blEspecialidades, ILogger<GruposCitasController> _logger)
         {
             bl = _bl;
+            blEspecialidades = _blEspecialidades;
             logger = _logger;
         }
 
@@ -169,6 +172,48 @@ namespace GestionCitas.Controllers
                 return StatusCode(StatusCodes.Status400BadRequest, new StatusDTO(false, "Error al obtener el detalle del grupo de citas"));
             }
         }
+
+
+
+
+
+        //[HttpGet("{id}/especialidad")]
+        //[ProducesResponseType(typeof(Especialidad), StatusCodes.Status200OK)]
+        //[ProducesResponseType(typeof(StatusDTO), StatusCodes.Status404NotFound)]
+        //public IActionResult GetEspecialidad(long id)
+        //{
+        //    try
+        //    {
+        //        // Obtener el GrupoCita
+        //        var grupoCita = bl.Get(id);
+        //        if (grupoCita == null)
+        //        {
+        //            return NotFound(new StatusDTO(false, $"No se encontró el GrupoCita con ID {id}."));
+        //        }
+
+        //        // Obtén el token del encabezado de autorización
+        //        var token = HttpContext.Request.Headers["Authorization"].ToString();
+
+        //        if (string.IsNullOrEmpty(token))
+        //        {
+        //            return Unauthorized(new StatusDTO(false, "No se proporcionó un token de autenticación."));
+        //        }
+
+        //        // Obtener la Especialidad relacionada
+        //        var especialidad = blEspecialidades.GetEspecialidad(grupoCita.EspecialidadId, token);
+        //        if (especialidad == null)
+        //        {
+        //            return NotFound(new StatusDTO(false, $"No se encontró la Especialidad con ID {grupoCita.EspecialidadId}."));
+        //        }
+
+        //        return Ok(especialidad);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        logger.LogError(ex, "Error al obtener la especialidad para el GrupoCita con ID {Id}", id);
+        //        return StatusCode(StatusCodes.Status500InternalServerError, new StatusDTO(false, "Error al procesar la solicitud."));
+        //    }
+        //}
 
     }
 }

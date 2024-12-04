@@ -29,9 +29,11 @@ namespace DAL.Models
             {
                 Id = Id,
                 ArticuloId = ArticulosId,
-                //Articulo = Articulos?.GetEntity()
+                Articulo = Articulos?.GetEntity(),
                 EspecialidadId = EspecialidadesId,
-                TipoSeguroId = TiposSegurosId
+                Especialidad = Especialidades?.GetEntity(),
+                TipoSeguroId = TiposSegurosId,
+                TipoSeguro = TiposSeguros?.GetEntity()
             };
         }
 

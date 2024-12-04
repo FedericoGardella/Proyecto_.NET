@@ -10,5 +10,7 @@ namespace BL.IBLs
         Especialidad Add(Especialidad x);
         Especialidad Update(Especialidad x);
         void Delete(long Id);
+        //Especialidad GetEspecialidad(long Id, string token);
+
     }
 }

@@ -23,7 +23,13 @@ namespace DAL.DALs
 
         public List<PrecioEspecialidad> GetAll()
         {
-            return db.PreciosEspecialidades.Select(x => x.GetEntity()).ToList();
+            var preciosEspecialidades = db.PreciosEspecialidades
+                                        .Include(p => p.Especialidades) // Incluye la relación con Especialidad
+                                        .Include(p => p.TiposSeguros)  // Incluye la relación con TipoSeguro
+                                        .Include(p => p.Articulos)    // Incluye el Artículo para obtener el costo
+                                        .ToList();
+
+            return preciosEspecialidades.Select(pe => pe.GetEntity()).ToList();
         }
 
         public PrecioEspecialidad Add(PrecioEspecialidad x)

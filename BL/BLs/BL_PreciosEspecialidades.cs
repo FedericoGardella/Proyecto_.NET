@@ -1,5 +1,6 @@
 ﻿using BL.IBLs;
 using DAL.IDALs;
+using Shared.DTOs;
 using Shared.Entities;
 
 namespace BL.BLs
@@ -20,9 +21,18 @@ namespace BL.BLs
             return dal.Get(Id);
         }
 
-        public List<PrecioEspecialidad> GetAll()
+        public List<PrecioEspecialidadNombresDTO> GetAll()
         {
-            return dal.GetAll();
+            var preciosEspecialidades = dal.GetAll();
+
+            // Convierte a DTO
+            return preciosEspecialidades.Select(p => new PrecioEspecialidadNombresDTO
+            {
+                Id = p.Id,
+                EspecialidadNombre = p.Especialidad?.Nombre,
+                TipoSeguroNombre = p.TipoSeguro?.Nombre,
+                Costo = p.Articulo?.Costo ?? 0
+            }).ToList();
         }
 
         public PrecioEspecialidad Add(PrecioEspecialidad x)

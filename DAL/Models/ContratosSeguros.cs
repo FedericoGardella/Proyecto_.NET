@@ -28,7 +28,7 @@ namespace DAL.Models
                 FechaInicio = FechaInicio,
                 Activo = Activo,
                 PacienteId = PacientesId,
-                Paciente = Pacientes?.GetEntity(),
+                //Paciente = Pacientes?.GetEntity(),
                 TipoSeguroId = TiposSegurosId,
                 TipoSeguro = TiposSeguros?.GetEntity()
             };

@@ -67,5 +67,13 @@ namespace DAL.DALs
             db.Especialidades.Remove(toDelete);
             db.SaveChanges();
         }
+
+        //public Especialidad GetEspecialidad(long Id, string token)
+        //{
+        //    var especialidad = db.Especialidades.Find(Id)?.GetEntity();
+        //    if (especialidad == null)
+        //        throw new Exception($"No existe un {entityName} con Id {Id}");
+        //    return especialidad;
+        //}
     }
 }

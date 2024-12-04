@@ -12,11 +12,13 @@ namespace GestionCitas.Controllers
     public class CitasController : ControllerBase
     {
         private readonly IBL_Citas bl;
+        private IBL_Pacientes blPacientes;
         private readonly ILogger<CitasController> logger;
 
-        public CitasController(IBL_Citas _bl, ILogger<CitasController> _logger)
+        public CitasController(IBL_Citas _bl, IBL_Pacientes _blPacientes, ILogger<CitasController> _logger)
         {
             bl = _bl;
+            blPacientes = _blPacientes;
             logger = _logger;
         }
 
@@ -100,7 +102,41 @@ namespace GestionCitas.Controllers
                     return BadRequest(new StatusDTO(false, "PacienteId debe ser un valor positivo."));
                 }
 
-                bl.UpdatePaciente(id, pacienteId);
+                // Obtén el token del encabezado de autorización
+                var token = HttpContext.Request.Headers["Authorization"].ToString();
+
+                if (string.IsNullOrEmpty(token))
+                {
+                    return Unauthorized(new StatusDTO(false, "No se proporcionó un token de autenticación."));
+                }
+
+                // Validar si el paciente tiene un contrato activo
+                var paciente = blPacientes.Get(pacienteId, token);
+                if (paciente == null)
+                {
+                    throw new Exception($"No se encontró el paciente con ID {pacienteId}");
+                }
+
+                logger.LogInformation("Paciente encontrado con nombre: {Nombres}", paciente.Nombres);
+
+
+                var contratoActivo = paciente.ContratosSeguros.FirstOrDefault(c => c.Activo);
+                if (contratoActivo == null)
+                {
+                    throw new Exception($"El paciente con ID {pacienteId} no tiene un contrato activo.");
+                }
+
+                logger.LogInformation("El paciente tiene un contrato activo");
+
+                // obtener el tipo de seguro del contrato activo
+                var tipoSeguroId = contratoActivo.TipoSeguroId;
+                
+
+                // Log o uso del tipo de seguro según sea necesario
+                Console.WriteLine($"El paciente tiene un contrato activo con el tipo de seguro: {tipoSeguroId}");
+
+
+                bl.UpdatePaciente(id, pacienteId, tipoSeguroId);
 
                 return Ok(new StatusResponse() { StatusOk = true, StatusMessage = "Cita actualizada exitosamente." });
             }

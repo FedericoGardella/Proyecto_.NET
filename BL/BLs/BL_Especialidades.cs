@@ -47,5 +47,10 @@ namespace BL.BLs
         {
             dal.Delete(Id);
         }
+
+        //public Especialidad GetEspecialidad(long Id, string token)
+        //{
+        //    return dal.GetEspecialidad(Id, token);
+        //}
     }
 }

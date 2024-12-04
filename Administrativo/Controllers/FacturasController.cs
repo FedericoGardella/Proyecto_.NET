@@ -105,32 +105,6 @@ namespace Administrativo.Controllers
 
                 logger.LogInformation("Paciente encontrado con ID: {PacienteId}", facturaDTO.PacienteId);
 
-                // Validar y calcular el costo de la factura según el contrato de seguro o la cita
-                //decimal costo = 0;
-                //if (facturaDTO.ContratosSegurosId != null)
-                //{
-                //    var contratoSeguro = blContratosSeguros.Get((long)facturaDTO.ContratosSegurosId);
-                //    if (contratoSeguro == null)
-                //    {
-                //        return NotFound(new StatusDTO(false, "Contrato de seguro no encontrado."));
-                //    }
-
-                //    logger.LogInformation("Contrato de seguro encontrado con ID: {ContratosSegurosId}", facturaDTO.ContratosSegurosId);
-                //    costo = contratoSeguro.TiposSeguros.Articulos.Costo; // Asumiendo que el costo proviene de un artículo relacionado
-                //}
-                //else if (facturaDTO.CitasId != null)
-                //{
-                //    var cita = blCitas.Get((long)facturaDTO.CitasId);
-                //    if (cita == null)
-                //    {
-                //        return NotFound(new StatusDTO(false, "Cita no encontrada."));
-                //    }
-
-                //    logger.LogInformation("Cita encontrada con ID: {CitasId}", facturaDTO.CitasId);
-                //    costo = cita.PreciosEspecialidades.Articulos.Costo; // Asumiendo que el costo proviene de un artículo relacionado
-                //}
-
-                //logger.LogInformation("Costo calculado para la factura: {Costo}", costo);
 
                 // Crear la nueva factura
                 var nuevaFactura = new Factura

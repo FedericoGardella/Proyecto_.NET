@@ -20,6 +20,7 @@ namespace DAL.DALs
         {
             var paciente = db.Personas
                 .OfType<Pacientes>()
+                .Include(p => p.ContratosSeguros)
                 .SingleOrDefault(p => p.Id == Id);
 
             if (paciente == null)

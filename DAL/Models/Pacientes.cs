@@ -31,6 +31,7 @@ namespace DAL.Models
                 Documento = Documento,
                 HistoriasClinicas = HistoriasClinicas?.Select(h => h.GetEntity()).ToList(),
                 Facturas = Facturas?.Select(f => f.GetEntity()).ToList(),
+                ContratosSeguros = ContratosSeguros?.Select(c => c.GetEntity()).ToList()
             };
         }
 
