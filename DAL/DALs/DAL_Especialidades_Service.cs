@@ -1,4 +1,5 @@
 ﻿using System.Net.Http;
+using System.Text.Json;
 using DAL.IDALs;
 using Shared.Entities;
 
@@ -6,127 +7,79 @@ namespace DAL.DALs
 {
     public class DAL_Especialidades_Service : IDAL_Especialidades
     {
-        private readonly List<Especialidad> _especialidades;
+        private readonly HttpClient _httpClient;
 
-        public DAL_Especialidades_Service()
+        public DAL_Especialidades_Service(HttpClient httpClient)
         {
-            // Inicializar una lista fija de especialidades
-            _especialidades = new List<Especialidad>
-            {
-                new Especialidad { Id = 1, Nombre = "Cardiología", tiempoCita = TimeSpan.FromMinutes(30) },
-                new Especialidad { Id = 2, Nombre = "Dermatología", tiempoCita = TimeSpan.FromMinutes(20) },
-                new Especialidad { Id = 3, Nombre = "Pediatría", tiempoCita = TimeSpan.FromMinutes(40) },
-                new Especialidad { Id = 4, Nombre = "Oftalmología", tiempoCita = TimeSpan.FromMinutes(25) }
-            };
-
+            _httpClient = httpClient;
         }
 
-        // Obtener una especialidad por ID
         public Especialidad Get(long Id)
         {
-            var especialidad = _especialidades.FirstOrDefault(e => e.Id == Id);
-            if (especialidad == null)
-            {
-                throw new Exception($"Especialidad con ID {Id} no encontrada.");
-            }
-            return especialidad;
+            throw new NotImplementedException();
         }
 
         public List<Especialidad> GetByIds(List<long> ids)
         {
-            // Simulamos una lista de especialidades en memoria
-            var mockEspecialidades = new List<Especialidad>
+            try
             {
-                new Especialidad { Id = 1, Nombre = "Cardiología", tiempoCita = TimeSpan.FromMinutes(30) },
-                new Especialidad { Id = 2, Nombre = "Dermatología", tiempoCita = TimeSpan.FromMinutes(20) },
-                new Especialidad { Id = 3, Nombre = "Neurología", tiempoCita = TimeSpan.FromMinutes(40) },
-                new Especialidad { Id = 4, Nombre = "Oftalmología", tiempoCita = TimeSpan.FromMinutes(25) }
-            };
+                // Validar que la lista de IDs no sea nula o vacía
+                if (ids == null || !ids.Any())
+                {
+                    throw new ArgumentException("La lista de IDs no puede ser nula o vacía.");
+                }
 
-            // Si la lista de IDs es nula o está vacía, devolvemos una lista vacía
-            if (ids == null || ids.Count == 0)
-            {
-                return new List<Especialidad>();
+                // Crear la URL con los IDs como parámetros de consulta
+                var queryString = string.Join("&", ids.Select(id => $"ids={id}"));
+                var url = $"http://host.docker.internal:8081/api/Especialidades/GetByIds?{queryString}";
+
+                // Realizar la solicitud GET al endpoint
+                var response = _httpClient.GetAsync(url).Result;
+
+                // Verificar si la respuesta fue exitosa
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new Exception($"Error al llamar al servicio externo: {response.ReasonPhrase}");
+                }
+
+                // Leer el contenido de la respuesta como una lista de Especialidad
+                var content = response.Content.ReadAsStringAsync().Result;
+                var especialidades = JsonSerializer.Deserialize<List<Especialidad>>(content, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+
+                return especialidades ?? new List<Especialidad>();
             }
-
-            // Filtramos las especialidades que coinciden con los IDs proporcionados
-            return mockEspecialidades
-                   .Where(m => ids.Contains(m.Id))
-                   .ToList();
+            catch (Exception ex)
+            {
+                throw new Exception("Error al obtener especialidades desde el servicio externo.", ex);
+            }
         }
 
         public List<Especialidad> GetAll()
         {
-            return _especialidades;
+            throw new NotImplementedException();
         }
 
-        // Agregar una nueva especialidad
         public Especialidad Add(Especialidad x)
         {
-            x.Id = _especialidades.Any() ? _especialidades.Max(e => e.Id) + 1 : 1; // Generar un nuevo ID
-            _especialidades.Add(x);
-            return x;
+            throw new NotImplementedException();
         }
 
-        // Actualizar una especialidad existente
         public Especialidad Update(Especialidad x)
         {
-            var especialidad = _especialidades.FirstOrDefault(e => e.Id == x.Id);
-            if (especialidad != null)
-            {
-                especialidad.Nombre = x.Nombre;
-                especialidad.tiempoCita = x.tiempoCita;
-            }
-            return especialidad;
+            throw new NotImplementedException();
         }
 
-        // Eliminar una especialidad por ID
         public void Delete(long Id)
         {
-            var especialidad = _especialidades.FirstOrDefault(e => e.Id == Id);
-            if (especialidad != null)
-            {
-                _especialidades.Remove(especialidad);
-            }
+            throw new NotImplementedException();
         }
 
         public List<Especialidad> GetEspecialidadesPorMedico(long medicoId)
         {
             throw new NotImplementedException();
         }
-
-
-        //public Especialidad GetEspecialidad(long Id, string token)
-        //{
-        //    try
-        //    {
-        //        _httpClient.DefaultRequestHeaders.Clear();
-        //        _httpClient.DefaultRequestHeaders.Add("Authorization", $"{token}");
-
-        //        var url = $"___________________________{Id}";
-
-        //        var response = _httpClient.GetAsync(url).Result;
-
-        //        if (!response.IsSuccessStatusCode)
-        //        {
-        //            throw new Exception($"Error al llamar al servicio externo: {response.ReasonPhrase}");
-        //        }
-
-        //        var content = response.Content.ReadAsStringAsync().Result;
-
-        //        var especialidadObtenida = System.Text.Json.JsonSerializer.Deserialize<Especialidad>(content, new System.Text.Json.JsonSerializerOptions
-        //        {
-        //            PropertyNameCaseInsensitive = true
-        //        });
-
-        //        return especialidadObtenida;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw new Exception("Error al obtener la última historia clínica desde el servicio externo.", ex);
-        //    }
-
-        //}
     }
-
 }

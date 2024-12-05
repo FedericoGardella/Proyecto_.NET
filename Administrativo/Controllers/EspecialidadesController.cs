@@ -46,6 +46,37 @@ namespace Administrativo.Controllers
             }
         }
 
+        // GET: api/Especialidades/GetByIds
+        [ProducesResponseType(typeof(List<Especialidad>), 200)]
+        [HttpGet("GetByIds")]
+        public IActionResult GetByIds([FromQuery] List<long> ids)
+        {
+            try
+            {
+                // Validar la entrada
+                if (ids == null || !ids.Any())
+                {
+                    return BadRequest(new StatusDTO(false, "La lista de IDs no puede ser nula o vacía."));
+                }
+
+                // Obtener las especialidades desde el BL
+                var especialidades = bl.GetByIds(ids);
+
+                // Validar si se encontraron resultados
+                if (especialidades == null || !especialidades.Any())
+                {
+                    return NotFound(new StatusDTO(false, "No se encontraron especialidades para los IDs proporcionados."));
+                }
+
+                return Ok(especialidades);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error al obtener especialidades por IDs");
+                return StatusCode(StatusCodes.Status500InternalServerError, new StatusDTO(false, "Error al obtener especialidades por IDs."));
+            }
+        }
+
         // GET: api/Especialidades/Medico/{id}
         [Authorize(Roles = "ADMIN, MEDICO, PACIENTE")]
         [ProducesResponseType(typeof(List<Especialidad>), 200)]

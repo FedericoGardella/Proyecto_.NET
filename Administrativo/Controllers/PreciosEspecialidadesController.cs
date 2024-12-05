@@ -224,7 +224,6 @@ namespace Administrativo.Controllers
 
 
         [HttpGet("GetCosto")]
-        [Authorize(Roles = "ADMIN, MEDICO")]
         [ProducesResponseType(typeof(decimal), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(StatusDTO), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(StatusDTO), StatusCodes.Status404NotFound)]

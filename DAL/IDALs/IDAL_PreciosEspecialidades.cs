@@ -11,5 +11,7 @@ namespace DAL.IDALs
         void Delete(long Id);
         PrecioEspecialidad GetByEspecialidadAndTipoSeguro(long especialidadId, long tipoSeguroId);
         bool Repetido(long especialidadId, long tipoSeguroId);
+
+        decimal GetCosto(long especialidadId, long tipoSeguroId);
     }
 }

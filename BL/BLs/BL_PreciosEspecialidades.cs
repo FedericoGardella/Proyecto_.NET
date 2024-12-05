@@ -79,30 +79,16 @@ namespace BL.BLs
 
         public decimal GetCosto(long especialidadId, long tipoSeguroId)
         {
-            // Busca el registro de PrecioEspecialidad con los IDs proporcionados
-            var precioEspecialidad = dal.GetByEspecialidadAndTipoSeguro(especialidadId, tipoSeguroId);
-
-            if (precioEspecialidad == null)
+            try
             {
-                throw new Exception($"No se encontró un precio de especialidad para EspecialidadId {especialidadId} y TipoSeguroId {tipoSeguroId}.");
+                return dal.GetCosto(especialidadId, tipoSeguroId);
             }
-
-            // Validar que tenga un ArticuloId
-            if (precioEspecialidad.ArticuloId == 0)
+            catch (Exception ex)
             {
-                throw new Exception($"El PrecioEspecialidad con ID {precioEspecialidad.Id} no tiene un ArticuloId válido asociado.");
+                throw new Exception($"Error al obtener el costo: {ex.Message}", ex);
             }
-
-            // Buscar el artículo relacionado
-            var articulo = dalArticulos.Get(precioEspecialidad.ArticuloId);
-            if (articulo == null)
-            {
-                throw new Exception($"No se encontró un artículo con ID {precioEspecialidad.ArticuloId} asociado al PrecioEspecialidad.");
-            }
-
-            // Devuelve el costo del artículo
-            return articulo.Costo;
         }
+
 
         public bool Repetido(long especialidadId, long tipoSeguroId)
         {
