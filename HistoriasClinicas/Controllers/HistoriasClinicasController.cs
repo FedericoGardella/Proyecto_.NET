@@ -13,11 +13,13 @@ namespace HistoriasClinicas.Controllers
     public class HistoriasClinicasController : ControllerBase
     {
         private readonly IBL_HistoriasClinicas bl;
+        private IBL_Pacientes blPacientes;
         private readonly ILogger<HistoriasClinicasController> logger;
 
-        public HistoriasClinicasController(IBL_HistoriasClinicas _bl, ILogger<HistoriasClinicasController> _logger)
+        public HistoriasClinicasController(IBL_HistoriasClinicas _bl, IBL_Pacientes _blPacientes, ILogger<HistoriasClinicasController> _logger)
         {
             bl = _bl;
+            blPacientes = _blPacientes;
             logger = _logger;
         }
 
@@ -259,6 +261,42 @@ namespace HistoriasClinicas.Controllers
         {
             try
             {
+                // Obtener el token desde el encabezado de autorización
+                var token = HttpContext.Request.Headers["Authorization"].ToString()?.Replace("Bearer ", "");
+
+                if (string.IsNullOrEmpty(token))
+                {
+                    return Unauthorized(new StatusDTO(false, "No se proporcionó un token de autenticación."));
+                }
+
+                // Decodificar el token para obtener los claims
+                var handler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
+                var jwtToken = handler.ReadJwtToken(token);
+
+                // Extraer el email desde los claims del token
+                var emailFromToken = jwtToken.Claims
+                    .FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name")
+                    ?.Value;
+
+                if (string.IsNullOrEmpty(emailFromToken))
+                {
+                    return Unauthorized(new StatusDTO(false, "No se pudo determinar el email del usuario."));
+                }
+
+                // Obtener el email del paciente relacionado con el ID proporcionado
+                var emailPaciente = blPacientes.GetPacienteEmail(id);
+
+                // Validar si el email del paciente coincide con el email del token si el rol es PACIENTE
+                var userRole = jwtToken.Claims
+                    .FirstOrDefault(c => c.Type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role")
+                    ?.Value;
+
+                if (userRole == "PACIENTE" && !emailFromToken.Equals(emailPaciente, StringComparison.OrdinalIgnoreCase))
+                {
+                    return Forbid(); // Responder con 403 Forbidden si no coincide
+                }
+
+                // Obtener la última historia clínica
                 var ultimaHistoria = bl.GetUltimaHistoriaClinicaPorPaciente(id, null);
 
                 if (ultimaHistoria == null)
@@ -271,7 +309,7 @@ namespace HistoriasClinicas.Controllers
             catch (Exception ex)
             {
                 logger.LogError(ex, "Error al obtener la última historia clínica para el paciente con ID {PacienteId}", id);
-                return StatusCode(500, new StatusDTO(false, "Ocurrio un error al procesar la solicitud."));
+                return StatusCode(500, new StatusDTO(false, "Ocurrió un error al procesar la solicitud."));
             }
         }
 

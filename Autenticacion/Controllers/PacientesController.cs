@@ -65,7 +65,49 @@ namespace Autenticacion.Controllers
         {
             try
             {
-                return Ok(_bl.Get(Id, null));
+                // Obtener el token del encabezado de autorización
+                var token = HttpContext.Request.Headers["Authorization"].ToString()?.Replace("Bearer ", "");
+
+                if (string.IsNullOrEmpty(token))
+                {
+                    return Unauthorized(new StatusDTO(false, "Token no proporcionado."));
+                }
+
+                // Decodificar el token para obtener los claims
+                var handler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
+                var jwtToken = handler.ReadJwtToken(token);
+
+                // Extraer el email desde los claims del token
+                var emailFromToken = jwtToken.Claims
+                    .FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name")
+                    ?.Value;
+
+                if (string.IsNullOrEmpty(emailFromToken))
+                {
+                    return Unauthorized(new StatusDTO(false, "No se pudo determinar el email del usuario."));
+                }
+
+                // Obtener el email del paciente desde el DAL
+                var emailFromPaciente = _bl.GetPacienteEmail(Id);
+
+                if (string.IsNullOrEmpty(emailFromPaciente))
+                {
+                    return NotFound(new StatusDTO(false, $"No se encontró el paciente con ID {Id}."));
+                }
+
+                // Verificar que el rol del usuario sea PACIENTE y que el email coincida
+                var userRole = jwtToken.Claims
+                    .FirstOrDefault(c => c.Type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role")
+                    ?.Value;
+
+                if (userRole == "PACIENTE" && !emailFromToken.Equals(emailFromPaciente, StringComparison.OrdinalIgnoreCase))
+                {
+                    return Forbid(); // Responder con 403 Forbidden si no coincide
+                }
+
+                // Obtener y devolver la información del paciente
+                var paciente = _bl.Get(Id, null);
+                return Ok(paciente);
             }
             catch (Exception ex)
             {

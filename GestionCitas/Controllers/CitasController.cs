@@ -103,15 +103,49 @@ namespace GestionCitas.Controllers
                 }
 
                 // Obtén el token del encabezado de autorización
-                var token = HttpContext.Request.Headers["Authorization"].ToString();
+                var token = HttpContext.Request.Headers["Authorization"].ToString()?.Replace("Bearer ", "");
+                var token2 = HttpContext.Request.Headers["Authorization"].ToString();
 
                 if (string.IsNullOrEmpty(token))
                 {
                     return Unauthorized(new StatusDTO(false, "No se proporcionó un token de autenticación."));
                 }
 
+                // Decodificar el token para obtener los claims
+                var handler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
+                var jwtToken = handler.ReadJwtToken(token);
+
+                // Extraer el email desde los claims del token
+                var emailFromToken = jwtToken.Claims
+                    .FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name")
+                    ?.Value;
+
+                if (string.IsNullOrEmpty(emailFromToken))
+                {
+                    return Unauthorized(new StatusDTO(false, "No se pudo determinar el email del usuario."));
+                }
+
+                // Verificar que el email del token coincide con el email del paciente
+                var emailPaciente = blPacientes.GetPacienteEmail(pacienteId);
+                if (string.IsNullOrEmpty(emailPaciente))
+                {
+                    throw new Exception($"No se encontró el email para el paciente con ID {pacienteId}.");
+                }
+
+                // Validar si el rol es PACIENTE y los emails no coinciden
+                var userRole = jwtToken.Claims
+                    .FirstOrDefault(c => c.Type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role")
+                    ?.Value;
+
+                if (userRole == "PACIENTE" && !emailFromToken.Equals(emailPaciente, StringComparison.OrdinalIgnoreCase))
+                {
+                    return Forbid(); // Responder con 403 Forbidden si no coincide
+                }
+
+                logger.LogInformation("Paciente validado con email: {Email}", emailPaciente);
+
                 // Validar si el paciente tiene un contrato activo
-                var paciente = blPacientes.Get(pacienteId, token);
+                var paciente = blPacientes.Get(pacienteId, token2);
                 if (paciente == null)
                 {
                     throw new Exception($"No se encontró el paciente con ID {pacienteId}");
@@ -130,7 +164,7 @@ namespace GestionCitas.Controllers
 
                 // obtener el tipo de seguro del contrato activo
                 var tipoSeguroId = contratoActivo.TipoSeguroId;
-                
+
                 // Log o uso del tipo de seguro según sea necesario
                 Console.WriteLine($"El paciente tiene un contrato activo con el tipo de seguro: {tipoSeguroId}");
 

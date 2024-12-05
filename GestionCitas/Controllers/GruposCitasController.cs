@@ -14,11 +14,13 @@ namespace GestionCitas.Controllers
     public class GruposCitasController : ControllerBase
     {
         private readonly IBL_GruposCitas bl;
+        private IBL_Pacientes blPacientes;
         private readonly ILogger<GruposCitasController> logger;
 
-        public GruposCitasController(IBL_GruposCitas _bl, ILogger<GruposCitasController> _logger)
+        public GruposCitasController(IBL_GruposCitas _bl, IBL_Pacientes _blPacientes ,ILogger<GruposCitasController> _logger)
         {
             bl = _bl;
+            blPacientes = _blPacientes;
             logger = _logger;
         }
 
@@ -141,10 +143,56 @@ namespace GestionCitas.Controllers
         {
             try
             {
+                // Obtener el token desde el encabezado de autorización
+                var token = HttpContext.Request.Headers["Authorization"].ToString()?.Replace("Bearer ", "");
+
+                if (string.IsNullOrEmpty(token))
+                {
+                    return Unauthorized(new StatusDTO(false, "No se proporcionó un token de autenticación."));
+                }
+
+                // Decodificar el token para obtener los claims
+                var handler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
+                var jwtToken = handler.ReadJwtToken(token);
+
+                // Extraer el email desde los claims del token
+                var emailFromToken = jwtToken.Claims
+                    .FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name")
+                    ?.Value;
+
+                if (string.IsNullOrEmpty(emailFromToken))
+                {
+                    return Unauthorized(new StatusDTO(false, "No se pudo determinar el email del usuario."));
+                }
+
+                // Obtener el grupo de citas
                 var grupoCita = bl.GetDetalle(id);
                 if (grupoCita == null)
                 {
                     return NotFound(new StatusDTO(false, "Grupo de citas no encontrado"));
+                }
+
+                // Validar las citas en el grupo si el rol es PACIENTE
+                var userRole = jwtToken.Claims
+                    .FirstOrDefault(c => c.Type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role")
+                    ?.Value;
+
+                if (userRole == "PACIENTE")
+                {
+                    foreach (var cita in grupoCita.Citas)
+                    {
+                        if (cita.PacienteId.HasValue)
+                        {
+                            // Obtener el email del paciente relacionado con la cita
+                            var emailPaciente = blPacientes.GetPacienteEmail(cita.PacienteId.Value);
+
+                            // Validar si el email del paciente en la cita coincide con el email del token
+                            if (!emailFromToken.Equals(emailPaciente, StringComparison.OrdinalIgnoreCase))
+                            {
+                                return Forbid(); // Responder con 403 Forbidden si no coincide
+                            }
+                        }
+                    }
                 }
 
                 // Mapear al DTO
