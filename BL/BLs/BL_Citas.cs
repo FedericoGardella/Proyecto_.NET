@@ -93,6 +93,28 @@ namespace BL.BLs
             }
         }
 
+        public List<Cita> GetCitasFuturasPorPacienteYEspecialidad(long pacienteId, long especialidadId, DateTime fechaActual)
+        {
+
+            var citasFuturas = dal.GetCitasFuturasPorPacienteYEspecialidad(pacienteId, especialidadId, fechaActual);
+
+
+            return citasFuturas;
+        }
+
+        public List<(long PacienteId, string Hora)> GetTomorrowAppointments()
+        {
+            var tomorrow = DateTime.Now.AddDays(1).Date;
+
+            // Obtener la lista de CitaDTO desde el DAL
+            var citasDTO = dal.GetCitasDTOByDate(tomorrow);
+
+            // Transformar la lista de CitaDTO en el formato deseado
+            return citasDTO
+                .Where(c => c.PacienteId.HasValue)
+                .Select(c => (PacienteId: c.PacienteId.Value, Hora: c.Hora.ToString(@"hh\:mm")))
+                .ToList();
+        }
 
         public void Delete(long Id)
         {

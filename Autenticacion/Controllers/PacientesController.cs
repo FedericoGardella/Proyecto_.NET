@@ -116,5 +116,30 @@ namespace Autenticacion.Controllers
                 return BadRequest(new StatusDTO(false, "Error al eliminar paciente."));
             }
         }
+
+        // GET: api/Pacientes/{id}/email
+        [HttpGet("{id:long}/email")]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(StatusDTO), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(StatusDTO), StatusCodes.Status400BadRequest)]
+        public IActionResult GetEmail(long id)
+        {
+            try
+            {
+                var email = _bl.GetPacienteEmail(id);
+                if (string.IsNullOrEmpty(email))
+                {
+                    return NotFound(new StatusDTO(false, "Email no encontrado para el paciente proporcionado."));
+                }
+
+                return Ok(email);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al obtener el email del paciente.");
+                return BadRequest(new StatusDTO(false, "Error al obtener el email del paciente."));
+            }
+        }
+
     }
 }

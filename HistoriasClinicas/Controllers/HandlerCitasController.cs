@@ -27,16 +27,16 @@ namespace HistoriasClinicas.Controllers
         [ProducesResponseType(typeof(GrupoCita), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(StatusDTO), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(StatusDTO), StatusCodes.Status404NotFound)]
-        public IActionResult GetCitasHoy(long medicoId, string fecha)
+        public IActionResult GetCitasHoy(long medicoId)
         {
-            // Validar el parámetro fecha
-            if (!DateTime.TryParse(fecha, out DateTime fechaConvertida))
-            {
-                return BadRequest(new StatusDTO(false, "El formato de la fecha no es válido. Se esperaba YYYY-MM-DD."));
-            }
+
+            // Obtén el token del encabezado de autorización
+            var token = HttpContext.Request.Headers["Authorization"].ToString();
+
+            var fechaHoy = DateTime.Today;
 
             // Lógica para obtener el grupo de citas
-            var grupoCitas = blGruposCitas.GetGrupoCitasMedico(medicoId, fechaConvertida.Date);
+            var grupoCitas = blGruposCitas.GetGrupoCitasMedico(medicoId, fechaHoy, token);
             if (grupoCitas == null)
             {
                 return NotFound(new StatusDTO(false, "No hay citas para la fecha especificada."));

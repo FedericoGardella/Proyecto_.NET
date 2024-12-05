@@ -1,6 +1,7 @@
 ﻿using DAL.IDALs;
 using DAL.Models;
 using Microsoft.EntityFrameworkCore;
+using Shared.DTOs;
 using Shared.Entities;
 
 namespace DAL.DALs
@@ -56,6 +57,31 @@ namespace DAL.DALs
             existingCita.PacienteId = cita.PacienteId;
 
             db.SaveChanges();
+        }
+
+        public List<Cita> GetCitasFuturasPorPacienteYEspecialidad(long pacienteId, long especialidadId, DateTime fechaActual)
+        {
+            return db.Citas
+                     .Include(c => c.GruposCitas) // Incluir la relación con el grupo de citas
+                     .ThenInclude(g => g.Especialidades) // Incluir la relación con especialidades
+                     .Where(c => c.PacienteId == pacienteId &&
+                                 c.GruposCitas.EspecialidadesId == especialidadId &&
+                                 c.GruposCitas.Fecha > fechaActual)
+                     .Select(c => c.GetEntity()) // Convertir a la entidad compartida
+                     .ToList(); // Materializar la consulta como una lista
+        }
+
+        public List<CitaDTO> GetCitasDTOByDate(DateTime date)
+        {
+            return db.Citas
+                .Where(c => c.GruposCitas.Fecha.Date == date.Date && c.PacienteId != null)
+                .Select(c => new CitaDTO
+                {
+                    Id = c.Id,
+                    Hora = c.Hora,
+                    PacienteId = c.PacienteId,
+                })
+                .ToList();
         }
 
         public void Delete(long Id)

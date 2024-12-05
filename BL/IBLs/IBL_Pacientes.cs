@@ -12,6 +12,7 @@ namespace BL.IBLs
         Paciente Update(Paciente x);
         void Delete(long Id);
         Paciente GetPacienteByDocumento(string documento);
+        string GetPacienteEmail(long id);
         List<ContratoSeguroDTO> GetContratosSeguros(long PacienteId);
     }
 }

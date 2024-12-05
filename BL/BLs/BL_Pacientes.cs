@@ -48,5 +48,12 @@ namespace BL.BLs
         {
             return _dal.GetContratosSeguros(PacienteId);
         }
+
+        public string GetPacienteEmail(long id)
+        {
+            var email = _dal.GetEmail(id);
+            return email;
+        }
+
     }
 }

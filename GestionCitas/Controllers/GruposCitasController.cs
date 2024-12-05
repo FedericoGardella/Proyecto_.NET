@@ -160,7 +160,8 @@ namespace GestionCitas.Controllers
                     Citas = grupoCita.Citas.Select(cita => new CitaDTO
                     {
                         Id = cita.Id,
-                        Hora = cita.Hora
+                        Hora = cita.Hora,
+                        PacienteId = cita.PacienteId
                     }).ToList()
                 };
 
@@ -172,10 +173,6 @@ namespace GestionCitas.Controllers
                 return StatusCode(StatusCodes.Status400BadRequest, new StatusDTO(false, "Error al obtener el detalle del grupo de citas"));
             }
         }
-
-
-
-
 
         //[HttpGet("{id}/especialidad")]
         //[ProducesResponseType(typeof(Especialidad), StatusCodes.Status200OK)]
@@ -214,6 +211,34 @@ namespace GestionCitas.Controllers
         //        return StatusCode(StatusCodes.Status500InternalServerError, new StatusDTO(false, "Error al procesar la solicitud."));
         //    }
         //}
+
+
+        // GET: api/grupos-citas/medico/{medicoId}/hoy
+        [Authorize(Roles = "ADMIN, MEDICO")]
+        [ProducesResponseType(typeof(GrupoCita), 200)]
+        [HttpGet("medico/{medicoId}/hoy")]
+        public IActionResult GetByMedicoAndToday(long medicoId)
+        {
+            try
+            {
+                var fechaHoy = DateTime.Today;
+
+                // Obtener el grupo de citas del BL
+                var grupoCita = bl.GetGrupoCitasMedico(medicoId, fechaHoy, null);
+
+                if (grupoCita == null)
+                {
+                    return NotFound(new StatusDTO(false, "No se encontró un grupo de citas para el médico y la fecha especificada."));
+                }
+
+                return Ok(grupoCita);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, $"Error al obtener grupo de citas para el médico {medicoId} y la fecha de hoy");
+                return StatusCode(StatusCodes.Status400BadRequest, new StatusDTO(false, "Error al obtener grupo de citas."));
+            }
+        }
 
     }
 }

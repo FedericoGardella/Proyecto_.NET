@@ -8,7 +8,7 @@ namespace DAL.IDALs
     {
         GrupoCita Get(long Id);
         List<GrupoCita> GetAll();
-        GrupoCita GetGrupoCitasMedico(long medicoId, DateTime fecha);
+        GrupoCita GetGrupoCitasMedico(long medicoId, DateTime fecha, string token);
         GrupoCita Add(GrupoCita x);
         GrupoCita AddGrupoCitaConCitas(GrupoCitaPostDTO dto);
         GrupoCita Update(GrupoCita x);

@@ -13,6 +13,6 @@ namespace DAL.IDALs
         public void Delete(long Id);
         Paciente GetPacienteByDocumento(string documento);
         List<ContratoSeguroDTO> GetContratosSeguros(long PacienteId);
-
+        string GetEmail(long pacienteId);
     }
 }

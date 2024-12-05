@@ -92,8 +92,8 @@ namespace GestionCitas.Controllers
 
         [Authorize(Roles = "ADMIN, PACIENTE")]
         [ProducesResponseType(typeof(StatusResponse), 200)]
-        [HttpPatch("{id}/paciente/{pacienteId}")]
-        public IActionResult UpdatePaciente(long id, long pacienteId)
+        [HttpPatch("{id}/paciente/{pacienteId}/{especialidadId}")]
+        public IActionResult UpdatePaciente(long id, long pacienteId, long especialidadId)
         {
             try
             {
@@ -131,21 +131,40 @@ namespace GestionCitas.Controllers
                 // obtener el tipo de seguro del contrato activo
                 var tipoSeguroId = contratoActivo.TipoSeguroId;
                 
-
                 // Log o uso del tipo de seguro según sea necesario
                 Console.WriteLine($"El paciente tiene un contrato activo con el tipo de seguro: {tipoSeguroId}");
 
 
+                // Verificar si la cita existe
+                var cita = bl.Get(id); // Obtener la cita actual
+                if (cita == null)
+                {
+                    return NotFound(new StatusDTO(false, "Cita no encontrada."));
+                }
+
+                var fechaHoy = DateTime.Now;
+
+                // Buscar si el paciente ya tiene una cita futura en esta especialidad
+                var citasFuturas = bl.GetCitasFuturasPorPacienteYEspecialidad(pacienteId, especialidadId, fechaHoy);
+
+                if (citasFuturas.Any())
+                {
+                    return BadRequest(new StatusDTO(false, "El paciente ya tiene una cita futura en esta especialidad."));
+                }
+
+                // Realizar el update si pasa la validación
                 bl.UpdatePaciente(id, pacienteId, tipoSeguroId);
+
 
                 return Ok(new StatusResponse() { StatusOk = true, StatusMessage = "Cita actualizada exitosamente." });
             }
             catch (Exception ex)
             {
                 logger.LogError(ex, $"Error al actualizar el paciente para la cita con ID {id}");
-                return StatusCode(StatusCodes.Status400BadRequest, new StatusDTO(false, "Error al actualizar la cita."));
+                return StatusCode(StatusCodes.Status400BadRequest, new StatusDTO(false, "El paciente ya tiene una cita agendada para esta especialidad."));
             }
         }
+
 
         // DELETE api/citas/{id}
         [Authorize(Roles = "ADMIN, MEDICO")]

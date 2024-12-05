@@ -9,6 +9,10 @@ namespace BL.IBLs
         Cita Add(Cita x);
         Cita Update(Cita x);
         void UpdatePaciente(long citaId, long pacienteId, long tipoSeguroId);
+       // void UpdatePaciente(long citaId, long pacienteId);
+        List<Cita> GetCitasFuturasPorPacienteYEspecialidad(long pacienteId, long especialidadId, DateTime fechaActual);
+        List<(long PacienteId, string Hora)> GetTomorrowAppointments();
+
         void Delete(long Id);
     }
 }

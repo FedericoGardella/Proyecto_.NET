@@ -26,10 +26,10 @@ namespace BL.BLs
             return dal.GetAll();
         }
 
-        public GrupoCita GetGrupoCitasMedico(long medicoDoc, DateTime fecha)
+        public GrupoCita GetGrupoCitasMedico(long medicoDoc, DateTime fecha, string token)
         {
 
-            var grupoCitas = dal.GetGrupoCitasMedico(medicoDoc, fecha);
+            var grupoCitas = dal.GetGrupoCitasMedico(medicoDoc, fecha, token);
 
             return grupoCitas;
         }

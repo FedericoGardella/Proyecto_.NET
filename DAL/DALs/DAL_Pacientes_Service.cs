@@ -113,5 +113,33 @@ namespace DAL.DALs
             throw new NotImplementedException(); 
         }
 
+        public string GetEmail(long pacienteId)
+        {
+            try
+            {
+                var url = $"http://host.docker.internal:8082/api/Pacientes/{pacienteId}/email";
+
+                var response = _httpClient.GetAsync(url).Result;
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new Exception($"Error al llamar al servicio externo: {response.ReasonPhrase}");
+                }
+
+                // Si el contenido es un string plano
+                var email = response.Content.ReadAsStringAsync().Result;
+
+                if (string.IsNullOrEmpty(email))
+                {
+                    throw new Exception("El servicio externo no devolvió un email válido.");
+                }
+
+                return email.Trim();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error al obtener el email desde el servicio externo.", ex);
+            }
+        }
     }
 }
