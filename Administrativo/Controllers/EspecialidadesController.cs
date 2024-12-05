@@ -46,7 +46,31 @@ namespace Administrativo.Controllers
             }
         }
 
+        // GET: api/Especialidades/Medico/{id}
+        [Authorize(Roles = "ADMIN, MEDICO, PACIENTE")]
+        [ProducesResponseType(typeof(List<Especialidad>), 200)]
+        [ProducesResponseType(typeof(StatusDTO), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(StatusDTO), StatusCodes.Status400BadRequest)]
+        [HttpGet("Medico/{id:long}")]
+        public IActionResult GetEspecialidadesPorMedico(long id)
+        {
+            try
+            {
+                var especialidades = bl.GetEspecialidadesPorMedico(id);
 
+                if (especialidades == null || !especialidades.Any())
+                {
+                    return NotFound(new StatusDTO(false, "No se encontraron especialidades para el médico especificado."));
+                }
+
+                return Ok(especialidades);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, $"Error al obtener especialidades para el médico con ID {id}");
+                return StatusCode(StatusCodes.Status400BadRequest, new StatusDTO(false, "Error al obtener especialidades."));
+            }
+        }
 
         // GET api/<EspecialidadesController>/5
         [Authorize(Roles = "ADMIN, X")]
