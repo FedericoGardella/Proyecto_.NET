@@ -6,6 +6,7 @@ using BL.IBLs;
 using BL.BLs;
 using DAL.IDALs;
 using DAL.DALs;
+using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -93,7 +94,7 @@ builder.Services.AddScoped<IDAL_GruposCitas, DAL_GruposCitas_EF>();
 
 
 builder.Services.AddScoped<IBL_PreciosEspecialidades, BL_PreciosEspecialidades>();
-builder.Services.AddScoped<IDAL_PreciosEspecialidades, DAL_PreciosEspecialidades_EF>();
+builder.Services.AddHttpClient<IDAL_PreciosEspecialidades, DAL_PreciosEspecialidades_Service>();
 
 builder.Services.AddScoped<IDAL_Articulos, DAL_Articulos_EF>();
 

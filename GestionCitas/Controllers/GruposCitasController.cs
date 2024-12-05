@@ -14,13 +14,11 @@ namespace GestionCitas.Controllers
     public class GruposCitasController : ControllerBase
     {
         private readonly IBL_GruposCitas bl;
-        private readonly IBL_Especialidades blEspecialidades;
         private readonly ILogger<GruposCitasController> logger;
 
-        public GruposCitasController(IBL_GruposCitas _bl, IBL_Especialidades _blEspecialidades, ILogger<GruposCitasController> _logger)
+        public GruposCitasController(IBL_GruposCitas _bl, ILogger<GruposCitasController> _logger)
         {
             bl = _bl;
-            blEspecialidades = _blEspecialidades;
             logger = _logger;
         }
 

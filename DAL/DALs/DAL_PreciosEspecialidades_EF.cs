@@ -81,6 +81,22 @@ namespace DAL.DALs
                 .Any(pe => pe.EspecialidadesId == especialidadId && pe.TiposSegurosId == tipoSeguroId);
         }
 
+        public decimal GetCosto(long especialidadId, long tipoSeguroId)
+        {
+            // Busca el registro de PrecioEspecialidad con los IDs proporcionados y obtén su costo directamente
+            var query = from pe in db.PreciosEspecialidades
+                        join a in db.Articulos on pe.ArticulosId equals a.Id
+                        where pe.EspecialidadesId == especialidadId && pe.TiposSegurosId == tipoSeguroId
+                        select a.Costo;
 
+            // Devuelve el costo si se encuentra, de lo contrario lanza excepción
+            var costo = query.FirstOrDefault();
+            if (costo == 0)
+            {
+                throw new Exception($"No se encontró un costo para EspecialidadId {especialidadId} y TipoSeguroId {tipoSeguroId}.");
+            }
+
+            return costo;
+        }
     }
 }
