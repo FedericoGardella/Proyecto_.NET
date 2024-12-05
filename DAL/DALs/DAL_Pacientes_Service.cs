@@ -63,6 +63,41 @@ namespace DAL.DALs
             throw new NotImplementedException();
         }
 
+        public List<Paciente> GetAllPacientes(string token)
+        {
+            try
+            {
+                // Configurar encabezados para la solicitud HTTP
+                _httpClient.DefaultRequestHeaders.Clear();
+                _httpClient.DefaultRequestHeaders.Add("Authorization", $"{token}");
+
+                // Definir la URL del endpoint para obtener todos los pacientes
+                var url = "http://host.docker.internal:8082/api/Pacientes";
+
+                // Hacer la solicitud GET
+                var response = _httpClient.GetAsync(url).Result;
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new Exception($"Error al llamar al servicio externo: {response.ReasonPhrase}");
+                }
+
+                // Leer y deserializar el contenido de la respuesta
+                var content = response.Content.ReadAsStringAsync().Result;
+                var pacientesObtenidos = System.Text.Json.JsonSerializer.Deserialize<List<Paciente>>(content, new System.Text.Json.JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+
+                return pacientesObtenidos;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al obtener todos los pacientes desde el servicio externo.", ex);
+            }
+        }
+
+
         public Paciente GetPacienteByDocumento(string documento)
         {
             // Lista mock de pacientes

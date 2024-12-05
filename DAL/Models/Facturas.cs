@@ -10,6 +10,7 @@ namespace DAL.Models
         public DateTime Fecha { get; set; } // Fecha de emisión de la factura
         public bool Pago { get; set; } // Indicador de si está pagada
         public decimal Costo { get; set; } // Costo total de la factura
+        public bool Mensual { get; set; } // Indica si es una factura mensual
 
 
         [ForeignKey("Pacientes")]
@@ -33,6 +34,7 @@ namespace DAL.Models
                 Fecha = Fecha,
                 Pago = Pago,
                 Costo = Costo,
+                Mensual = Mensual,
                 PacienteId = PacientesId,
                 Paciente = Pacientes?.GetEntity(),
                 ContratoSeguroId = ContratosSegurosId,
@@ -54,6 +56,7 @@ namespace DAL.Models
             facturaToSave.Fecha = factura.Fecha;
             facturaToSave.Pago = factura.Pago;
             facturaToSave.Costo = factura.Costo;
+            facturaToSave.Mensual = factura.Mensual;
             facturaToSave.PacientesId = factura.PacienteId;
             facturaToSave.ContratosSegurosId = factura.ContratoSeguroId;
             facturaToSave.CitasId = factura.CitaId;

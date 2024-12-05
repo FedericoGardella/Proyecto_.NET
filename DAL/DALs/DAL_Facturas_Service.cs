@@ -1,4 +1,5 @@
 ﻿using DAL.IDALs;
+using DAL.Models;
 using Shared.DTOs;
 using Shared.Entities;
 
@@ -36,5 +37,14 @@ namespace DAL.DALs
             throw new NotImplementedException();
         }
 
+        public List<Factura> GetFacturasPorPaciente(long pacienteId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<Factura> GetFacturasMensuales(long pacienteId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

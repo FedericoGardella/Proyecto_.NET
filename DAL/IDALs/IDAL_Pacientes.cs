@@ -14,5 +14,7 @@ namespace DAL.IDALs
         Paciente GetPacienteByDocumento(string documento);
         List<ContratoSeguroDTO> GetContratosSeguros(long PacienteId);
         string GetEmail(long pacienteId);
+        List<Paciente> GetAllPacientes(string token);
+
     }
 }

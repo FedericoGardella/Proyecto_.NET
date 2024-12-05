@@ -177,5 +177,75 @@ namespace Administrativo.Controllers
             }
         }
 
+
+        [HttpGet("pacientes/{pacienteId}/facturas")]
+        [Authorize(Roles = "PACIENTE, ADMIN")]
+        [ProducesResponseType(typeof(List<FacturaDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(StatusDTO), StatusCodes.Status404NotFound)]
+        public IActionResult GetFacturasPaciente(long pacienteId)
+        {
+            try
+            {
+                var facturas = bl.GetFacturasPorPaciente(pacienteId);
+                if (facturas == null || facturas.Count == 0)
+                {
+                    return NotFound(new StatusDTO(false, "No se encontraron facturas para este paciente."));
+                }
+
+                return Ok(facturas);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error al obtener las facturas del paciente.");
+                return BadRequest(new StatusDTO(false, "Error al obtener las facturas."));
+            }
+        }
+
+        [HttpPost("generar-facturas-mensuales")]
+        [Authorize(Roles = "ADMIN")]
+        public IActionResult GenerarFacturasMensuales()
+        {
+            try
+            {
+                var token = HttpContext.Request.Headers["Authorization"].ToString();
+
+                if (string.IsNullOrEmpty(token))
+                {
+                    return Unauthorized(new StatusDTO(false, "No se proporcionó un token de autenticación."));
+                }
+
+                bl.GenerarFacturasMensuales(token);
+                return Ok(new StatusDTO(true, "Facturas mensuales generadas exitosamente."));
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error al generar facturas mensuales.");
+                return BadRequest(new StatusDTO(false, "Error al generar facturas mensuales."));
+            }
+        }
+
+        [HttpGet("mensuales")]
+        [Authorize(Roles = "PACIENTE, ADMIN")]
+        [ProducesResponseType(typeof(List<FacturaDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(StatusDTO), StatusCodes.Status404NotFound)]
+        public IActionResult GetFacturasMensuales([FromQuery] long pacienteId)
+        {
+            try
+            {
+                var facturas = bl.GetFacturasMensuales(pacienteId);
+                if (facturas == null || facturas.Count == 0)
+                {
+                    return NotFound(new StatusDTO(false, "No se encontraron facturas mensuales sin pagar para el paciente."));
+                }
+
+                return Ok(facturas);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error al obtener las facturas mensuales.");
+                return BadRequest(new StatusDTO(false, "Error al obtener las facturas mensuales."));
+            }
+        }
+
     }
 }

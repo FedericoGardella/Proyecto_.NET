@@ -1,4 +1,5 @@
-﻿using Shared.DTOs;
+﻿using DAL.Models;
+using Shared.DTOs;
 using Shared.Entities;
 
 namespace DAL.IDALs
@@ -10,6 +11,8 @@ namespace DAL.IDALs
         Factura Add(Factura x);
         Factura Update(Factura x);
         void Delete(long Id);
+        List<Factura> GetFacturasPorPaciente(long pacienteId);
+        List<Factura> GetFacturasMensuales(long pacienteId);
         //List<CitaDTO> GetCitas(long facturaId);
     }
 }

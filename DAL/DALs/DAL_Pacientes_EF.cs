@@ -144,5 +144,11 @@ namespace DAL.DALs
             // Devuelve el email del usuario si existe, de lo contrario null
             return usuario?.Username;
         }
+
+        public List<Paciente> GetAllPacientes(string token)
+        {
+            return db.Pacientes.Select(x => x.GetEntity()).ToList();
+        }
+
     }
 }
