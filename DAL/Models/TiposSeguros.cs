@@ -22,7 +22,7 @@ namespace DAL.Models
                 Nombre = Nombre,
                 Descripcion = Descripcion,
                 ArticuloId = ArticulosId,
-                //Articulo = Articulos?.GetEntity()
+                Articulo = Articulos?.GetEntity()
             };
 
         }

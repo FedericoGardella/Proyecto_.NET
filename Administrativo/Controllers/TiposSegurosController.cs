@@ -32,7 +32,15 @@ namespace Administrativo.Controllers
         {
             try
             {
-                return Ok(bl.GetAll());
+                var tiposSeguros = bl.GetAll();
+                if (tiposSeguros == null || !tiposSeguros.Any())
+                {
+                    logger.LogWarning("No se encontraron tipos de seguro.");
+                    return NotFound(new StatusDTO(false, "No se encontraron tipos de seguro."));
+                }
+
+                logger.LogInformation("Se obtuvieron {Count} tipos de seguro.", tiposSeguros.Count);
+                return Ok(tiposSeguros);
             }
             catch (Exception ex)
             {

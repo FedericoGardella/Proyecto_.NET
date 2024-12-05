@@ -21,9 +21,17 @@ namespace BL.BLs
             return dal.Get(Id);
         }
 
-        public List<TipoSeguro> GetAll()
+        public List<TipoSeguroCostoDTO> GetAll()
         {
-            return dal.GetAll();
+            var tiposSeguros =  dal.GetAll();
+
+            return tiposSeguros.Select(ts => new TipoSeguroCostoDTO
+            {
+                Id = ts.Id,
+                Nombre = ts.Nombre,
+                Descripcion = ts.Descripcion,
+                Costo = ts.Articulo?.Costo ?? 0 // Usa el costo del artículo relacionado
+            }).ToList();
         }
 
         public TipoSeguro Add(TipoSeguro x)

@@ -23,7 +23,11 @@ namespace DAL.DALs
 
         public List<TipoSeguro> GetAll()
         {
-            return db.TiposSeguros.Select(x => x.GetEntity()).ToList();
+            var tiposSeguros = db.TiposSeguros
+                        .Include(ts => ts.Articulos)
+                        .ToList();
+
+            return tiposSeguros.Select(ts => ts.GetEntity()).ToList();
         }
 
         public TipoSeguro Add(TipoSeguro x)
