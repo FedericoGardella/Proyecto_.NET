@@ -65,7 +65,7 @@ public class ReminderService : BackgroundService
                 }
             }
 
-            await Task.Delay(TimeSpan.FromSeconds(10), stoppingToken); // Revisa cada 30 segundos
+            await Task.Delay(TimeSpan.FromSeconds(50), stoppingToken); // Revisa cada 30 segundos
         }
     }
 

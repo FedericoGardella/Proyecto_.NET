@@ -58,7 +58,7 @@ namespace Autenticacion.Controllers
 
 
         // GET api/<PacientesController>/5
-        [Authorize(Roles = "ADMIN, MEDICO")]
+        [Authorize(Roles = "ADMIN, MEDICO, PACIENTE")]
         [ProducesResponseType(typeof(Paciente), 200)]
         [HttpGet("{Id}")]
         public IActionResult Get(long Id)

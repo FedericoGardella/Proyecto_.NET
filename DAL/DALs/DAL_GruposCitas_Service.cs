@@ -2,6 +2,7 @@
 using DAL.Models;
 using Shared.DTOs;
 using Shared.Entities;
+using System.Net;
 using System.Net.Http;
 
 namespace DAL.DALs
@@ -42,7 +43,6 @@ namespace DAL.DALs
         {
             try
             {
-
                 _httpClient.DefaultRequestHeaders.Clear();
                 _httpClient.DefaultRequestHeaders.Add("Authorization", $"{token}");
 
@@ -50,9 +50,33 @@ namespace DAL.DALs
 
                 var response = _httpClient.GetAsync(url).Result;
 
+                if (response.StatusCode == HttpStatusCode.NotFound)
+                {
+                    // Retorna un grupo vacío si no se encontró nada
+                    return new GrupoCita
+                    {
+                        Id = 0,
+                        EspecialidadId = 0,
+                        Fecha = fecha,
+                        Lugar = string.Empty,
+                        MedicoId = medicoId,
+                        Citas = new List<Cita>()
+                    };
+                }
+
                 if (!response.IsSuccessStatusCode)
                 {
-                    throw new Exception($"Error al llamar al servicio externo: {response.ReasonPhrase}");
+                    // Loguea el error y retorna un grupo vacío
+                    Console.WriteLine($"Error al llamar al servicio externo: {response.ReasonPhrase}");
+                    return new GrupoCita
+                    {
+                        Id = 0,
+                        EspecialidadId = 0,
+                        Fecha = fecha,
+                        Lugar = string.Empty,
+                        MedicoId = medicoId,
+                        Citas = new List<Cita>()
+                    };
                 }
 
                 var content = response.Content.ReadAsStringAsync().Result;
@@ -66,7 +90,17 @@ namespace DAL.DALs
             }
             catch (Exception ex)
             {
-                throw new Exception("Error al obtener el grupocita desde el servicio externo.", ex);
+                // Loguea el error y retorna un grupo vacío en caso de cualquier excepción
+                Console.WriteLine($"Error al obtener el grupocita desde el servicio externo: {ex.Message}");
+                return new GrupoCita
+                {
+                    Id = 0,
+                    EspecialidadId = 0,
+                    Fecha = fecha,
+                    Lugar = string.Empty,
+                    MedicoId = medicoId,
+                    Citas = new List<Cita>()
+                };
             }
         }
 
