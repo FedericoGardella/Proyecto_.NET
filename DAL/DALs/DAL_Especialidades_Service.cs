@@ -90,6 +90,11 @@ namespace DAL.DALs
             }
         }
 
+        public List<Especialidad> GetEspecialidadesPorMedico(long medicoId)
+        {
+            throw new NotImplementedException();
+        }
+
 
         //public Especialidad GetEspecialidad(long Id, string token)
         //{

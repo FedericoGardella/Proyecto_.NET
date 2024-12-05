@@ -29,7 +29,7 @@ namespace BL.BLs
             return _dal.Add(x);
         }
 
-        public Paciente Update(Paciente x)
+        public PacienteDTO Update(PacienteDTO x)
         {
             return _dal.Update(x);
         }

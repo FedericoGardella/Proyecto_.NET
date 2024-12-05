@@ -52,5 +52,18 @@ namespace BL.BLs
         //{
         //    return dal.GetEspecialidad(Id, token);
         //}
+
+        public List<Especialidad> GetEspecialidadesPorMedico(long medicoId)
+        {
+            try
+            {
+                // Llama al DAL para obtener las especialidades
+                return dal.GetEspecialidadesPorMedico(medicoId);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error al obtener especialidades para el médico con ID {medicoId}.", ex);
+            }
+        }
     }
 }

@@ -62,14 +62,48 @@ namespace DAL.DALs
             return Get(toSave.Id, null);
         }
 
-        public Paciente Update(Paciente x)
+        public PacienteDTO Update(PacienteDTO pacienteDto)
         {
-            Pacientes toSave = db.Pacientes.FirstOrDefault(c => c.Id == x.Id);
-            toSave = Pacientes.FromEntity(x, toSave);
-            db.Update(toSave);
+            // Verificar si el DTO es válido
+            if (pacienteDto == null || pacienteDto.Id <= 0)
+            {
+                throw new ArgumentException("El paciente DTO proporcionado no es válido.");
+            }
+
+            // Buscar el paciente existente en la base de datos
+            Pacientes pacienteExistente = db.Pacientes.FirstOrDefault(c => c.Id == pacienteDto.Id);
+
+            if (pacienteExistente == null)
+            {
+                throw new InvalidOperationException($"No se encontró un paciente con el ID {pacienteDto.Id}.");
+            }
+
+            // Mapear los datos del DTO al modelo existente
+            pacienteExistente = Pacientes.FromEntity(new Paciente
+            {
+                Id = pacienteDto.Id,
+                Nombres = pacienteDto.Nombres,
+                Apellidos = pacienteDto.Apellidos,
+                Documento = pacienteDto.Documento,
+                Telefono = pacienteDto.Telefono
+            }, pacienteExistente);
+
+            // Actualizar la base de datos
+            db.Pacientes.Update(pacienteExistente);
             db.SaveChanges();
-            return Get(toSave.Id,null);
+
+            // Retornar el DTO actualizado
+            return new PacienteDTO
+            {
+                Id = pacienteExistente.Id,
+                Nombres = pacienteExistente.Nombres,
+                Apellidos = pacienteExistente.Apellidos,
+                Documento = pacienteExistente.Documento,
+                Telefono = pacienteExistente.Telefono,
+                HistoriaClinicaId = 0
+            };
         }
+
 
         public void Delete(long Id)
         {

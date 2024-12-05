@@ -1,4 +1,5 @@
-﻿using Shared.Entities;
+﻿using Shared.DTOs;
+using Shared.Entities;
 
 namespace DAL.IDALs
 {
@@ -7,7 +8,7 @@ namespace DAL.IDALs
         Medico Get(long Id);
         List<Medico> GetAll();
         Medico Add(Medico x);
-        Medico Update(Medico x);
+        MedicoDTO Update(MedicoDTO x);
         void Delete(long Id);
     }
 }

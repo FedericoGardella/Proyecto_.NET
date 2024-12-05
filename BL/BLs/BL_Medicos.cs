@@ -1,5 +1,6 @@
 ﻿using BL.IBLs;
 using DAL.IDALs;
+using Shared.DTOs;
 using Shared.Entities;
 
 namespace BL.BLs
@@ -28,7 +29,7 @@ namespace BL.BLs
             return dal.Add(x);
         }
 
-        public Medico Update(Medico x)
+        public MedicoDTO Update(MedicoDTO x)
         {
             return dal.Update(x);
         }

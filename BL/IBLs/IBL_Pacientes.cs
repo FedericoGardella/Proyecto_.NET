@@ -9,7 +9,7 @@ namespace BL.IBLs
         Paciente Get(long Id, string token);
         List<Paciente> GetAll();
         Paciente Add(Paciente x);
-        Paciente Update(Paciente x);
+        PacienteDTO Update(PacienteDTO x);
         void Delete(long Id);
         Paciente GetPacienteByDocumento(string documento);
         string GetPacienteEmail(long id);

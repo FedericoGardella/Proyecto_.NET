@@ -1,4 +1,5 @@
 ﻿using DAL.IDALs;
+using Shared.DTOs;
 using Shared.Entities;
 
 namespace DAL.DALs
@@ -25,7 +26,7 @@ namespace DAL.DALs
             throw new NotImplementedException();
         }
 
-        public Medico Update(Medico x)
+        public MedicoDTO Update(MedicoDTO x)
         {
             throw new NotImplementedException();
         }

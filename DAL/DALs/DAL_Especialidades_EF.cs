@@ -75,5 +75,22 @@ namespace DAL.DALs
         //        throw new Exception($"No existe un {entityName} con Id {Id}");
         //    return especialidad;
         //}
+        public List<Especialidad> GetEspecialidadesPorMedico(long medicoId)
+        {
+            try
+            {
+                // Consulta Many-to-Many para obtener las especialidades asociadas al médico
+                var especialidades = db.Especialidades
+                    .Where(e => e.Medicos.Any(m => m.Id == medicoId)) // Relación Medico -> Especialidades
+                    .Select(e => e.GetEntity()) // Mapea al Shared Entity
+                    .ToList();
+
+                return especialidades;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error al obtener especialidades para el médico con ID {medicoId}.", ex);
+            }
+        }
     }
 }
