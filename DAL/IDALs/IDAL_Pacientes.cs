@@ -9,7 +9,7 @@ namespace DAL.IDALs
         Paciente Get(long Id, string token);
         List<Paciente> GetAll();
         Paciente Add(Paciente x);
-        Paciente Update(Paciente x);
+        PacienteDTO Update(PacienteDTO x);
         public void Delete(long Id);
         Paciente GetPacienteByDocumento(string documento);
         List<ContratoSeguroDTO> GetContratosSeguros(long PacienteId);

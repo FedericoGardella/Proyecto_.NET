@@ -103,7 +103,7 @@ namespace DAL.DALs
             return paciente;
         }
 
-        public Paciente Update(Paciente x)
+        public PacienteDTO Update(PacienteDTO x)
         {
             throw new NotImplementedException();
         }

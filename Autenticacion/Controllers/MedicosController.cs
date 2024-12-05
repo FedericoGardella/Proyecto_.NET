@@ -58,9 +58,9 @@ namespace Autenticacion.Controllers
 
         // PUT api/<MedicosController>/5
         [Authorize(Roles = "ADMIN")]
-        [ProducesResponseType(typeof(Medico), 200)]
+        [ProducesResponseType(typeof(MedicoDTO), 200)]
         [HttpPut("{Id}")]
-        public IActionResult Put(long Id, [FromBody] Medico x)
+        public IActionResult Put(long Id, [FromBody] MedicoDTO x)
         {
             try
             {

@@ -3,6 +3,7 @@ using DAL.Models;
 using Shared.Entities;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
+using Shared.DTOs;
 
 namespace DAL.DALs
 {
@@ -77,15 +78,43 @@ namespace DAL.DALs
             return Get(toSave.Id);
         }
 
-
-        public Medico Update(Medico x)
+        public MedicoDTO Update(MedicoDTO medicoDto)
         {
-                Medicos toSave = db.Medicos.FirstOrDefault(c => c.Id == x.Id);
-                toSave = Medicos.FromEntity(x, toSave);
-                db.Update(toSave);
-                db.SaveChanges();
-                return Get(toSave.Id);
+            // Validar que el DTO no sea nulo
+            if (medicoDto == null) throw new ArgumentNullException(nameof(medicoDto));
+
+            // Buscar el médico en la base de datos
+            var toSave = db.Medicos.FirstOrDefault(c => c.Id == medicoDto.Id);
+
+            // Validar que el médico exista
+            if (toSave == null)
+            {
+                throw new InvalidOperationException($"No se encontró el médico con ID {medicoDto.Id}");
             }
+
+            // Actualizar los campos simples del médico
+            toSave.Nombres = medicoDto.Nombres;
+            toSave.Apellidos = medicoDto.Apellidos;
+            toSave.Documento = medicoDto.Documento;
+            toSave.Matricula = medicoDto.Matricula;
+
+            // Asegurarse de que la lista de especialidades no sea tocada
+            toSave.Especialidades = toSave.Especialidades ?? new List<Especialidades>();
+
+            // Guardar cambios en la base de datos
+            db.Medicos.Update(toSave);
+            db.SaveChanges();
+
+            // Devolver el médico actualizado como DTO
+            return new MedicoDTO
+            {
+                Id = toSave.Id,
+                Nombres = toSave.Nombres,
+                Apellidos = toSave.Apellidos,
+                Documento = toSave.Documento,
+                Matricula = toSave.Matricula
+            };
+        }
 
         public void Delete(long Id)
         {
