@@ -55,5 +55,9 @@ namespace BL.BLs
             return email;
         }
 
+        public List<Paciente> GetAllPacientes(string token)
+        {
+            return _dal.GetAllPacientes(token);
+        }
     }
 }

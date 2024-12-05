@@ -10,6 +10,9 @@ namespace BL.IBLs
         Factura Add(Factura x);
         Factura Update(Factura x);
         void Delete(long Id);
+        List<FacturaDTO> GetFacturasPorPaciente(long pacienteId);
+        public void GenerarFacturasMensuales(string token);
+        List<FacturaDTO> GetFacturasMensuales(long pacienteId);
         //List<CitaDTO> GetCitas(long facturaId);
     }
 }

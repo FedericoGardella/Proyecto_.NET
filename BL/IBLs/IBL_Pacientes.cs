@@ -14,5 +14,6 @@ namespace BL.IBLs
         Paciente GetPacienteByDocumento(string documento);
         string GetPacienteEmail(long id);
         List<ContratoSeguroDTO> GetContratosSeguros(long PacienteId);
+        List<Paciente> GetAllPacientes(string token);
     }
 }

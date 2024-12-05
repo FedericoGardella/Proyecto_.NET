@@ -1,5 +1,6 @@
 ﻿using DAL.IDALs;
 using DAL.Models;
+using Microsoft.EntityFrameworkCore;
 using Shared.DTOs;
 using Shared.Entities;
 
@@ -24,7 +25,6 @@ namespace DAL.DALs
         {
             return db.Facturas.Select(x => x.GetEntity()).ToList();
         }
-
 
         public Factura Add(Factura x)
         {
@@ -53,6 +53,25 @@ namespace DAL.DALs
             db.SaveChanges();
         }
 
+        public List<Factura> GetFacturasPorPaciente(long pacienteId)
+        {
+            var facturas = db.Facturas
+                             .Where(f => f.PacientesId == pacienteId && !f.Mensual)
+                             .Include(f => f.ContratosSeguros)
+                             .Include(f => f.Citas)
+                             .ToList();
+
+            return facturas.Select(f => f.GetEntity()).ToList();
+        }
+
+        public List<Factura> GetFacturasMensuales(long pacienteId)
+        {
+            var facturas = db.Facturas
+                             .Where(f => f.PacientesId == pacienteId && f.Mensual && !f.Pago) // Filtra facturas mensuales no pagadas
+                             .ToList();
+
+            return facturas.Select(f => f.GetEntity()).ToList();
+        }
 
     }
 }
